@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  laravel-tests:
+  uteLocker-tests:
 
     runs-on: ubuntu-latest
 
@@ -31,3 +31,25 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit
+
+  uteLocker-deploy:
+    runs-on: ubuntu-latest
+    needs: uteLocker-tests
+    steps:
+    - uses: actions/checkout@v2
+    - uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /var/www/html/uteLocker
+          rm package-lock.json
+          git pull
+          composer install --prefer-dist --no-progress --no-interaction --no-dev
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          php artisan optimize
