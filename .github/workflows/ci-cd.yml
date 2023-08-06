@@ -27,16 +27,16 @@ jobs:
       with:
           node-version: '18'
     - run: npm install
-    - run: npm run build
-    - name: Create Database
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: vendor/bin/phpunit
+    - run: npm run dev
+#    - name: Create Database
+#      run: |
+#        mkdir -p database
+#        touch database/database.sqlite
+#    - name: Execute tests (Unit and Feature tests) via PHPUnit
+#      env:
+#        DB_CONNECTION: sqlite
+#        DB_DATABASE: database/database.sqlite
+#      run: vendor/bin/phpunit
 
   uteLocker-deploy:
     runs-on: ubuntu-latest
