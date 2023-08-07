@@ -9,4 +9,11 @@ return array(
     'forgotPassword' => 'Forgot Password?',
     'password' => 'Password',
     'viewPassword' => 'View Password',
+    'loading' => 'Loading...',
+    'recoverPassword' => 'Recover Password',
+    'sendPasswordLink' => 'Send Password Reset Link',
+    'menu' => [
+        'home' => 'Home',
+        'dashboard' => 'Dashboard',
+    ]
 );

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('vendor/css/font-awesome-icons/all.min.css') }}">
 
     {{--  Template CSS  --}}
+    <link href="{{ asset('vendor/froiden-helper/helper.css') }}" rel="stylesheet">
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/main.css') }}">
 
     <title>Login</title>
@@ -41,5 +42,7 @@
 
     <!-- Template JS -->
     <script src="{{ asset('js/main.js') }}"></script>
+
+    {{ $scripts }}
 </body>
 </html>

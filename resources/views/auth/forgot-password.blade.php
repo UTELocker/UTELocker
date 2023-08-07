@@ -1,25 +1,46 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
-
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('password.email') }}">
+<x-auth>
+    <form id="forgot-password-form" action="{{ route('password.email') }}" class="ajax-form" method="POST">
         @csrf
+        <h3 class="text-capitalize mb-4 f-w-500">{{ __('app.recoverPassword') }}</h3>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="alert alert-success m-t-10 d-none" id="success-msg"></div>
+        <div class="group">
+            <div class="form-group text-left">
+                <label for="email" class="f-w-500">{{ __('auth.email') }}</label>
+                <input type="email" name="email" class="form-control height-50 f-15 light_text"
+                       autofocus placeholder="{{ __('placeholders.email') }}" id="email">
+            </div>
+
+            <button
+                type="button"
+                id="submit-login"
+                class="btn-primary f-w-500 rounded w-100 height-50 f-18">
+                @lang('app.sendPasswordLink') <i class="fa fa-arrow-right pl-1"></i>
+            </button>
         </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
+        <div class="forgot_pswd mt-3">
+            <a href="{{ route('login') }}" class="justify-content-center">{{ __('app.login') }}</a>
         </div>
     </form>
-</x-guest-layout>
+    <x-slot name="scripts">
+        <script>
+            $('#submit-login').click(function () {
+                const url = "{{ route('password.email') }}";
+                $.easyAjax({
+                    url: url,
+                    container: '#forgot-password-form',
+                    disableButton: true,
+                    blockUI: true,
+                    buttonSelector: "#submit-login",
+                    type: "POST",
+                    data: $('#forgot-password-form').serialize(),
+                    success: function (response) {
+                        $('#success-msg').removeClass('d-none');
+                        $('#success-msg').html(response.message);
+                        $('.group').remove();
+                    }
+                })
+            });
+        </script>
+    </x-slot>
+</x-auth>

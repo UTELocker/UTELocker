@@ -1,7 +1,17 @@
-import './bootstrap';
+(function () {
+    'use strict';
 
-import Alpine from 'alpinejs';
+    let UTELocker = window.UTELocker = {};
 
-window.Alpine = Alpine;
+    const modules = [
+        'common',
+    ];
 
-Alpine.start();
+    $(function () {
+        modules.forEach(function (module) {
+            if (UTELocker[module] && UTELocker[module] !== undefined) {
+                UTELocker[module].init();
+            }
+        });
+    })
+})();

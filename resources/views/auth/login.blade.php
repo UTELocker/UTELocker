@@ -17,15 +17,15 @@
 
         <div id="password-section">
             <div class="form-group text-left">
-                <label for="password">@lang('app.password')</label>
+                <label for="password">{{ __('app.password') }}</label>
                 <x-forms.input-group>
                     <input type="password" name="password" id="password"
-                           placeholder="@lang('placeholders.password')" tabindex="3"
+                           placeholder="{{ __('placeholders.password') }}" tabindex="3"
                            class="form-control height-50 f-15 light_text @error('password') is-invalid @enderror">
 
                     <x-slot name="append">
                         <button type="button" data-toggle="tooltip"
-                                data-original-title="@lang('app.viewPassword')"
+                                data-original-title="{{ __('app.viewPassword') }}"
                                 class="btn btn-outline-secondary border-grey height-50 toggle-password">
                             <i
                                 class="fa fa-eye"></i></button>
@@ -37,18 +37,32 @@
                 @endif
             </div>
             <div class="forgot_pswd mb-3">
-                <a href="{{ url('forgot-password') }}">@lang('app.forgotPassword')</a>
+                <a href="{{ url('forgot-password') }}">{{ __('app.forgotPassword') }}</a>
             </div>
 
             <div class="form-group text-left ">
                 <input id="checkbox-signup" class="cursor-pointer" type="checkbox" name="remember">
-                <label for="checkbox-signup" class="cursor-pointer">@lang('app.rememberMe')</label>
+                <label for="checkbox-signup" class="cursor-pointer">{{ __('app.rememberMe') }}</label>
             </div>
 
             <button type="submit" id="submit-login"
                     class="btn-primary f-w-500 rounded w-100 height-50 f-18">
-                @lang('app.login') <i class="fa fa-arrow-right pl-1"></i>
+                {{ __('app.login') }} <i class="fa fa-arrow-right pl-1"></i>
             </button>
         </div>
     </form>
+    <x-slot name="scripts">
+        <script>
+            $(document).ready(function () {
+                $("form#login-form").submit(function () {
+                    const button = $('form#login-form').find('#submit-login');
+                    const text =
+                        '<span class="spinner-border spinner-border-sm"'
+                        + ' role="status" aria-hidden="true"></span> {{__('app.loading')}}';
+                    button.prop("disabled", true);
+                    button.html(text);
+                });
+            });
+        </script>
+    </x-slot>
 </x-auth>
