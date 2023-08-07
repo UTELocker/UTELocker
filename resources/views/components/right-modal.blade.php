@@ -1,4 +1,3 @@
-<!-- Task Detail Start -->
 <div class="task-overlay w-100 h-100" id="close-task-detail-overlay"></div>
 <div class="task-detail-panel bg-additional-grey" id="task-detail-1">
     <a class="close-task-detail" id="close-task-detail" style="display: none;">
@@ -12,4 +11,3 @@
         </div>
     </div>
 </div>
-<!-- Task Detail End -->

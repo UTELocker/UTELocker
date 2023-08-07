@@ -866,10 +866,6 @@ input[type="number"] {
     z-index: auto;
 }
 
-.flag-icon-ja-jp.flag-icon-squared {
-    background-image: url(../flags/1x1/ja-JP.svg);
-}
-
 .bootstrap-select > select.mobile-device{
     width: auto !important;
     z-index: auto !important;
@@ -1031,4 +1027,28 @@ input[type="number"] {
     display: contents !important;
     color:#007bff !important;
     font-size: 15px;
+}
+
+/*********** CLIENT DETAIL **************/
+.client-detail-chart{
+    height: 159px;
+}
+
+/*********** CLIENT LIST **************/
+.client-list-filter{
+    .select-box{
+        width: auto;
+
+        .input-group{
+            width: auto;
+        }
+    }
+
+    @include media-breakpoint-down(sm){
+        position: initial;
+    }
+}
+
+.client-list-filter.filter-box{
+    padding: 0px 28px;
 }

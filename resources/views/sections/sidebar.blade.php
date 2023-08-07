@@ -1,5 +1,5 @@
 <aside class="sidebar-dark">
-    <div class="mobile-close-sidebar-panel w-100 h-100" id="mobile_close_panel"></div>
+    <div class="mobile-close-sidebar-panel w-100 h-100" onclick="closeMobileMenu()" id="mobile_close_panel"></div>
     <div class="main-sidebar" id="mobile_menu_collapse">
         <div class="sidebar-brand-box dropdown cursor-pointer">
             <div class="dropdown-toggle sidebar-brand d-flex align-items-center justify-content-between  w-100"
@@ -37,14 +37,6 @@
                     </a>
                 </div>
 
-                <a class="dropdown-item d-flex justify-content-between align-items-center f-15 text-dark"
-                   href="javascript:;">
-                    <label for="dark-theme-toggle">@lang('app.darkTheme')</label>
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="dark-theme-toggle">
-                        <label class="custom-control-label f-14" for="dark-theme-toggle"></label>
-                    </div>
-                </a>
                 <a class="dropdown-item d-flex justify-content-between align-items-center f-15 text-dark"
                    href="{{ route('logout') }}" onclick="event.preventDefault();
                 document.getElementById('logout-form').submit();">

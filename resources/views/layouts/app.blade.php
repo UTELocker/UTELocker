@@ -8,6 +8,9 @@
     {{--  Font Awesome Icons  --}}
     <link rel="stylesheet" href="{{ asset('vendor/css/font-awesome-icons/all.min.css') }}">
 
+    <!-- Simple Line Icons -->
+    <link rel="stylesheet" href="{{ asset('vendor/css/simple-line-icons/simple-line-icons.css') }}">
+
     @stack('datatable-styles')
 
     {{--  Template CSS  --}}
@@ -65,7 +68,7 @@
 
             @yield('filter-section')
 
-            <x-app-title class="d-block d-lg-none" pageTitle="UTELocker"></x-app-title>
+            <x-app-title class="d-block d-lg-none" :pageTitle="$pageTitle"></x-app-title>
 
             @yield('content')
 
@@ -76,9 +79,19 @@
 
     <!-- Global Required Javascript -->
     <script src="{{ asset('js/main.js') }}"></script>
+    <script>
+        const MODAL_DEFAULT = '#myModalDefault';
+        const MODAL_LG = '#myModal';
+        const MODAL_XL = '#myModalXl';
+        const MODAL_HEADING = '#modelHeading';
+        const RIGHT_MODAL = '#task-detail-1';
+        const RIGHT_MODAL_CONTENT = '#right-modal-content';
+        const RIGHT_MODAL_TITLE = '#right-modal-title';
+    </script>
     @stack('scripts')
     <script>
         $(window).on('load', function () {
+            UTELocker.common.init();
             $(".preloader-container").fadeOut("slow", function () {
                 $(this).removeClass("d-flex");
             });

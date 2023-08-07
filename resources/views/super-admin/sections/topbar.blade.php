@@ -2,9 +2,9 @@
 <header class="main-header clearfix bg-white" id="header">
         <!-- NAVBAR LEFT(MOBILE MENU COLLAPSE) START-->
     <div class="navbar-left float-left d-flex align-items-center">
-        <x-app-title class="d-none d-lg-flex" pageTitle="Page Title"></x-app-title>
+        <x-app-title class="d-none d-lg-flex" :pageTitle="$pageTitle"></x-app-title>
 
-        <div class="d-block d-lg-none menu-collapse cursor-pointer position-relative">
+        <div class="d-block d-lg-none menu-collapse cursor-pointer position-relative" onclick="openMobileMenu()">
             <div class="mc-wrap">
                 <div class="mcw-line"></div>
                 <div class="mcw-line center"></div>
