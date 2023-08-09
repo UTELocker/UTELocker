@@ -1,0 +1,19 @@
+@startuml
+!define MYSQL MySQL
+!define GITHUB GitHub
+!define ACTION "GitHub Action"
+!define SERVER Server
+!define DEPLOY_SCRIPT "Deploy Script"
+
+GITHUB -down-> ACTION : "Trigger build and deployment"
+ACTION --> GITHUB : "Checkout code"
+ACTION --> DEPLOY_SCRIPT : "Run deploy script"
+
+DEPLOY_SCRIPT --> SERVER : "Copy code to Apache server"
+DEPLOY_SCRIPT --> MYSQL : "Run database migrations"
+
+SERVER --> MYSQL : "Fetch data"
+MYSQL --> SERVER : "Send data"
+
+SERVER --> SERVER : "Serve Laravel App via Apache"
+@enduml

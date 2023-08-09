@@ -1,0 +1,40 @@
+@startuml
+actor User as user
+
+cloud "UTELocker" as locker {
+    node "Apache Web Server" as webserver {
+        folder "UTE Locker - Laravel Framework" as webapp {
+            component "Routing" as routing
+            frame "Presentation Layer" as presentation {
+                component "Controllers" as controllers
+                component "Views - Blade template engine and VueJs" as views
+
+                views <-.-> controllers
+            }
+            routing -down-> controllers
+            frame "Data Access Layer" as data {
+                component "Models - Eloquent (ORM)" as models
+                component "Laravel Query Builder" as query
+                component "Migration" as migration
+            }
+
+            frame "Service Layer" as service {
+                component "Permission Services" as permission
+                component "Business Logic Services" as business
+                permission -down-> business
+            }
+            controllers -down->permission
+            business -down-> controllers
+            business <--> models
+            query <--> business
+        }
+    }
+    database "UTELocker Database - MySQL" as database {
+        folder "DB Tables" as tables
+    }
+    migration -down--> database
+    models <-down-> database
+    query <-down-> database
+
+}
+@enduml

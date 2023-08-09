@@ -1,0 +1,30 @@
+@startuml
+entity "Site Group" as site_group {
+    + id [PK] : number <<generated>>
+    --
+    *name : string <<required>>
+    app_name : string
+    phone : string
+    *logo : string <<required>>
+    favicon : string
+    login_background : string
+    *address : string <<required>>
+    website : string
+    timezone : string
+    *date_format : string <<required>>
+    *date_picker_format : string <<required>>
+    *moment_format : string <<required>>
+    *time_format : string <<required>>
+    *locale : string <<required>>
+    latitude : string
+    longitude : string
+    created_at
+    updated_at
+}
+
+entity "Users" as users {
+    + id [PK] : number <<generated>>
+    --
+    *name : string <<required>>
+}
+@enduml

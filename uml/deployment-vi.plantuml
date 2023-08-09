@@ -1,0 +1,19 @@
+@startuml
+!define MYSQL MySQL
+!define GITHUB GitHub
+!define ACTION "GitHub Action"
+!define SERVER "Server"
+!define DEPLOY_SCRIPT "Script CI/CD"
+
+GITHUB -down-> ACTION : "Trigger build và deployment"
+ACTION --> GITHUB : "Checkout code"
+ACTION --> DEPLOY_SCRIPT : "Chạy script deploy"
+
+DEPLOY_SCRIPT --> SERVER : "Sao chép mã nguồn vào Apache Server"
+DEPLOY_SCRIPT --> MYSQL : "Chạy upgrade cơ sở dữ liệu"
+
+SERVER --> MYSQL : "Lấy dữ liệu"
+MYSQL --> SERVER : "Lưu dữ liệu"
+
+SERVER --> SERVER : "UTELocker chạy thông qua Apache"
+@enduml
