@@ -1,0 +1,33 @@
+@startuml
+title Client buy a product
+footer <i>UTE Locker - Workflow 01</i> - <b>Created date: 11/08/2023</b>
+skin rose
+
+start
+:Khách hàng mua UTELocker;
+note right
+    Khách hàng cung cấp một số thông tin
+    cần thiết để tạo Site Group.
+end note
+:Tạo Site Group cho khách hàng;
+note right
+    Site Group ở đây được xem như là một tổ chức
+    Eg: Trường Đại học Sư phạm Kỹ thuật TP.HCM
+end note
+:Khách hàng đăng nhập vào Site Group;
+note left
+    Khách hàng sẽ được cấp một tài khoản
+    để đăng nhập vào Site Group
+end note
+:Khách hàng kích hoạt Locker;
+note right
+    Khách hàng sẽ được cấp một mã kích hoạt
+    để kích hoạt Locker
+end note
+:Cấu hình Locker;
+note left
+    Khách hàng sẽ cấu hình Locker theo ý muốn
+end note
+:Sản phẩm đi vào hoạt động;
+stop
+@enduml

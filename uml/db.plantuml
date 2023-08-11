@@ -1,30 +1,101 @@
 @startuml
-entity "Site Group" as site_group {
-    + id [PK] : number <<generated>>
-    --
-    *name : string <<required>>
-    app_name : string
-    phone : string
-    *logo : string <<required>>
-    favicon : string
-    login_background : string
-    *address : string <<required>>
-    website : string
-    timezone : string
-    *date_format : string <<required>>
-    *date_picker_format : string <<required>>
-    *moment_format : string <<required>>
-    *time_format : string <<required>>
-    *locale : string <<required>>
-    latitude : string
-    longitude : string
-    created_at
-    updated_at
+title UTELocks Database Schema
+skin rose
+!includeurl https://raw.githubusercontent.com/chippyash/db-plantuml/master/dist/DatabasePhysical.iuml
+footer Created by @ngtrdai - https://utelocker.svute.com
+
+Table(site_group, site_groups, Site Groups) {
+    primary()
+    not_null(name, string(128))
+    app_name, string(128)
+    phone, string(20)
+    not_null(logo, string(128))
+    favicon, string(128)
+    login_background, string(128)
+    not_null(address, string(128))
+    website, string(128)
+    timezone, string(128)
+    not_null(date_format, string(128))
+    not_null(date_picker_format, string(128))
+    not_null(moment_format, string(128))
+    not_null(time_format, string(128))
+    not_null(locale, string(128))
+    latitude, string(128)
+    longitude, string(128)
+    created_at()
+    updated_at()
 }
 
-entity "Users" as users {
-    + id [PK] : number <<generated>>
-    --
-    *name : string <<required>>
+Table(users, users, Users) {
+    primary()
+    not_null(name, string(128))
+    not_null(email, string(128))
+    not_null(user_type, int)
+    not_null(password, string(128))
+    not_null(site_group_id, int)
+    not_null(image, string(128))
+    gender, string(128)
+    locale, string(128)
+    not_null(status, enum)
+    not_null(login, enum)
+    remember_token, string(128)
+    created_at()
+    updated_at()
 }
+
+Type(status, Status) {
+    ACTIVE
+    INACTIVE
+}
+
+Type(e_login, Login) {
+    ENABLE
+    DISABLE
+}
+
+Table(locations, locations, Locations) {
+    primary()
+    not_null(site_group_id, int)
+    not_null(name, string(128))
+    not_null(address, string(128))
+    latitude, string(128)
+    longitude, string(128)
+    image, string(128)
+    created_at()
+    updated_at()
+}
+
+Table(lockers, lockers, Lockers) {
+    primary()
+    not_null(site_group_id, int)
+    not_null(name, string(128))
+    not_null(code, string(128))
+    not_null(type, string(128))
+    not_null(size, string(128))
+    not_null(status, enum)
+    image, string(128)
+    description, string(128)
+    not_null(location_id, int)
+    created_at()
+    updated_at()
+}
+
+Table(locker_license, locker_license, Locker License) {
+    primary()
+    not_null(locker_id, int)
+    not_null(license, string(128))
+    not_null(expired_at, datetime)
+    created_at()
+    updated_at()
+}
+
+depends(users, status, Status)
+depends(users, e_login, Login)
+depends(lockers, status, Status)
+
+onemany(site_group, users, '1 - M')
+onemany(locations, site_group, '1 - M')
+onemany(site_group, locker, '1 - M')
+
+
 @enduml

@@ -5,30 +5,29 @@ namespace App\Http\Controllers\Admin\Users;
 use App\Classes\Reply;
 use App\DataTables\UsersDataTable;
 use App\Http\Controllers\Controller;
+use App\Services\Admin\Users\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function __construct()
+    private UserService $userService;
+
+    public function __construct(UserService $userService)
     {
+        $this->userService = $userService;
         $this->pageTitle = 'Users';
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(UsersDataTable $dataTable)
     {
         return $dataTable->render('admin.users.index', $this->data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $this->pageTitle = 'Create User';
         $this->view = 'admin.users.ajax.create';
+        $this->user = $this->userService->new();
 
         if (request()->ajax()) {
             if (request('quick-form') == 1) {

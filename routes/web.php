@@ -26,7 +26,16 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'dashboard'], function () {
 });
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'clients'], function () {
-    Route::resource('/', ClientController::class);
+    Route::resource('/', ClientController::class)
+        ->names([
+            'index' => 'admin.clients.index',
+            'create' => 'admin.clients.create',
+            'store' => 'admin.clients.store',
+            'show' => 'admin.clients.show',
+            'edit' => 'admin.clients.edit',
+            'update' => 'admin.clients.update',
+            'destroy' => 'admin.clients.destroy',
+        ]);
 });
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'users'], function () {

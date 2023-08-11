@@ -1,4 +1,6 @@
 @startuml
+title UTE Locker - Component Diagram
+footer <i>UTE Locker - Component Diagram</i> - <b>Created date: 11/08/2023</b>
 actor User as user
 
 cloud "UTELocker" as locker {

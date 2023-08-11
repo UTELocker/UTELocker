@@ -16,6 +16,7 @@ return array(
         'home' => 'Home',
         'dashboard' => 'Dashboard',
         'users' => 'Users',
+        'clients' => 'Clients',
     ],
     'datatable' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/English.json',
     'exportExcel' => 'Export Excel',
