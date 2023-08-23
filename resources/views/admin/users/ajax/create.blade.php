@@ -3,14 +3,15 @@
         <x-form id="save-user-data-form">
             <div class="add-client bg-white rounded">
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
-                    User Detail
+                    User Details
                 </h4>
 
                 <div class="row p-20">
                     <div class="col-lg-9">
                         <div class="row">
                         </div>
-            </div>
+                    </div>
+                </div>
         </x-form>
     </div>
 </div>

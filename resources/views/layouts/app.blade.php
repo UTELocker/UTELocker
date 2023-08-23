@@ -11,6 +11,12 @@
     <!-- Simple Line Icons -->
     <link rel="stylesheet" href="{{ asset('vendor/css/simple-line-icons/simple-line-icons.css') }}">
 
+    <!-- Select Plugin -->
+    <link rel="stylesheet" href="{{ asset('vendor/css/select2/select2.min.css') }}">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="{{ asset('vendor/css/bootstrap-icons/bootstrap-icons.css') }}">
+
     @stack('datatable-styles')
 
     {{--  Template CSS  --}}
@@ -87,6 +93,13 @@
         const RIGHT_MODAL = '#task-detail-1';
         const RIGHT_MODAL_CONTENT = '#right-modal-content';
         const RIGHT_MODAL_TITLE = '#right-modal-title';
+
+        const dropifyMessages = {
+            default: "@lang('app.dragDrop')",
+            replace: "@lang('app.dragDropReplace')",
+            remove: "@lang('app.remove')",
+            error: "@lang('messages.errorOccured')",
+        };
     </script>
     @stack('scripts')
     <script>

@@ -4,11 +4,42 @@ UTELocker.common = (function () {
             parent = parent + " ";
         }
 
+        if (
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)
+        ) {
+            $(parent + ".select-picker").selectpicker("mobile");
+        } else {
+            $(parent + ".select-picker").selectpicker();
+        }
+
         $(parent + "input").attr("autocomplete", "off");
 
         $("body").tooltip({
             selector: '[data-toggle="tooltip"]',
             trigger: 'hover'
+        });
+
+        $(function () {
+            $('[data-toggle="popover"]').popover();
+        });
+
+        var drEvent = $(".dropify").dropify({
+            messages: dropifyMessages,
+            imgFileExtensions: ['png', 'jpg', 'jpeg', 'gif', 'bmp','svg'],
+        });
+
+        drEvent.on("dropify.afterClear", function (event, element) {
+            var elementID = element.element.id;
+            var elementName = element.element.name;
+            if ($("#" + elementID + "_delete").length == 0) {
+                $("#" + elementID).after(
+                    '<input type="hidden" name="' +
+                    elementName +
+                    '_delete" id="' +
+                    elementID +
+                    '_delete" value="yes">'
+                );
+            }
         });
     };
 

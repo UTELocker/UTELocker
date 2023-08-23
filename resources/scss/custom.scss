@@ -1,5 +1,7 @@
 $dropify-font-path: "../fonts" !default;
+@import "../../node_modules/dropify/src/sass/dropify";
 @import "../../node_modules/sweetalert2/src/sweetalert2";
+@import "../../node_modules/flag-icon-css/sass/flag-icons";
 @import "../../node_modules/bootstrap-select/sass/bootstrap-select";
 
 @font-face {
