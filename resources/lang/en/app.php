@@ -48,4 +48,5 @@ return array(
     'others' => 'Others',
     'save' => 'Save',
     'saveAddMore' => 'Save & More',
+    'cancel' => 'Cancel',
 );

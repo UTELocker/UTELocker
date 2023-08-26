@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Admin\Clients;
 use App\Classes\CommonConstant;
 use App\Classes\Reply;
 use App\DataTables\ClientsDataTable;
+use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Clients\StoreClientRequest;
 use App\Models\LanguageSetting;
+use App\Models\User;
 use App\Services\Admin\Clients\ClientService;
 use App\Services\Admin\Users\UserService;
 use Illuminate\Http\Request;
@@ -23,9 +26,6 @@ class ClientController extends Controller
         $this->userService = $userService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(ClientsDataTable $dataTable)
     {
         return $dataTable->render(
@@ -60,10 +60,37 @@ class ClientController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @throws ApiException
      */
-    public function store(Request $request)
+    public function store(StoreClientRequest $request)
     {
-        //
+        $form = $request->all();
+        $userData = $this->getDataWithPrefix(UserService::FORM_PREFIX, $form);
+        $clientData = $this->getDataWithPrefix(ClientService::FORM_PREFIX, $form);
+        $client = $this->clientService->add($clientData, ['isPrefix' => true]);
+        $userData['client_id'] = $client->id;
+        $userData['type'] = User::ROLE_ADMIN;
+        $this->userService->add($userData, ['isPrefix' => true]);
+
+        $redirectUrl = urldecode($request->redirect_url);
+
+        if ($redirectUrl == '') {
+            $redirectUrl = route('admin.clients.index');
+        }
+
+        if($request->add_more == 'true') {
+            $html = $this->create();
+            return Reply::successWithData(__('messages.recordSaved'), ['html' => $html, 'add_more' => true]);
+        }
+
+        return Reply::successWithData(__('messages.recordSaved'), ['redirectUrl' => $redirectUrl]);
+    }
+
+    private function getDataWithPrefix($prefix, $form): array
+    {
+        return array_filter($form, function ($key) use ($prefix) {
+            return str_starts_with($key, $prefix);
+        }, ARRAY_FILTER_USE_KEY);
     }
 
     /**

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Traits\HasSiteGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -17,6 +16,9 @@ class User extends Authenticatable
     public const ROLE_SUPER_USER = 0;
     public const ROLE_ADMIN = 1;
     public const ROLE_NORMAL_USER = 2;
+    public const GENDER_MALE = 0;
+    public const GENDER_FEMALE = 1;
+    public const GENDER_OTHER = 2;
 
     protected $hidden = [
         'password',
@@ -30,11 +32,6 @@ class User extends Authenticatable
             self::ROLE_ADMIN => __('app.admin'),
             self::ROLE_NORMAL_USER => __('app.user'),
         ];
-    }
-
-    public function siteGroup(): BelongsTo
-    {
-        return $this->belongsTo(SiteGroup::class);
     }
 
     public function getRoleAttribute(): string

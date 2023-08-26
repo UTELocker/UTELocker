@@ -2,32 +2,57 @@
 
 namespace App\Services\Admin\Clients;
 
-use App\Models\SiteGroup;
+use App\Classes\Common;
+use App\Classes\Files;
+use App\Exceptions\ApiException;
+use App\Models\Client;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 
 class ClientService extends BaseService
 {
+    public const FORM_PREFIX = 'client_';
+
     public function __construct()
     {
-        parent::__construct(new SiteGroup());
+        parent::__construct(new Client());
     }
 
-    public function add(&$id, $inputs, array $options = [])
+    /**
+     * @throws ApiException
+     */
+    public function add(array $inputs, array $options = []): Model
     {
         $this->new();
+        if ($options['isPrefix']) {
+            $inputs = Common::mappingRemovePrefix($inputs, self::FORM_PREFIX);
+        }
         $this->formatInputData($inputs);
         $this->setModelFields($inputs);
 
-        return true;
+        $this->model->save();
+
+        return $this->model;
     }
 
-    protected function formatInputData(&$inputs)
+    /**
+     * @throws ApiException
+     */
+    protected function formatInputData(&$inputs): void
     {
-        $inputs['password'] = bcrypt($inputs['password']);
+        if (!empty($inputs['logo'])) {
+            $inputs['logo'] = Files::upload($inputs['logo'], 'client-logo', width: 300);
+        }
     }
 
-    protected function setModelFields($inputs)
+    protected function setModelFields($inputs): void
     {
-        $this->model->fill($inputs);
+        Common::assignField($this->model, 'name', $inputs);
+        Common::assignField($this->model, 'app_name', $inputs);
+        Common::assignField($this->model, 'email', $inputs);
+        Common::assignField($this->model, 'phone', $inputs);
+        Common::assignField($this->model, 'logo', $inputs);
+        Common::assignField($this->model, 'address', $inputs);
+        Common::assignField($this->model, 'website', $inputs);
     }
 }

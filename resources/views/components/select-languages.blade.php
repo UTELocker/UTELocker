@@ -1,7 +1,7 @@
 <x-forms.select
-    fieldId="locale"
+    fieldId="{{ $name }}"
     :fieldLabel="__('modules.accountSettings.changeLanguage')"
-    fieldName="locale" search="true">
+    fieldName="{{ $name }}" search="true">
     @foreach ($languages as $language)
         <option
             {{ \Auth::user()->locale == $language->language_code ? 'selected' : '' }}
