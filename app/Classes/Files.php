@@ -123,4 +123,12 @@ class Files
             })
             ->save();
     }
+
+    public static function getImageUrl($fileName, $folder, $folderType = self::USER_UPLOAD_FOLDER): string
+    {
+        if ($fileName === null) {
+            return '';
+        }
+        return asset("$folderType/$folder/$fileName");
+    }
 }

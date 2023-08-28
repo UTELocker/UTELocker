@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Clients;
 
-use App\Classes\CommonConstant;
+use App\Classes\Files;
 use App\Classes\Reply;
 use App\DataTables\ClientsDataTable;
 use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Clients\StoreClientRequest;
+use App\Http\Requests\Admin\Clients\UpdateClientRequest;
 use App\Models\LanguageSetting;
 use App\Models\User;
 use App\Services\Admin\Clients\ClientService;
@@ -28,6 +29,9 @@ class ClientController extends Controller
 
     public function index(ClientsDataTable $dataTable)
     {
+        if (!user()->hasPermission(User::ROLE_SUPER_USER)) {
+            abort(403);
+        }
         return $dataTable->render('admin.clients.index',$this->data);
     }
 
@@ -40,7 +44,7 @@ class ClientController extends Controller
         $this->view = 'admin.clients.ajax.create';
         $this->client = $this->clientService->new();
         $this->user = $this->userService->new();
-        $this->languages = LanguageSetting::where('enabled', CommonConstant::DATABASE_YES)->get();
+        $this->languages = LanguageSetting::getEnabledLanguages();
 
         if (request()->ajax()) {
             if (request('quick-form') == 1) {
@@ -108,15 +112,51 @@ class ClientController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $this->editPermission = user()->hasPermission(User::ROLE_ADMIN);
+        if (!$this->editPermission) {
+            abort(403);
+        }
+
+        $this->client = $this->clientService->get($id);
+        $this->languages = LanguageSetting::getEnabledLanguages();
+        $this->client_logo = Files::getImageUrl($this->client->logo, 'client-logo', Files::CLIENT_UPLOAD_FOLDER);
+
+        $this->pageTitle = __('app.update') . ' ' . __('app.client');
+
+        if (request()->ajax()) {
+            $this->view = 'admin.clients.ajax.edit';
+            $html = view($this->view, $this->data)->render();
+
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+
+        $this->view = 'admin.clients.ajax.edit';
+
+        return view('admin.clients.create', $this->data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateClientRequest $request, string $id)
     {
-        //
+        $this->editPermission = user()->hasPermission(User::ROLE_ADMIN);
+        if (!$this->editPermission) {
+            abort(403);
+        }
+
+        $this->client = $this->clientService->get($id);
+        $form = $request->all();
+        $clientData = $this->getDataWithPrefix(ClientService::FORM_PREFIX, $form);
+        $this->clientService->update($this->client, $clientData, ['isPrefix' => true]);
+
+        $redirectUrl = urldecode($request->redirect_url);
+
+        if ($redirectUrl == '') {
+            $redirectUrl = route('admin.clients.index');
+        }
+
+    return Reply::successWithData(__('messages.recordUpdated'), ['redirectUrl' => $redirectUrl]);
     }
 
     /**

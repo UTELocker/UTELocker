@@ -10,4 +10,5 @@ return array(
             'Only .txt, .pdf, .doc, .xls, .xlsx, .docx, .rtf, .png, .jpg, .jpeg formats are allowed.',
     ),
     'recordSaved' => 'Record saved successfully.',
+    'recordUpdated' => 'Record updated successfully.',
 );

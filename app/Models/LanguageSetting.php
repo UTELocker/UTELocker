@@ -49,4 +49,9 @@ class LanguageSetting extends Model
             'enabled' => CommonConstant::DATABASE_NO
         ],
     ];
+
+    public static function getEnabledLanguages()
+    {
+        return self::where('enabled', CommonConstant::DATABASE_YES)->get();
+    }
 }

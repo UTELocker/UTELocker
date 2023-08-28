@@ -60,4 +60,20 @@ class ClientService extends BaseService
     {
         return $this->model->hasPermission()->findOrFail($id);
     }
+
+    /**
+     * @throws ApiException
+     */
+    public function update(Client $client, array $inputs, array $options = []): Client
+    {
+        $this->setModel($client);
+        if ($options['isPrefix']) {
+            $inputs = Common::mappingRemovePrefix($inputs, self::FORM_PREFIX);
+        }
+        $this->formatInputData($inputs);
+        $this->setModelFields($inputs);
+        $client->save();
+
+        return $client;
+    }
 }

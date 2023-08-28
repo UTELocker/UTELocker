@@ -24,6 +24,11 @@ abstract class BaseService
         return $this->model->findOrFail($id);
     }
 
+    public function setModel(Model $model): void
+    {
+        $this->model = $model;
+    }
+
     public function new(): Model
     {
         $this->model = $this->model->newInstance();

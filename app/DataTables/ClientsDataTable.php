@@ -8,6 +8,7 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use App\View\Components\Client as ClientComponent;
 
 class ClientsDataTable extends BaseDataTable
 {
@@ -34,6 +35,10 @@ class ClientsDataTable extends BaseDataTable
 
         $datatables->addColumn('name', function ($row) {
             return ucfirst($row->name);
+        });
+
+        $datatables->editColumn('name', function ($row) {
+            return (new ClientComponent($row))->render();
         });
 
         $datatables->addColumn('created_at', function ($row) {
