@@ -49,4 +49,9 @@ return array(
     'save' => 'Save',
     'saveAddMore' => 'Save & More',
     'cancel' => 'Cancel',
+    'appName' => 'App Name',
+    'apply' => 'Apply',
+    'phone' => 'Phone',
+    'address' => 'Address',
+    'createdAt' => 'Created',
 );

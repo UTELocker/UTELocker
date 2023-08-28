@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Client;
 use App\Models\GlobalSetting;
 use App\Models\SiteGroup;
 
@@ -45,7 +46,7 @@ if (!function_exists('siteGroup')) {
 
         if (user()) {
             if (user()->siteGroup) {
-                $siteGroup = SiteGroup::find(user()->siteGroup->id);
+                $siteGroup = Client::find(user()->siteGroup->id);
                 session(['siteGroup' => $siteGroup]);
 
                 return $siteGroup;

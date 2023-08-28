@@ -10,6 +10,9 @@ class GlobalSetting extends Model
 {
     use HasFactory;
 
+    public const STYLE_SIDEBAR_LOGO_SQUARE = 'square';
+    public const STYLE_SIDEBAR_LOGO_CIRCLE = 'circle';
+
     protected $appends = [
         'logo_url',
         'favicon_url',

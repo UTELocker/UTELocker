@@ -106,7 +106,7 @@ class UsersDataTable extends BaseDataTable
                 'searchable' => false,
                 'title' => '#'
             ],
-            __('app.name') => ['data' => 'name', 'name' => 'name', 'exportable' => false, 'title' => __('app.name')],
+            __('app.name') => ['data' => 'name', 'name' => 'name', 'exportable' => true, 'title' => __('app.name')],
             __('app.status') => ['data' => 'status', 'name' => 'status', 'title' => __('app.status')],
         ];
 

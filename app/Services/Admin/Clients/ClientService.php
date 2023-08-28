@@ -55,4 +55,9 @@ class ClientService extends BaseService
         Common::assignField($this->model, 'address', $inputs);
         Common::assignField($this->model, 'website', $inputs);
     }
+
+    public function get($id)
+    {
+        return $this->model->hasPermission()->findOrFail($id);
+    }
 }

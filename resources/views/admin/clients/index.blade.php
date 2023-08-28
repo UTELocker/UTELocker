@@ -8,7 +8,7 @@
     <x-filters.filter-box>
         <!-- DATE START -->
         <div class="select-box d-flex pr-2 border-right-grey border-right-grey-sm-0">
-            <p class="mb-0 pr-2 f-14 text-dark-grey d-flex align-items-center">@lang('modules.users.addedOn')</p>
+            <p class="mb-0 pr-2 f-14 text-dark-grey d-flex align-items-center">@lang('modules.clients.addedOn')</p>
             <div class="select-status d-flex">
                 <label for="datatableRange"></label>
                 <input type="text"
@@ -74,15 +74,48 @@
                     @lang('app.client')
                 </x-forms.link-primary>
             </div>
+            <x-datatable.actions>
+            </x-datatable.actions>
         </div>
         <div class="d-flex flex-column w-tables rounded mt-3 bg-white table-responsive">
-
             {!! $dataTable->table(['class' => 'table table-hover border-0 w-100']) !!}
-
         </div>
     </div>
 @endsection
 
 @push('scripts')
     @include('sections.datatables_js')
+
+    <script>
+        $('#clients-table').on('preXhr.dt', function(e, settings, data) {
+            const dateRangePicker = $('#datatableRange').data('daterangepicker');
+            let startDate = $('#datatableRange').val();
+            let endDate;
+
+            if (startDate === '') {
+                startDate = null;
+                endDate = null;
+            } else {
+                startDate = dateRangePicker.startDate.format('YYYY-MM-DD');
+                endDate = dateRangePicker.endDate.format('YYYY-MM-DD');
+            }
+
+            data['startDate'] = startDate;
+            data['endDate'] = endDate;
+        });
+
+        const showTable = () => {
+            window.LaravelDataTables["clients-table"].draw(false);
+        }
+
+        $(document).ready(function () {
+            @if (!is_null(request('start')) && !is_null(request('end')))
+            $('#datatableRange').val('{{ request('start') }}' +
+                ' @lang("app.to") ' + '{{ request('end') }}');
+            $('#datatableRange').data('daterangepicker').setStartDate("{{ request('start') }}");
+            $('#datatableRange').data('daterangepicker').setEndDate("{{ request('end') }}");
+            showTable();
+            @endif
+        })
+    </script>
 @endpush

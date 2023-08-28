@@ -5,7 +5,6 @@ namespace App\Classes;
 use App\Exceptions\ApiException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class Files

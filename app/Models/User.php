@@ -53,4 +53,9 @@ class User extends Authenticatable
     {
         return self::find($userId)->user_type === self::ROLE_NORMAL_USER;
     }
+
+    public static function hasPermission(int $userType): bool
+    {
+        return auth()->user()->type <= $userType;
+    }
 }

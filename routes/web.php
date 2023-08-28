@@ -25,8 +25,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'dashboard'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
 });
 
-Route::group(['middleware' => ['auth'], 'prefix' => 'clients'], function () {
-    Route::resource('/', ClientController::class)
+Route::group(['middleware' => ['auth']], function () {
+    Route::resource('clients', ClientController::class)
         ->names([
             'index' => 'admin.clients.index',
             'create' => 'admin.clients.create',

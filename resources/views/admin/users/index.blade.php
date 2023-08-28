@@ -78,7 +78,6 @@
                 <div class="select-status mr-3">
                     <select name="action_type" class="form-control select-picker" id="quick-action-type" disabled>
                         <option value="">@lang('app.selectAction')</option>
-                        <option value="change-status">@lang('modules.tasks.changeStatus')</option>
                         <option value="delete">@lang('app.delete')</option>
                     </select>
                 </div>

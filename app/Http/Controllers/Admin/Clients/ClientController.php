@@ -28,10 +28,7 @@ class ClientController extends Controller
 
     public function index(ClientsDataTable $dataTable)
     {
-        return $dataTable->render(
-            'admin.clients.index',
-            ['pageTitle' => $this->pageTitle]
-        );
+        return $dataTable->render('admin.clients.index',$this->data);
     }
 
     /**
@@ -98,7 +95,12 @@ class ClientController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $this->viewPermission = user()->hasPermission(User::ROLE_ADMIN);
+        if (!$this->viewPermission) {
+            abort(403);
+        }
+        $this->client = $this->clientService->get($id);
+        dd($this->client);
     }
 
     /**
