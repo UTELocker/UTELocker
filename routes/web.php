@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\Clients\ClientController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\Admin\Settings\AppSettingController;
 use App\Http\Controllers\Admin\Users\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -21,8 +22,8 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::group(['middleware' => ['auth'], 'prefix' => 'dashboard'], function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 Route::group(['middleware' => ['auth']], function () {
@@ -48,6 +49,20 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'users'], function () {
             'edit' => 'admin.users.edit',
             'update' => 'admin.users.update',
             'destroy' => 'admin.users.destroy',
+        ]);
+});
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get(
+        'settings/change-language',
+        [AppSettingController::class, 'changeLanguage']
+    )->name('admin.settings.change-language');
+    Route::resource('/settings', AppSettingController::class)
+        ->only(['index', 'edit', 'update', 'change-language'])
+        ->names([
+            'index' => 'admin.settings.index',
+            'edit' => 'admin.settings.edit',
+            'update' => 'admin.settings.update',
         ]);
 });
 

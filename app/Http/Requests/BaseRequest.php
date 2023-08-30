@@ -8,7 +8,6 @@ use Illuminate\Contracts\Validation\Validator;
 
 class BaseRequest extends FormRequest
 {
-
     protected function formatErrors(Validator $validator): array
     {
         return Reply::formErrors($validator);

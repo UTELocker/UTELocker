@@ -23,5 +23,14 @@ return array(
     'accountSettings' => [
         'changeLanguage' => 'Change Language',
         'companyAddress' => 'Company Address',
+    ],
+    'settings' => [
+        'settings' => 'Settings',
+        'menu' => [
+            'app' => [
+                'menu' => 'System Settings',
+                'general' => 'General',
+            ]
+        ]
     ]
 );

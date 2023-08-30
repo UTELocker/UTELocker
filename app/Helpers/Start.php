@@ -1,8 +1,6 @@
 <?php
 
-use App\Models\Client;
 use App\Models\GlobalSetting;
-use App\Models\SiteGroup;
 
 if (!function_exists('globalSettings')) {
     function globalSettings()
@@ -44,17 +42,35 @@ if (!function_exists('siteGroup')) {
             return session('siteGroup');
         }
 
+        if (user()?->siteGroup) {
+            $siteGroup = user()->siteGroup;
+            session(['siteGroup' => $siteGroup]);
+
+            return $siteGroup;
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('companyOrGlobalSetting')) {
+    function siteGroupOrGlobalSetting()
+    {
+        if (session()->has('companyOrGlobalSetting')) {
+            return session('companyOrGlobalSetting');
+        }
+
         if (user()) {
             if (user()->siteGroup) {
-                $siteGroup = Client::find(user()->siteGroup->id);
-                session(['siteGroup' => $siteGroup]);
+                $siteGroup = user()->siteGroup;
+                session(['companyOrGlobalSetting' => $siteGroup]);
 
                 return $siteGroup;
             }
 
-            return session('siteGroup');
+            return globalSettings();
         }
 
-        return false;
+        return globalSettings();
     }
 }

@@ -13,7 +13,6 @@ use App\Models\LanguageSetting;
 use App\Models\User;
 use App\Services\Admin\Clients\ClientService;
 use App\Services\Admin\Users\UserService;
-use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
@@ -22,7 +21,7 @@ class ClientController extends Controller
 
     public function __construct(ClientService $clientService, UserService $userService)
     {
-        $this->pageTitle = 'Client';
+        $this->pageTitle = 'Clients';
         $this->clientService = $clientService;
         $this->userService = $userService;
     }
@@ -45,7 +44,6 @@ class ClientController extends Controller
         $this->client = $this->clientService->new();
         $this->user = $this->userService->new();
         $this->languages = LanguageSetting::getEnabledLanguages();
-
         if (request()->ajax()) {
             if (request('quick-form') == 1) {
                 return view('admin.clients.ajax.quick-create', $this->data);
@@ -94,9 +92,6 @@ class ClientController extends Controller
         }, ARRAY_FILTER_USE_KEY);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $this->viewPermission = user()->hasPermission(User::ROLE_ADMIN);
@@ -107,9 +102,6 @@ class ClientController extends Controller
         dd($this->client);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $this->editPermission = user()->hasPermission(User::ROLE_ADMIN);
@@ -123,21 +115,16 @@ class ClientController extends Controller
 
         $this->pageTitle = __('app.update') . ' ' . __('app.client');
 
+        $this->view = 'admin.clients.ajax.edit';
         if (request()->ajax()) {
-            $this->view = 'admin.clients.ajax.edit';
             $html = view($this->view, $this->data)->render();
 
             return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
-        $this->view = 'admin.clients.ajax.edit';
-
         return view('admin.clients.create', $this->data);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateClientRequest $request, string $id)
     {
         $this->editPermission = user()->hasPermission(User::ROLE_ADMIN);
@@ -156,7 +143,7 @@ class ClientController extends Controller
             $redirectUrl = route('admin.clients.index');
         }
 
-    return Reply::successWithData(__('messages.recordUpdated'), ['redirectUrl' => $redirectUrl]);
+        return Reply::successWithData(__('messages.recordUpdated'), ['redirectUrl' => $redirectUrl]);
     }
 
     /**
@@ -164,6 +151,14 @@ class ClientController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $this->deletePermission = user()->hasPermission(User::ROLE_SUPER_USER);
+        if (!$this->deletePermission) {
+            abort(403);
+        }
+
+        $this->client = $this->clientService->get($id);
+        $this->client->delete();
+
+        return Reply::success(__('messages.recordDeleted'));
     }
 }

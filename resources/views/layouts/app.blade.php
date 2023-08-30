@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset(globalSettings()->favicon) }}">
 
-    {{--  Font Awesome Icons  --}}
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{{ asset('vendor/css/font-awesome-icons/all.min.css') }}">
 
     <!-- Simple Line Icons -->
@@ -19,11 +20,13 @@
 
     @stack('datatable-styles')
 
-    {{--  Template CSS  --}}
+    <!-- Template CSS  -->
     <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/main.css') }}">
 
-    <title>UTELocker</title>
-
+    <title>{{ $pageTitle }}</title>
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="{{ asset(globalSettings()->favicon) }}">
+    <meta name="theme-color" content="#ffffff">
     @stack('styles')
 
     <style>

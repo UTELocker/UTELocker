@@ -9,6 +9,6 @@ trait HasSiteGroup
 {
     public function siteGroup(): BelongsTo
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Client::class, 'client_id');
     }
 }

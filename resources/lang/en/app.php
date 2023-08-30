@@ -54,4 +54,5 @@ return array(
     'phone' => 'Phone',
     'address' => 'Address',
     'createdAt' => 'Created',
+    'search' => 'Search',
 );

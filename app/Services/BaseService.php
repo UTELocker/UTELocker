@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Client;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseService
