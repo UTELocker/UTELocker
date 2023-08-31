@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Admin\Settings;
 
 use App\Classes\Reply;
-use App\Http\Controllers\Controller;
+use App\Models\GlobalSetting;
 use App\Models\User;
+use DateTimeZone;
 use Illuminate\Http\Request;
 
-class AppSettingController extends Controller
+class AppSettingController extends BaseSettingController
 {
     public function __construct()
     {
+        parent::__construct();
         $this->pageTitle = __('modules.settings.settings');
-        $this->activeSettingMenu = 'settings.app';
+        $this->activeSettingMenu = 'settings-app';
         $this->middleware(function ($request, $next) {
             return user()->hasPermission(User::ROLE_ADMIN)
                 ? $next($request)
@@ -28,6 +30,9 @@ class AppSettingController extends Controller
         $tab = request('tab');
         $this->view = 'admin.settings.app.ajax.general';
         $this->activeTab = $tab ?: 'general';
+        $this->timezones = DateTimeZone::listIdentifiers();
+        $this->dateFormat = array_keys(GlobalSetting::DATE_FORMATS);
+        $this->dateObject = now();
 
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();

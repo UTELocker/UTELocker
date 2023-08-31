@@ -10,7 +10,7 @@ class MenuItem extends Component
 {
     public ?string $text;
     public ?string $href;
-    public ?bool $active;
+    public mixed $active;
     public mixed $menu;
 
     /**

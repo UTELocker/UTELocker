@@ -31,6 +31,10 @@ return array(
                 'menu' => 'System Settings',
                 'general' => 'General',
             ]
-        ]
+        ],
+        'dateFormat' => 'Date Format',
+        'timeFormat' => 'Time Format',
+        'defaultTimezone' => 'Default Timezone',
+        'language' => 'Language',
     ]
 );

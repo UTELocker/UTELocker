@@ -55,4 +55,5 @@ return array(
     'address' => 'Address',
     'createdAt' => 'Created',
     'search' => 'Search',
+    'hour' => 'Hour(s)',
 );

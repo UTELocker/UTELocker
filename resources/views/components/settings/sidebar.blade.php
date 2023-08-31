@@ -8,14 +8,18 @@
                     <i class="fa fa-search f-12 text-lightest"></i>
                 </span>
             </div>
-            <input type="text" id="search-setting-menu" class="form-control border-0 f-14 pl-0"
-                   placeholder="@lang('app.search')">
+            <input
+                type="text"
+                id="search-setting-menu"
+                class="form-control border-0 f-14 pl-0"
+                placeholder="@lang('app.search')"
+            >
         </div>
     </form>
     <ul class="settings-menu" id="settingsMenu">
         @if (user()->hasPermission(App\Models\User::ROLE_SUPER_USER))
             <x-settings.menu-item
-                :active="$activeMenu" menu="settings.app"
+                :active="$activeMenu" menu="settings-app"
                 :href="route('admin.settings.index')"
                 :text="__('modules.settings.menu.app.menu')"
             />
@@ -40,19 +44,16 @@
             success: function (response) {
                 if (response.status === "success") {
                     $('.content-wrapper').html(response.html);
-                    init('.content-wrapper');
+                    UTELocker.common.init('.content-wrapper');
                 }
             }
         });
     });
 
     $("#search-setting-menu").on("keyup", function () {
-        var value = this.value.toLowerCase().trim();
+        const value = this.value.toLowerCase().trim();
         $("#settingsMenu li").show().filter(function () {
-            return $(this).text().toLowerCase().trim().indexOf(value) == -1;
+            return $(this).text().toLowerCase().trim().indexOf(value) === -1;
         }).hide();
     });
-
-    document.querySelector('#settingsMenu .active').scrollIntoView()
-
 </script>

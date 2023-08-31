@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\GlobalSetting;
+use App\Models\LanguageSetting;
 
 if (!function_exists('globalSettings')) {
     function globalSettings()
@@ -73,4 +74,17 @@ if (!function_exists('companyOrGlobalSetting')) {
 
         return globalSettings();
     }
+}
+
+if (!function_exists('languageSettings')) {
+
+    function languageSettings()
+    {
+        if (!cache()->has('languageSettings')) {
+            cache(['languageSettings' => LanguageSetting::getEnabledLanguages()]);
+        }
+
+        return cache('languageSettings');
+    }
+
 }
