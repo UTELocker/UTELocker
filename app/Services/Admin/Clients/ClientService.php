@@ -58,7 +58,7 @@ class ClientService extends BaseService
 
     public function get($id)
     {
-        return $this->model->hasPermission()->findOrFail($id);
+        return $this->model->canAccess()->findOrFail($id);
     }
 
     /**

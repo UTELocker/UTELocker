@@ -13,7 +13,7 @@ trait HasSiteGroup
         return $this->belongsTo(Client::class, 'client_id');
     }
 
-    public function scopeSiteGroup($query)
+    public function scopeUserSiteGroup($query)
     {
         if (user()->type === UserRole::SUPER_USER) {
             return $query;

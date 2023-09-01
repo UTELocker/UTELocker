@@ -10,17 +10,25 @@ final class UserRole extends Enum
     public const ADMIN = 1;
     public const NORMAL = 2;
 
-    public static function getDescription(int $value): string
+    public static function getDescription($value): string
     {
         return self::getDescriptions()[$value];
     }
 
-    public static function getDescriptions(): array
+    public static function getDescriptions($exclude = []): array
     {
-        return [
-            self::SUPER_USER => __('app.superUser'),
-            self::ADMIN => __('app.admin'),
-            self::NORMAL => __('app.user'),
+        $descriptions = [
+            self::SUPER_USER => 'Super User',
+            self::ADMIN => 'Admin',
+            self::NORMAL => 'Normal',
         ];
+
+        if (count($exclude) > 0) {
+            foreach ($exclude as $value) {
+                unset($descriptions[$value]);
+            }
+        }
+
+        return $descriptions;
     }
 }
