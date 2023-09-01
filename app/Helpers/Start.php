@@ -28,7 +28,6 @@ if (!function_exists('user')) {
 
         if ($user) {
             session(['user' => $user]);
-
             return session('user');
         }
 
@@ -57,18 +56,17 @@ if (!function_exists('siteGroup')) {
 if (!function_exists('companyOrGlobalSetting')) {
     function siteGroupOrGlobalSetting()
     {
-        if (session()->has('companyOrGlobalSetting')) {
-            return session('companyOrGlobalSetting');
+        if (session()->has('siteGroupOrGlobalSetting')) {
+            return session('siteGroupOrGlobalSetting');
         }
 
         if (user()) {
             if (user()->siteGroup) {
                 $siteGroup = user()->siteGroup;
-                session(['companyOrGlobalSetting' => $siteGroup]);
+                session(['siteGroupOrGlobalSetting' => $siteGroup]);
 
                 return $siteGroup;
             }
-
             return globalSettings();
         }
 
