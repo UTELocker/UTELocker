@@ -1,101 +1,130 @@
 @startuml
-title UTELocks Database Schema
-skin rose
-!includeurl https://raw.githubusercontent.com/chippyash/db-plantuml/master/dist/DatabasePhysical.iuml
-footer Created by @ngtrdai - https://utelocker.svute.com
 
-Table(site_group, site_groups, Site Groups) {
-    primary()
-    not_null(name, string(128))
-    app_name, string(128)
-    phone, string(20)
-    not_null(logo, string(128))
-    favicon, string(128)
-    login_background, string(128)
-    not_null(address, string(128))
-    website, string(128)
-    timezone, string(128)
-    not_null(date_format, string(128))
-    not_null(date_picker_format, string(128))
-    not_null(moment_format, string(128))
-    not_null(time_format, string(128))
-    not_null(locale, string(128))
-    latitude, string(128)
-    longitude, string(128)
-    created_at()
-    updated_at()
+!define Table class
+!define PK <<PK>>
+!define FK <<FK>>
+
+skinparam linetype ortho
+
+Table global_settings {
+  + id : int PK
+  global_app_name : string
+  logo : string
+  favicon : string
+  login_background : string
+  header_color : string
+  sidebar_logo_style : string
+  locale : string
+  date_format : string
+  timezone : string
+  time_format : string
+  moment_format : string
 }
 
-Table(users, users, Users) {
-    primary()
-    not_null(name, string(128))
-    not_null(email, string(128))
-    not_null(user_type, int)
-    not_null(password, string(128))
-    not_null(site_group_id, int)
-    not_null(image, string(128))
-    gender, string(128)
-    locale, string(128)
-    not_null(status, enum)
-    not_null(login, enum)
-    remember_token, string(128)
-    created_at()
-    updated_at()
+Table language_settings {
+  + id : int PK
+  language_code : string
+  language_name : string
+  flag_code : string
+  enabled : char
 }
 
-Type(status, Status) {
-    ACTIVE
-    INACTIVE
+Table clients {
+  + id : int PK
+  name : string
+  app_name : string
+  email : string
+  phone : string
+  logo : string
+  login_background : string
+  address : string
+  website : string
+  timezone : string
+  date_format : string
+  date_picker_format : string
+  moment_format : string
+  locale : string
+  latitude : decimal
+  longitude : decimal
 }
 
-Type(e_login, Login) {
-    ENABLE
-    DISABLE
+Table location_type {
+  + id : int PK
+  code : string
+  description : string
 }
 
-Table(locations, locations, Locations) {
-    primary()
-    not_null(site_group_id, int)
-    not_null(name, string(128))
-    not_null(address, string(128))
-    latitude, string(128)
-    longitude, string(128)
-    image, string(128)
-    created_at()
-    updated_at()
+Table locations {
+  + id : int PK
+  code : string
+  description : string
+  client_id : int
+  location_type_id : int
+  latitude : decimal
+  longitude : decimal
 }
 
-Table(lockers, lockers, Lockers) {
-    primary()
-    not_null(site_group_id, int)
-    not_null(name, string(128))
-    not_null(code, string(128))
-    not_null(type, string(128))
-    not_null(size, string(128))
-    not_null(status, enum)
-    image, string(128)
-    description, string(128)
-    not_null(location_id, int)
-    created_at()
-    updated_at()
+Table users {
+  + id : int PK
+  client_id : int
+  name : string
+  email : string
+  type : tinyint
+  password : string
+  avatar : string
+  mobile : string
+  gender : tinyint
+  locale : string
+  active : char
+  login : char
+  onesignal_player_id : text
+  remember_token : string
 }
 
-Table(locker_license, locker_license, Locker License) {
-    primary()
-    not_null(locker_id, int)
-    not_null(license, string(128))
-    not_null(expired_at, datetime)
-    created_at()
-    updated_at()
+Table lockers {
+  + id : int PK
+  code : string
+  description : string
+  status : tinyint
+  location_id : int
 }
 
-depends(users, status, Status)
-depends(users, e_login, Login)
-depends(lockers, status, Status)
+Table locker_slots {
+  + id : int PK
+  locker_id : int
+  status : tinyint
+  x_coor : int
+  y_coor : int
+}
 
-onemany(site_group, users, '1 - M')
-onemany(locations, site_group, '1 - M')
-onemany(site_group, locker, '1 - M')
+Table licenses {
+  + id : int PK
+  code : string
+  client_id : int
+  locker_id : int
+  active_date : date_time
+  expired_date : date_time
+}
 
+Table bookings {
+  + id : int PK
+  client_id : int
+  locker_slot_id : int
+  owner_id : int
+  status : tinyint
+  start_time : date_time
+  end_time : date_time
+}
+
+clients -- locations : <<FK>>
+clients -- users : <<FK>>
+locations -- location_type : <<FK>>
+locations -- lockers : <<FK>>
+lockers -- locker_slots : <<FK>>
+licenses -- lockers : <<FK>>
+licenses -- clients : <<FK>>
+bookings -- clients : <<FK>>
+bookings -- locker_slots : <<FK>>
+bookings -- users : <<FK>>
 
 @enduml

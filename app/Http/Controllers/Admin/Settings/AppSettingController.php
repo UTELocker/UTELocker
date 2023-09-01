@@ -17,7 +17,7 @@ class AppSettingController extends BaseSettingController
         $this->pageTitle = __('modules.settings.settings');
         $this->activeSettingMenu = 'settings-app';
         $this->middleware(function ($request, $next) {
-            return user()->hasPermission(UserRole::ADMIN)
+            return user()->canAccess(UserRole::ADMIN)
                 ? $next($request)
                 : redirect()->route('admin.dashboard');
         });
