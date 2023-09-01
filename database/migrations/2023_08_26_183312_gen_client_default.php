@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Models\Client;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -26,7 +27,7 @@ return new class extends Migration
             $user = new User();
             $user->name = 'Gen User';
             $user->email = $client->email;
-            $user->type = User::ROLE_ADMIN;
+            $user->type = UserRole::ADMIN;
             $user->password = bcrypt('123');
             $user->client_id = $client->id;
             $user->save();

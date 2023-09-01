@@ -1,6 +1,8 @@
 <?php
 
 use App\Classes\CommonConstant;
+use App\Enums\UserGender;
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,11 +20,11 @@ return new class extends Migration
             $table->foreignId('client_id')->nullable()->constrained('clients');
             $table->string('name');
             $table->string('email')->nullable();
-            $table->tinyInteger('type')->default(User::ROLE_NORMAL_USER);
+            $table->tinyInteger('type')->default(UserRole::NORMAL);
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->string('mobile', 20)->nullable();
-            $table->tinyInteger('gender')->default(User::GENDER_OTHER);
+            $table->tinyInteger('gender')->default(UserGender::OTHER);
             $table->string('locale')->default('en');
             $table->char('active')->default(CommonConstant::DATABASE_YES);
             $table->char('login')->default(CommonConstant::DATABASE_YES);

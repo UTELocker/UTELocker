@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use App\Traits\HasSiteGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,12 +14,6 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
     use HasSiteGroup;
 
-    public const ROLE_SUPER_USER = 0;
-    public const ROLE_ADMIN = 1;
-    public const ROLE_NORMAL_USER = 2;
-    public const GENDER_MALE = 0;
-    public const GENDER_FEMALE = 1;
-    public const GENDER_OTHER = 2;
 
     protected $hidden = [
         'password',
@@ -27,11 +22,7 @@ class User extends Authenticatable
 
     public static function roles(): array
     {
-        return [
-            self::ROLE_SUPER_USER => __('app.superUser'),
-            self::ROLE_ADMIN => __('app.admin'),
-            self::ROLE_NORMAL_USER => __('app.user'),
-        ];
+        return UserRole::getDescriptions();
     }
 
     public function getRoleAttribute(): string
@@ -41,17 +32,17 @@ class User extends Authenticatable
 
     public static function isSuperUser($userId): bool
     {
-        return self::find($userId)->user_type === self::ROLE_SUPER_USER;
+        return self::find($userId)->type === UserRole::SUPER_USER;
     }
 
     public static function isAdmin($userId): bool
     {
-        return self::find($userId)->user_type === self::ROLE_ADMIN;
+        return self::find($userId)->type === UserRole::ADMIN;
     }
 
     public static function isNormalUser($userId): bool
     {
-        return self::find($userId)->user_type === self::ROLE_NORMAL_USER;
+        return self::find($userId)->type === UserRole::NORMAL;
     }
 
     public static function hasPermission(int $userType): bool

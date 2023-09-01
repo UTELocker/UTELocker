@@ -69,9 +69,9 @@
                             <div class="col-md-4">
                                 <x-forms.select fieldId="user_gender" :fieldLabel="__('modules.profile.gender')"
                                                 fieldName="user_gender">
-                                    <option value="0">@lang('app.male')</option>
-                                    <option value="1">@lang('app.female')</option>
-                                    <option value="2">@lang('app.others')</option>
+                                    @foreach(\App\Enums\UserGender::getDescriptions() as $key => $gender)
+                                        <option value="{{ $key }}">{{ $gender }}</option>
+                                    @endforeach
                                 </x-forms.select>
                             </div>
                             <div class="col-md-4">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ return new class extends Migration
             $user = new User();
             $user->name = 'Super User';
             $user->email = 'sadmin@email.com';
-            $user->type = User::ROLE_SUPER_USER;
+            $user->type = UserRole::SUPER_USER;
             $user->password = bcrypt('123');
             $user->save();
         });

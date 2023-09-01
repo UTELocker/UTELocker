@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Clients;
 use App\Classes\Files;
 use App\Classes\Reply;
 use App\DataTables\ClientsDataTable;
+use App\Enums\UserRole;
 use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Clients\StoreClientRequest;
@@ -21,6 +22,7 @@ class ClientController extends Controller
 
     public function __construct(ClientService $clientService, UserService $userService)
     {
+        parent::__construct();
         $this->pageTitle = 'Clients';
         $this->clientService = $clientService;
         $this->userService = $userService;
@@ -28,7 +30,7 @@ class ClientController extends Controller
 
     public function index(ClientsDataTable $dataTable)
     {
-        if (!user()->hasPermission(User::ROLE_SUPER_USER)) {
+        if (!user()->hasPermission(UserRole::SUPER_USER)) {
             abort(403);
         }
         return $dataTable->render('admin.clients.index',$this->data);
@@ -68,7 +70,7 @@ class ClientController extends Controller
         $clientData = $this->getDataWithPrefix(ClientService::FORM_PREFIX, $form);
         $client = $this->clientService->add($clientData, ['isPrefix' => true]);
         $userData['client_id'] = $client->id;
-        $userData['type'] = User::ROLE_ADMIN;
+        $userData['type'] = UserRole::ADMIN;
         $this->userService->add($userData, ['isPrefix' => true]);
 
         $redirectUrl = urldecode($request->redirect_url);
@@ -94,7 +96,7 @@ class ClientController extends Controller
 
     public function show(string $id)
     {
-        $this->viewPermission = user()->hasPermission(User::ROLE_ADMIN);
+        $this->viewPermission = user()->hasPermission(UserRole::ADMIN);
         if (!$this->viewPermission) {
             abort(403);
         }
@@ -104,7 +106,7 @@ class ClientController extends Controller
 
     public function edit(string $id)
     {
-        $this->editPermission = user()->hasPermission(User::ROLE_ADMIN);
+        $this->editPermission = user()->hasPermission(UserRole::ADMIN);
         if (!$this->editPermission) {
             abort(403);
         }
@@ -127,7 +129,7 @@ class ClientController extends Controller
 
     public function update(UpdateClientRequest $request, string $id)
     {
-        $this->editPermission = user()->hasPermission(User::ROLE_ADMIN);
+        $this->editPermission = user()->hasPermission(UserRole::ADMIN);
         if (!$this->editPermission) {
             abort(403);
         }
@@ -151,7 +153,7 @@ class ClientController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->deletePermission = user()->hasPermission(User::ROLE_SUPER_USER);
+        $this->deletePermission = user()->hasPermission(UserRole::SUPER_USER);
         if (!$this->deletePermission) {
             abort(403);
         }

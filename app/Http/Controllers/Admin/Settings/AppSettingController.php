@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Settings;
 
 use App\Classes\Reply;
+use App\Enums\UserRole;
 use App\Models\GlobalSetting;
 use App\Models\User;
 use DateTimeZone;
@@ -16,7 +17,7 @@ class AppSettingController extends BaseSettingController
         $this->pageTitle = __('modules.settings.settings');
         $this->activeSettingMenu = 'settings-app';
         $this->middleware(function ($request, $next) {
-            return user()->hasPermission(User::ROLE_ADMIN)
+            return user()->hasPermission(UserRole::ADMIN)
                 ? $next($request)
                 : redirect()->route('admin.dashboard');
         });

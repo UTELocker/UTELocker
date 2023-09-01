@@ -17,7 +17,7 @@
         </div>
     </form>
     <ul class="settings-menu" id="settingsMenu">
-        @if (user()->hasPermission(App\Models\User::ROLE_SUPER_USER))
+        @if (user()->hasPermission(\App\Enums\UserRole::SUPER_USER))
             <x-settings.menu-item
                 :active="$activeMenu" menu="settings-app"
                 :href="route('admin.settings.index')"

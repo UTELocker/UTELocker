@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,7 +29,7 @@ class Client extends Model
 
     public function scopeHasPermission($query)
     {
-        if (user()->type === User::ROLE_SUPER_USER) {
+        if (user()->type === UserRole::SUPER_USER) {
             return $query;
         }
 
