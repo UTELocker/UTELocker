@@ -10,4 +10,5 @@ return array(
     'address' => 'e.g. So 1, Vo Van Ngan, Thu Duc, Ho Chi Minh',
     'company' => 'e.g. Trường Đại học Sư phạm Kỹ thuật TP.HCM',
     'companyEmail' => 'e.g. admin@hcmute.edu.vn',
+    'code' => 'e.g. CODE001',
 );

@@ -14,18 +14,27 @@ class MenuItem extends Component
     public $active;
     public $addon;
     public $count;
+    public $viewBox;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($icon, $text, $link = null, $active = false, $addon = false, $count = 0)
-    {
+    public function __construct(
+        $icon,
+        $text,
+        $link = null,
+        $active = false,
+        $addon = false,
+        $count = 0,
+        $viewBox = '0 0 16 16',
+    ) {
         $this->icon = $icon;
         $this->text = $text;
         $this->link = $link;
         $this->active = $active;
         $this->addon = $addon;
         $this->count = $count;
+        $this->viewBox = $viewBox;
     }
 
     /**

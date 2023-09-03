@@ -17,6 +17,8 @@ return array(
         'dashboard' => 'Dashboard',
         'users' => 'Users',
         'clients' => 'Clients',
+        'lockers' => 'Lockers',
+        'settings' => 'Settings',
     ],
     'datatable' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/English.json',
     'exportExcel' => 'Export Excel',
@@ -56,4 +58,14 @@ return array(
     'createdAt' => 'Created',
     'search' => 'Search',
     'hour' => 'Hour(s)',
+    'locker' => 'Locker',
+    'code' => 'Code',
+    'enums' => [
+        'lockerStatus' => [
+            'available' => 'Available',
+            'inUse' => 'In Use',
+            'underMaintenance' => 'Under Maintenance',
+            'broken' => 'Broken',
+        ]
+    ]
 );

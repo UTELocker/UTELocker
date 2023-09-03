@@ -31,21 +31,16 @@ abstract class BaseService
     public function new(): Model
     {
         $this->model = $this->model->newInstance();
+        $this->initDefaultData();
         return $this->model;
     }
 
-    protected function initDefaultData(): void
+    public function initDefaultData(): static
     {
-        // override this method to init default data
+        return $this;
     }
 
-    protected function formatInputData(&$inputs)
-    {
-        // override this method to format input data
-    }
+    abstract protected function formatInputData(&$inputs);
 
-    protected function setModelFields($inputs)
-    {
-        // override this method to set model fields
-    }
+    abstract protected function setModelFields($inputs);
 }

@@ -7,6 +7,7 @@ mix.scripts([
         'public/vendor/jquery/font-awesome-icons/all.min.js',
         'public/vendor/jquery/select2/select2.min.js',
         'public/vendor/froiden-helper/helper.js',
+        'public/vendor/jquery/date-range-picker/datepicker.min.js',
 
         'node_modules/dropify/src/js/dropify.js',
         'node_modules/sweetalert2/dist/sweetalert2.all.min.js',

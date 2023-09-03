@@ -36,5 +36,23 @@ return array(
         'timeFormat' => 'Time Format',
         'defaultTimezone' => 'Default Timezone',
         'language' => 'Language',
+    ],
+    'lockers' => [
+        'title' => 'Lockers',
+        'create' => 'Create Locker',
+        'details' => 'Locker Details',
+        'code' => 'Locker Code',
+        'description' => 'Description',
+        'image' => 'Image',
+        'dateOfManufacture' => 'Date of Manufacture',
+        'status' => 'Status',
+        'placeholders' => [
+            'code' => 'e.g. LOCKER001',
+            'description' => 'e.g. Locker on 1st floor, near the entrance',
+        ],
+        'tabs' => [
+            'details' => 'Details',
+            'slots' => 'Slots',
+        ],
     ]
 );

@@ -12,6 +12,12 @@
     <!-- Simple Line Icons -->
     <link rel="stylesheet" href="{{ asset('vendor/css/simple-line-icons/simple-line-icons.css') }}">
 
+    <!-- Datepicker -->
+    <link rel="stylesheet" href="{{ asset('vendor/css/datepicker/datepicker.min.css') }}">
+
+    <!-- TimePicker -->
+    <link rel="stylesheet" href="{{ asset('vendor/css/bootstrap-timepicker/bootstrap-timepicker.min.css') }}">
+
     <!-- Select Plugin -->
     <link rel="stylesheet" href="{{ asset('vendor/css/select2/select2.min.css') }}">
 
@@ -102,6 +108,18 @@
             replace: "@lang('app.dragDropReplace')",
             remove: "@lang('app.remove')",
             error: "@lang('messages.errorOccured')",
+        };
+
+        const datepickerConfig = {
+            formatter: (input, date, instance) => {
+                input.value = moment(date).format('{{ siteGroupOrGlobalSetting()->moment_format }}')
+            },
+            showAllDates: true,
+            customDays: {!!  json_encode(\App\Models\GlobalSetting::getDaysOfWeek())!!},
+            customMonths: {!!  json_encode(\App\Models\GlobalSetting::getMonthsOfYear())!!},
+            customOverlayMonths: {!!  json_encode(\App\Models\GlobalSetting::getMonthsOfYear())!!},
+            overlayButton: "@lang('app.submit')",
+            overlayPlaceholder: "@lang('app.enterYear')",
         };
     </script>
     @stack('scripts')
