@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 
 class LockerService extends BaseService
 {
-    public const DEFAULT_CODE = 'NEW';
     private LicenseService $licenseService;
 
     public function __construct(LicenseService $licenseService)

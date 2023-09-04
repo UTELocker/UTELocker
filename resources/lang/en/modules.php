@@ -53,6 +53,7 @@ return array(
         'tabs' => [
             'details' => 'Details',
             'slots' => 'Slots',
+            'bulkCreate' => 'Bulk Create Slots',
         ],
     ]
 );

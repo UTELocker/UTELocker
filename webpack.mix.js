@@ -20,3 +20,8 @@ mix.scripts([
     .sass('resources/scss/main.scss', 'public/css')
     .options({processCssUrls: false})
     .sourceMaps(true, 'source-map')
+
+mix.scripts([
+    'resources/js/bulkCreate.js',
+], 'public/js/bulkCreate.js')
+    .sass('resources/scss/bulkCreate.scss', 'public/css')

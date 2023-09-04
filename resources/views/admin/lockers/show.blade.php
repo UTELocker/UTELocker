@@ -13,9 +13,13 @@
                 <i class="fa fa-times"></i>
             </a>
             <x-tab
-                :href="route('admin.lockers.show', $locker->id)"
+                :href="route('admin.lockers.show', ['locker' => $locker->id, 'tab' => 'details'])"
                 :text="__('modules.lockers.tabs.details')"
-                class="show" />
+                class="details" />
+            <x-tab
+                :href="route('admin.lockers.show', ['locker' => $locker->id, 'tab' => 'bulk-create'])"
+                :text="__('modules.lockers.tabs.bulkCreate')"
+                class="bulk-create" />
         </div>
 
         <a class="mb-0 d-block d-lg-none text-dark-grey ml-auto mr-2 border-left-grey"
@@ -33,6 +37,7 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('js/bulkCreate.js') }}"></script>
     <script>
         $("body").on("click", ".ajax-tab", function(event) {
             event.preventDefault();
@@ -51,7 +56,7 @@
                 success: function(response) {
                     if (response.status == "success") {
                         $('.content-wrapper').html(response.html);
-                        init('.content-wrapper');
+                        UTELocker.common.init('.content-wrapper');
                     }
                 }
             });
@@ -61,5 +66,17 @@
     <script>
         const activeTab = "{{ $activeTab }}";
         $('.project-menu .' + activeTab).addClass('active');
+    </script>
+    <script>
+        $(function () {
+            const myLocker = $('#bulkCreate').bulkCreate({
+                lockerId: {{ $locker->id }},
+            });
+
+            // myLocker.addModule({ name: 'Test'});
+            // myLocker.addModule({ name: 'Test2'});
+
+            myLocker.renderModules();
+        });
     </script>
 @endpush

@@ -15,16 +15,6 @@ class LockerSlotController extends Controller
         dd($locker);
     }
 
-    public function bulkCreate($locker)
-    {
-        dd($locker);
-    }
-
-    public function bulkStore($locker)
-    {
-        dd($locker);
-    }
-
     /**
      * Show the form for creating a new resource.
      */

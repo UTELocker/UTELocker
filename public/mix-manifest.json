@@ -1,4 +1,6 @@
 {
+    "/css/bulkCreate.css": "/css/bulkCreate.css",
     "/css/main.css": "/css/main.css",
-    "/js/main.js": "/js/main.js"
+    "/js/main.js": "/js/main.js",
+    "/js/bulkCreate.js": "/js/bulkCreate.js"
 }

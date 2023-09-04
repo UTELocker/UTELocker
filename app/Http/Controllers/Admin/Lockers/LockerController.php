@@ -90,9 +90,23 @@ class LockerController extends Controller
             return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
-        $this->activeTab = $tab ?: 'show';
+        $this->activeTab = $tab ?: 'details';
 
         return view('admin.lockers.show', $this->data);
+    }
+
+    private function bulkCreate()
+    {
+//        $this->view = 'admin.lockers.slots.bulk-create';
+//        $this->pageTitle = __('modules.lockers.tabs.bulkCreate');
+//
+//        if (request()->ajax()) {
+//            $html = view($this->view, $this->data)->render();
+//
+//            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+//        }
+//
+//        return view('admin.lockers.show', $this->data);
     }
 
     /**

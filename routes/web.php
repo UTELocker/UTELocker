@@ -52,8 +52,6 @@ Route::group(['middleware' => ['auth']], function () {
         ]);
 
     Route::group(['middleware' => ['auth'], 'prefix' => 'lockers/{locker}'], function () {
-        Route::get('slots/bulk-create', [LockerSlotController::class, 'bulkCreate'])
-            ->name('admin.lockers.slots.bulk-create');
         Route::resource('slots', LockerSlotController::class)
             ->names([
                 'index' => 'admin.lockers.slots.index',
