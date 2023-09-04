@@ -11,6 +11,8 @@ class Files
 {
     public const USER_UPLOAD_FOLDER = 'user-uploads';
     public const CLIENT_UPLOAD_FOLDER = 'client-uploads';
+    public const CLIENT_LOGO_FOLDER = 'client-logo';
+    public const USER_AVATAR_FOLDER ='user-avatar';
     public const DEFAULT_IMAGE_HEIGHT = 800;
 
     /**

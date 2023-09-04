@@ -41,7 +41,7 @@ class ClientService extends BaseService
     protected function formatInputData(&$inputs): void
     {
         if (!empty($inputs['logo'])) {
-            $inputs['logo'] = Files::upload($inputs['logo'], 'client-logo', width: 300);
+            $inputs['logo'] = Files::upload($inputs['logo'], Files::CLIENT_LOGO_FOLDER, width: 300);
         }
     }
 
@@ -58,7 +58,7 @@ class ClientService extends BaseService
 
     public function get($id)
     {
-        return $this->model->canAccess()->findOrFail($id);
+        return $this->model->hasPermission()->findOrFail($id);
     }
 
     /**

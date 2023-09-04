@@ -33,6 +33,7 @@ return array(
     'add' => 'Add',
     'edit' => 'Edit',
     'update' => 'Update',
+    'show' => 'Detail',
     'logout' => 'Logout',
     'startTyping' => 'Start Typing...',
     'clearFilters' => 'Clear Filters',
@@ -67,5 +68,6 @@ return array(
             'underMaintenance' => 'Under Maintenance',
             'broken' => 'Broken',
         ]
-    ]
+    ],
+    'language' => 'Language'
 );

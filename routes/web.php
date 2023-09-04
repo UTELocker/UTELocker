@@ -77,8 +77,8 @@ Route::group(['middleware' => ['auth']], function () {
         ]);
 });
 
-Route::group(['middleware' => ['auth'], 'prefix' => 'users'], function () {
-    Route::resource('/', UserController::class)
+Route::group(['middleware' => ['auth']], function () {
+    Route::resource('users', UserController::class)
         ->names([
             'index' => 'admin.users.index',
             'create' => 'admin.users.create',

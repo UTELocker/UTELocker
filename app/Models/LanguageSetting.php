@@ -54,4 +54,9 @@ class LanguageSetting extends Model
     {
         return self::where('enabled', CommonConstant::DATABASE_YES)->get();
     }
+
+    public function getLabelAttribute()
+    {
+        return '<span  data-toggle="tooltip" data-original-title="' . $this->language_name . '" class="flag-icon flag-icon-' . $langCode . ' flag-icon-squared"></span>';
+    }
 }

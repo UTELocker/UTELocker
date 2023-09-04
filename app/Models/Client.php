@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Classes\CommonConstant;
 use App\Enums\UserRole;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -41,5 +43,13 @@ class Client extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public static function getClientList()
+    {
+        if (User::hasPermission(\App\Enums\UserRole::SUPER_USER)) {
+            return self::get();
+        }
+        return self::where('id', user()->client_id)->get();
     }
 }

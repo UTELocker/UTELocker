@@ -3,6 +3,14 @@
 return array(
     'users' => [
         'addedOn' => 'Added On',
+        'name' => 'Name',
+        'email' => 'Email',
+        'password' => 'Password',
+        'usertype' => 'User Type',
+        'client' => 'Client List',
+        'mobile' => 'Mobile',
+        'gender' => 'Gender',
+        'profileInfo' => 'Profile Info'
     ],
     'clients' => [
         'addedOn' => 'Added On',
@@ -15,10 +23,14 @@ return array(
         'companyEmail' => 'Official Email',
         'officePhoneNumber' => 'Official Phone Number',
         'companyLogo' => 'Company Logo',
+        'address' => 'Company Address'
     ],
     'profile' => [
         'profilePicture' => 'Profile Picture',
-        'gender' => 'Gender'
+        'gender' => 'Gender',
+        'wallet' => 'Wallet',
+        'booking' => 'Booking',
+        'transaction' => 'Transaction'
     ],
     'accountSettings' => [
         'changeLanguage' => 'Change Language',

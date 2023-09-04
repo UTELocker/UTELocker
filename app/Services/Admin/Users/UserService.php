@@ -44,7 +44,7 @@ class UserService extends BaseService
         if (!empty($inputs['avatar'])) {
             $inputs['avatar'] = Files::upload(
                 $inputs['avatar'],
-                'user-avatar',
+                Files::USER_AVATAR_FOLDER,
                 width: 300,
                 options: ['isUser' => true]
             );
@@ -62,5 +62,23 @@ class UserService extends BaseService
         Common::assignField($this->model, 'type', $inputs);
         Common::assignField($this->model, 'gender', $inputs);
         Common::assignField($this->model, 'locale', $inputs);
+    }
+
+    public function get($id)
+    {
+        return $this->model->findOrFail($id);
+    }
+
+    public function update(User $user, array $inputs, array $options = []): user
+    {
+        $this->setModel($user);
+        if ($options['isPrefix']) {
+            $inputs = Common::mappingRemovePrefix($inputs, self::FORM_PREFIX);
+        }
+        $this->formatInputData($inputs);
+        $this->setModelFields($inputs);
+        $user->save();
+
+        return $user;
     }
 }

@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-sm-12">
-        <x-form id="save-user-data-form">
+        <x-form id="save-client-data-form" method="PUT">
             <div class="add-client bg-white rounded">
-                <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
+                <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-top-grey">
                     User Details
                 </h4>
                 <div class="row p-20">
@@ -100,8 +100,11 @@
                             :fieldLabel="__('modules.profile.profilePicture')"
                             fieldName="user_avatar"
                             fieldId="user_avatar"
-                            fieldHeight="119" :popover="__('messages.fileFormat.ImageFile')" />
+                            :fieldValue="$user_avatar ?? ''"
+                            fieldHeight="119"
+                            :popover="__('messages.fileFormat.ImageFile')" />
                     </div>
+                    <input type ="hidden" name="add_more" value="false" id="add_more" />
                 </div>
                 <x-forms.actions>
                     <x-forms.button-primary
@@ -119,12 +122,15 @@
                         class="border-0">@lang('app.cancel')
                     </x-forms.button-cancel>
                 </x-forms.actions>
+            </div>
         </x-form>
     </div>
 </div>
 
+<script src="{{ asset('vendor/jquery/dropzone/dropzone.min.js') }}"></script>
 <script>
     $(document).ready(function() {
+
         $('#random_password').click(function() {
             const randPassword = Math.random().toString(36).substr(2, 8);
 
@@ -143,28 +149,25 @@
     }
 
     $('#save-user-form').click(function() {
-        const url = "{{ route('admin.users.store') }}";
+        const url = "{{ route('admin.users.update', $user->id) }}";
         const data = $('#save-user-data-form').serialize();
 
-        saveClient(data, url, '#save-client-form');
+        saveClient(data, url, '#save-user-form');
     });
 
     function saveClient(data, url, buttonSelector) {
         $.easyAjax({
             url: url,
-            container: '#save-user-data-form',
+            container: '#save-client-data-form',
             type: "POST",
-            disableButton: buttonSelector,
+            disableButton: true,
+            blockUI: true,
             file: true,
-            data: data,
+            buttonSelector: "#save-form",
+            data: $('#save-data-form').serialize(),
             success: function(response) {
-                if (response.status === 'success') {
-                    if ($(MODAL_XL).hasClass('show')) {
-                        $(MODAL_XL).modal('hide');
-                        window.location.reload();
-                    } else if(typeof response.redirectUrl !== 'undefined'){
-                        window.location.href = response.redirectUrl;
-                    }
+                if (response.status == 'success') {
+                    window.location.href = response.redirectUrl;
                 }
             }
         })

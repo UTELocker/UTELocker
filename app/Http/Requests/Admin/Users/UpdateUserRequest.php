@@ -32,7 +32,7 @@ class UpdateUserRequest extends FormRequest
             'user_locale' => 'required|string|in:en,vi',
             'user_type' => 'required|int|in:0,1,2',
         ];
-        if (user()->type === User::ROLE_SUPER_USER) {
+        if (User::hasPermission(\App\Enums\UserRole::SUPER_USER)) {
             $rules['user_client_id'] = 'required|exists:clients,id';
         }
         return $rules;

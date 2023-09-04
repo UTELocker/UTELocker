@@ -6,7 +6,7 @@
     class="mt-3">
 </x-forms.label>
 <div {{ $attributes->merge(['class' => 'form-group mb-0']) }}>
-    <select name="{{ $fieldName }}" id="{{ $fieldId }}" @if ($multiple) multiple @endif @if ($search)
+    <select name="{{ $fieldName }}" id="{{ $fieldId }}" @if($disabled) disabled @endif @if ($multiple) multiple @endif @if ($search)
         data-live-search="true"
             @endif
 

@@ -8,6 +8,8 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use App\Classes\CommonConstant;
+use App\View\Components\User as UserComponent;
 
 class UsersDataTable extends BaseDataTable
 {
@@ -35,12 +37,19 @@ class UsersDataTable extends BaseDataTable
         $datatables->editColumn(
             'status',
             function ($row) {
-                if ($row->status == 'active') {
+                if ($row->active == CommonConstant::DATABASE_YES) {
                     return ' <i class="fa fa-circle mr-1 text-light-green f-10"></i>' . __('app.active');
                 }
                 else {
                     return '<i class="fa fa-circle mr-1 text-red f-10"></i>' . __('app.inactive');
                 }
+            }
+        );
+
+        $datatables->editColumn(
+            'name',
+            function($row) {
+                return (new UserComponent($row))->render();
             }
         );
 
@@ -64,7 +73,10 @@ class UsersDataTable extends BaseDataTable
      */
     public function query(User $model): QueryBuilder
     {
-        return $model->newQuery();
+        if (User::hasPermission(\App\Enums\UserRole::SUPER_USER)) {
+            return $model->newQuery();
+        }
+        return $model->newQuery()->where('client_id', user()->client_id);
     }
 
     /**

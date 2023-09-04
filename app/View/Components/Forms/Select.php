@@ -16,6 +16,7 @@ class Select extends Component
     public $fieldName;
     public $fieldId;
     public $popover;
+    public $disabled;
 
     /**
      * Create a new component instance.
@@ -25,6 +26,7 @@ class Select extends Component
         $fieldId,
         $fieldRequired = false,
         $fieldLabel = null,
+        $disabled = false,
         bool $multiple = false,
         bool $search = false,
         bool $alignRight = false,
@@ -34,6 +36,7 @@ class Select extends Component
         $this->fieldLabel = $fieldLabel;
         $this->fieldId = $fieldId;
         $this->fieldRequired = $fieldRequired;
+        $this->disabled = $disabled;
         $this->multiple = $multiple;
         $this->search = $search;
         $this->popover = $popover;
