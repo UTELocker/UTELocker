@@ -77,7 +77,7 @@ class LockerController extends Controller
                 $this->view = 'admin.lockers.slots.index';
                 break;
             case 'bulk-create':
-                $this->view = 'admin.lockers.slots.bulk-create';
+                return $this->bulkCreate();
                 break;
             default:
                 $this->view = 'admin.lockers.ajax.show';
@@ -97,16 +97,15 @@ class LockerController extends Controller
 
     private function bulkCreate()
     {
-//        $this->view = 'admin.lockers.slots.bulk-create';
-//        $this->pageTitle = __('modules.lockers.tabs.bulkCreate');
-//
-//        if (request()->ajax()) {
-//            $html = view($this->view, $this->data)->render();
-//
-//            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
-//        }
-//
-//        return view('admin.lockers.show', $this->data);
+        $this->view = 'admin.lockers.slots.bulk-create';
+        $this->modules = $this->lockerService->getModules($this->locker);
+        if (request()->ajax()) {
+            $html = view($this->view, $this->data)->render();
+
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+        $this->activeTab = 'bulk-create';
+        return view('admin.lockers.show', $this->data);
     }
 
     /**

@@ -7,7 +7,7 @@
         <div class="media-body">
             <h5 class="mb-0 f-12">
                 <a
-                    href="{{ route('admin.clients.show', [$locker->id]) }}"
+                    href="{{ route('admin.lockers.show', [$locker->id]) }}"
                     class="text-darkest-grey">
                     {{ ucfirst($locker->code) }}
                 </a>

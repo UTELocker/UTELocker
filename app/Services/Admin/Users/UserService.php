@@ -7,15 +7,19 @@ use App\Classes\Files;
 use App\Exceptions\ApiException;
 use App\Models\User;
 use App\Services\BaseService;
+use App\Services\Wallets\WalletService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class UserService extends BaseService
 {
     public const FORM_PREFIX = 'user_';
+    private WalletService $walletService;
 
-    public function __construct()
+    public function __construct(WalletService $walletService)
     {
         parent::__construct(new User());
+        $this->walletService = $walletService;
     }
 
     /**
@@ -29,8 +33,14 @@ class UserService extends BaseService
         }
         $this->formatInputData($inputs);
         $this->setModelFields($inputs);
-
-        $this->model->save();
+        DB::transaction(function () {
+            $this->model->save();
+            $this->walletService->add([
+                'user_id' => $this->model->id,
+                'balance' => 0,
+                'promotion_balance' => 0,
+            ]);
+        });
 
         return $this->model;
     }

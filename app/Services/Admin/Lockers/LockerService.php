@@ -4,6 +4,8 @@ namespace App\Services\Admin\Lockers;
 
 use App\Classes\Common;
 use App\Classes\Files;
+use App\Enums\LockerSlotStatus;
+use App\Enums\LockerSlotType;
 use App\Models\Locker;
 use App\Services\Admin\Licenses\LicenseService;
 use App\Services\BaseService;
@@ -13,11 +15,18 @@ use Illuminate\Support\Facades\DB;
 class LockerService extends BaseService
 {
     private LicenseService $licenseService;
+    private LockerSlotService $lockerSlotService;
+    private array $slotDefault = [
+        LockerSlotType::SLOT,
+        LockerSlotType::CPU,
+        LockerSlotType::SLOT
+    ];
 
-    public function __construct(LicenseService $licenseService)
+    public function __construct(LicenseService $licenseService, LockerSlotService $lockerSlotService)
     {
         parent::__construct(new Locker());
         $this->licenseService = $licenseService;
+        $this->lockerSlotService = $lockerSlotService;
     }
 
     public function initDefaultData(): static
@@ -35,6 +44,7 @@ class LockerService extends BaseService
         DB::transaction(function () {
             $this->model->save();
             $this->licenseService->add(['locker_id' => $this->model->id]);
+            $this->addDefaultSlots();
         });
         return $this->model;
     }
@@ -59,5 +69,28 @@ class LockerService extends BaseService
         Common::assignField($this->model, 'status', $inputs);
         Common::assignField($this->model, 'description', $inputs);
         Common::assignField($this->model, 'image', $inputs);
+    }
+
+    private function addDefaultSlots()
+    {
+        foreach ($this->slotDefault as $key => $type) {
+            $this->lockerSlotService->add([
+                'locker_id' => $this->model->id,
+                'type' => $type,
+                'row' => 1,
+                'column' => $key + 1,
+                'status' => LockerSlotStatus::AVAILABLE
+            ]);
+        }
+    }
+
+    public function getModules(Locker $locker)
+    {
+        $modules = [];
+        $slots = $locker->lockerSlots;
+        foreach ($slots as $slot) {
+            $modules[$slot->row][$slot->column] = $slot->toArray();
+        }
+        return $modules;
     }
 }

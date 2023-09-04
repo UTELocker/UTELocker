@@ -37,7 +37,6 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('js/bulkCreate.js') }}"></script>
     <script>
         $("body").on("click", ".ajax-tab", function(event) {
             event.preventDefault();
@@ -66,17 +65,5 @@
     <script>
         const activeTab = "{{ $activeTab }}";
         $('.project-menu .' + activeTab).addClass('active');
-    </script>
-    <script>
-        $(function () {
-            const myLocker = $('#bulkCreate').bulkCreate({
-                lockerId: {{ $locker->id }},
-            });
-
-            // myLocker.addModule({ name: 'Test'});
-            // myLocker.addModule({ name: 'Test2'});
-
-            myLocker.renderModules();
-        });
     </script>
 @endpush

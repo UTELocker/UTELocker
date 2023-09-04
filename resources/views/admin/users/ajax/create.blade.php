@@ -88,7 +88,7 @@
                                 <x-forms.select fieldId="user_client_id" :fieldLabel="__('modules.users.client')"
                                                 fieldName="user_client_id" :disabled="(user()->type != \App\Enums\UserRole::SUPER_USER)" search="true">
                                     @foreach($clients as $client)
-                                        <option value={{ $client->id }}}>{{ $client->name }}</option>
+                                        <option value={{ $client->id }}>{{ $client->name }}</option>
                                     @endforeach
                                 </x-forms.select>
                             </div>

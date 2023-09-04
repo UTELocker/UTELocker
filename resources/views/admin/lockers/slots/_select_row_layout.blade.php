@@ -14,12 +14,12 @@
             </div>
             <div class="modal-body">
                 <div class="sample-rows">
-                    <div class="row sample-row-item">
+                    <div class="row sample-row-item" data-type="1">
                         <div class="col-item col-12">
                             <div class="block-slot"></div>
                         </div>
                     </div>
-                    <div class="row sample-row-item">
+                    <div class="row sample-row-item" data-type="2">
                         <div class="col-item col-6">
                             <div class="block-slot"></div>
                         </div>
@@ -27,7 +27,7 @@
                             <div class="block-slot"></div>
                         </div>
                     </div>
-                    <div class="row sample-row-item">
+                    <div class="row sample-row-item" data-type="3">
                         <div class="col-item col-4">
                             <div class="block-slot"></div>
                         </div>
@@ -38,7 +38,7 @@
                             <div class="block-slot"></div>
                         </div>
                     </div>
-                    <div class="row sample-row-item">
+                    <div class="row sample-row-item" data-type="4">
                         <div class="col-item col-3">
                             <div class="block-slot"></div>
                         </div>

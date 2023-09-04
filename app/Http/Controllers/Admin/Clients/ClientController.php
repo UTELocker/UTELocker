@@ -96,7 +96,7 @@ class ClientController extends Controller
 
     public function show(string $id)
     {
-        $this->viewPermission = user()->hasPermission(UserRole::ADMIN);
+        $this->viewPermission = user()->canAccess(UserRole::ADMIN);
         if (!$this->viewPermission) {
             abort(403);
         }
@@ -106,7 +106,7 @@ class ClientController extends Controller
 
     public function edit(string $id)
     {
-        $this->editPermission = user()->hasPermission(UserRole::ADMIN);
+        $this->editPermission = user()->canAccess(UserRole::ADMIN);
         if (!$this->editPermission) {
             abort(403);
         }
@@ -129,7 +129,7 @@ class ClientController extends Controller
 
     public function update(UpdateClientRequest $request, string $id)
     {
-        $this->editPermission = user()->hasPermission(UserRole::ADMIN);
+        $this->editPermission = user()->canAccess(UserRole::ADMIN);
         if (!$this->editPermission) {
             abort(403);
         }
@@ -153,7 +153,7 @@ class ClientController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->deletePermission = user()->hasPermission(UserRole::SUPER_USER);
+        $this->deletePermission = user()->canAccess(UserRole::SUPER_USER);
         if (!$this->deletePermission) {
             abort(403);
         }
