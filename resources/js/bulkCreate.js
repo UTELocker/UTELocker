@@ -9,6 +9,7 @@
             5 : '2-2-2-2-2-2',
         }
         const lockerId = options.lockerId;
+        let clipboard = {};
         const slotConfigDefault = {
             'id': -1,
             'type': 'SLOT',
@@ -112,6 +113,9 @@
                             <section class="empty-block">
                                 <button class="btn btn-outline-primary addModuleBtn mr-1">Add Slot</button>
                                 <button class="btn btn-outline-secondary addEmptyBtn ml-1">Add Empty</button>
+                                ${Object.keys(clipboard).length > 0 ? `
+                                    <button class="btn btn-outline-info pasteBtn ml-1">Paste</button>
+                                ` : ''}
                             </section>
                         </div>
                     </div>
@@ -124,6 +128,13 @@
 
             emptySlotDiv.find('.addEmptyBtn').on('click', function () {
                 addSlot(emptyConfigDefault, rowId, slotId);
+            });
+
+            emptySlotDiv.find('.pasteBtn').on('click', function () {
+                addSlot(clipboard, rowId, slotId);
+                clipboard = {};
+
+                renderModules();
             });
 
             return emptySlotDiv;
@@ -139,6 +150,12 @@
                                 type="button"
                             >
                                 <i class="fas fa-cog"></i>
+                            </button>
+                            <button
+                                class="btn btn-light btn-sm btn-move-block ml-1"
+                                type="button"
+                            >
+                                <i class="fas fa-arrows-alt"></i>
                             </button>
                             ${slot.type !== 'CPU' ? `
                                 <button
@@ -169,7 +186,79 @@
                 removeSlot(rowId, slotId);
             });
 
+            dummySlotDiv.find('.btn-move-block').on('click', function () {
+                clipboard = modules[rowId][slotId];
+                removeSlot(rowId, slotId);
+            });
+
             return dummySlotDiv;
+        }
+
+        const getRowControl = function (rowId) {
+            const $div = $(`
+                <div class="row-control">
+                    <div class="form-inline">
+                        <button
+                            class="btn btn-outline-secondary btn-sm btn-move-up mr-1"
+                            type="button"
+                        ><i class="fas fa-arrow-up"></i> <strong>Up</strong></button>
+                        <button
+                            class="btn btn-outline-secondary btn-sm btn-move-down mr-1 ml-1"
+                            type="button"
+                        ><i class="fas fa-arrow-down"></i> <strong>Down</strong></button>
+                        <button
+                            class="btn btn-outline-danger btn-sm btn-remove-row ml-1"
+                            type="button"
+                        ><i class="fas fa-trash"></i> <strong>Delete</strong></button>
+                    </div>
+                </div>
+            `);
+
+            if (rowId === 0) {
+                $div.find('.btn-move-up').attr('disabled', true);
+            }
+
+            if (rowId === modules.length - 1) {
+                $div.find('.btn-move-down').attr('disabled', true);
+            }
+
+            $div.find('.btn-move-up').on('click', function () {
+                const targetRow = modules[rowId];
+                modules[rowId] = modules[rowId - 1];
+                modules[rowId - 1] = targetRow;
+
+                renderModules();
+            });
+
+            $div.find('.btn-move-down').on('click', function () {
+                const targetRow = modules[rowId];
+                modules[rowId] = modules[rowId + 1];
+                modules[rowId + 1] = targetRow;
+
+                renderModules();
+            });
+
+            $div.find('.btn-remove-row').on('click', function () {
+                const row = modules[rowId];
+                for (const element of row) {
+                    const currentSlot = element;
+                    if (!currentSlot || currentSlot.type !== 'CPU') {
+                        continue;
+                    }
+
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Cannot delete row with CPU',
+                        icon: 'error',
+                    });
+                    return;
+                }
+                modules.splice(rowId, 1);
+
+                renderModules();
+            });
+
+            return $div;
         }
 
         const getNumberSlot = function (rowId, slotId, slot) {
@@ -205,6 +294,8 @@
                 const rowCount = row.length;
                 const colClass = 'col-' + (12 / rowCount);
                 const rowDiv = $('<div class="row row-layout row-height-medium"></div>');
+                const rowControlDiv = getRowControl(rowIndex);
+                rowDiv.append(rowControlDiv);
                 row.forEach((slot, slotId) => {
                     let slotDiv = null;
                     if (Object.keys(slot).length === 0 && slot.constructor === Object) {
