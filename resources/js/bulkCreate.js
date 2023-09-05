@@ -6,10 +6,18 @@
             2 : '6-6',
             3 : '4-4-4',
             4 : '3-3-3-3',
+            5 : '2-2-2-2-2-2',
         }
         const lockerId = options.lockerId;
         const slotConfigDefault = {
-            'type': 'SLOT'
+            'id': -1,
+            'type': 'SLOT',
+            'status': 0,
+        }
+        const emptyConfigDefault = {
+            'id': -1,
+            'type': 'EMPTY',
+            'status': 0,
         }
         const rawModules = options.modules;
         const modules = [];
@@ -39,6 +47,7 @@
 
         const addRowDiv = function (type, after) {
             const style = after === 0 ? 'mt-0' : 'mb-0';
+            const text = after === 0 ? 'Add Row Below' : 'Add Row Above';
             const rowDiv = $(`
                 <section class="grid-layout">
                     <div class="row row-layout ${style}">
@@ -49,7 +58,7 @@
                                         <div class="block-content dash-border">
                                             <section class="empty-block">
                                                 <button class="btn btn-primary addRowBtn"
-                                                    data-after="${after}">Add Row</button>
+                                                    data-after="${after}">${text}</button>
                                             </section>
                                         </div>
                                     </div>
@@ -76,7 +85,18 @@
 
         const addSlot = function (module, rowId, slotId) {
             const targetRow = modules[rowId];
-            targetRow.splice(slotId, 1, module);
+            targetRow.splice(slotId, 1, {
+                ...module,
+                'row': rowId,
+                'column': slotId,
+            });
+
+            renderModules();
+        }
+
+        const removeSlot = function (rowId, slotId) {
+            const targetRow = modules[rowId];
+            targetRow.splice(slotId, 1, {});
 
             renderModules();
         }
@@ -90,7 +110,8 @@
                     <div class="block-container">
                         <div class="block-content dash-border">
                             <section class="empty-block">
-                                <button class="btn btn-outline-primary addModuleBtn">Add Slot</button>
+                                <button class="btn btn-outline-primary addModuleBtn mr-1">Add Slot</button>
+                                <button class="btn btn-outline-secondary addEmptyBtn ml-1">Add Empty</button>
                             </section>
                         </div>
                     </div>
@@ -99,6 +120,10 @@
 
             emptySlotDiv.find('.addModuleBtn').on('click', function () {
                 addSlot(slotConfigDefault, rowId, slotId);
+            });
+
+            emptySlotDiv.find('.addEmptyBtn').on('click', function () {
+                addSlot(emptyConfigDefault, rowId, slotId);
             });
 
             return emptySlotDiv;
@@ -115,9 +140,9 @@
                             >
                                 <i class="fas fa-cog"></i>
                             </button>
-                            ${slot.type === 'SLOT' ? `
+                            ${slot.type !== 'CPU' ? `
                                 <button
-                                    class="btn btn-light btn-sm btn-delete-block"
+                                    class="btn btn-light btn-sm btn-delete-block ml-1"
                                     type="button"
                                 >
                                     <i class="fas fa-trash"></i>
@@ -126,7 +151,7 @@
                         </div>
                     </div>
                     <div class="block-container">
-                        <div class="block-content solid-border">
+                        <div class="block-content solid-border ${slot.type}">
                             <div class="block-dummy-box">
                                 <div class="d-block">
                                     ${slot.type === 'SLOT' ? `
@@ -140,6 +165,10 @@
                 </div>
             `);
 
+            dummySlotDiv.find('.btn-delete-block').on('click', function () {
+                removeSlot(rowId, slotId);
+            });
+
             return dummySlotDiv;
         }
 
@@ -148,8 +177,8 @@
 
             for (let i = 0; i < rowId; i++) {
                 const row = modules[i];
-                for (let j = 0; j < row.length; j++) {
-                    const currentSlot = row[j];
+                for (const element of row) {
+                    const currentSlot = element;
                     if (!currentSlot || currentSlot.type !== 'SLOT') {
                         continue;
                     }
@@ -180,7 +209,6 @@
                     let slotDiv = null;
                     if (Object.keys(slot).length === 0 && slot.constructor === Object) {
                         slotDiv = addEmptySlot(rowIndex, slotId);
-
                     } else {
                         slotDiv = getDummySlot(rowIndex, slotId, slot);
                     }
@@ -192,6 +220,72 @@
             });
 
             bulkCreate.append(addRowDiv(1, modules.length));
+        }
+
+        $('#saveBulkCreate').on('click', function () {
+            const errors = validateModules();
+            if (errors.length > 0) {
+                let errorMessage = '';
+                errors.forEach((error) => {
+                    errorMessage += `Row ${error.row + 1} Slot ${error.slot + 1}: ${error.message}\n`;
+                });
+                alert(errorMessage);
+                return;
+            }
+
+            const data = {
+                'modules': modules,
+                '_token': $('meta[name="csrf-token"]').attr('content'),
+                '_method': 'PUT'
+            };
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: options.saveRoute,
+                        type: 'POST',
+                        data: data,
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Locker has been created.',
+                                icon: 'success',
+                            }).then(() => {
+                                window.location.href = '/lockers';
+                            });
+                        },
+                        error: function (response) {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Something went wrong.',
+                                icon: 'error',
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        const validateModules = function () {
+            const errors = [];
+            modules.forEach((row, rowIndex) => {
+                row.forEach((slot, slotId) => {
+                    if (Object.keys(slot).length === 0 && slot.constructor === Object) {
+                        errors.push({
+                            'row': rowIndex,
+                            'slot': slotId,
+                            'message': 'Slot is empty',
+                        });
+                    }
+                });
+            });
+
+            return errors;
         }
 
         this.init = function () {

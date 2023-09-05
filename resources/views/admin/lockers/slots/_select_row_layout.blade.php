@@ -52,6 +52,26 @@
                             <div class="block-slot"></div>
                         </div>
                     </div>
+                    <div class="row sample-row-item" data-type="5">
+                        <div class="col-item col-2">
+                            <div class="block-slot"></div>
+                        </div>
+                        <div class="col-item col-2">
+                            <div class="block-slot"></div>
+                        </div>
+                        <div class="col-item col-2">
+                            <div class="block-slot"></div>
+                        </div>
+                        <div class="col-item col-2">
+                            <div class="block-slot"></div>
+                        </div>
+                        <div class="col-item col-2">
+                            <div class="block-slot"></div>
+                        </div>
+                        <div class="col-item col-2">
+                            <div class="block-slot"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

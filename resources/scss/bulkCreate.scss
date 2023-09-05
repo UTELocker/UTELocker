@@ -31,6 +31,14 @@
         border: 5px solid #dddddd;
         border-radius: 5px;
     }
+
+    .block-content.solid-border.CPU {
+        background: var(--info);
+    }
+
+    .block-content.solid-border.EMPTY {
+        background: var(--secondary);
+    }
 }
 
 .empty-block {

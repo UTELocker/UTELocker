@@ -1,6 +1,3 @@
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/bulkCreate.css') }}">
-@endpush
 <div class="d-grid d-lg-flex d-md-flex action-bar">
     <div id="table-actions" class="flex-grow-1 align-items-center">
         <x-forms.button-primary
@@ -28,6 +25,7 @@
         const myLocker = $('#bulkCreate').bulkCreate({
             lockerId: {{ $locker->id }},
             modules: @json($modules),
+            saveRoute: '{{ route('admin.lockers.slots.bulkUpdate', $locker->id) }}',
         }).init();
     });
 </script>

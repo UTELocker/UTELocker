@@ -3,16 +3,36 @@
 namespace App\Http\Controllers\Admin\Lockers;
 
 use App\Http\Controllers\Controller;
+use App\Services\Admin\Lockers\LockerService;
+use App\Services\Admin\Lockers\LockerSlotService;
 use Illuminate\Http\Request;
 
 class LockerSlotController extends Controller
 {
+    private LockerSlotService $lockerSlotService;
+    private LockerService $lockerService;
+
+    public function __construct(LockerSlotService $lockerSlotService, LockerService $lockerService)
+    {
+        parent::__construct();
+        $this->lockerSlotService = $lockerSlotService;
+        $this->lockerService = $lockerService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index($locker)
     {
         dd($locker);
+    }
+
+    public function bulkUpdate(Request $request, $locker)
+    {
+        $form = $request->all();
+        $locker = $this->lockerService->get($locker);
+        $oldSlots = $this->lockerService->getModules($locker);
+        $this->lockerSlotService->bulkUpdate($locker->id, $oldSlots, $form);
     }
 
     /**

@@ -52,6 +52,8 @@ Route::group(['middleware' => ['auth']], function () {
         ]);
 
     Route::group(['middleware' => ['auth'], 'prefix' => 'lockers/{locker}'], function () {
+        Route::put('slots/bulk-update', [LockerSlotController::class, 'bulkUpdate'])
+            ->name('admin.lockers.slots.bulkUpdate');
         Route::resource('slots', LockerSlotController::class)
             ->names([
                 'index' => 'admin.lockers.slots.index',

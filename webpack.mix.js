@@ -24,4 +24,3 @@ mix.scripts([
 mix.scripts([
     'resources/js/bulkCreate.js',
 ], 'public/js/bulkCreate.js')
-    .sass('resources/scss/bulkCreate.scss', 'public/css')
