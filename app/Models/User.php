@@ -36,4 +36,9 @@ class User extends Authenticatable
     {
         return auth()->user()->type === $userType;
     }
+
+    public static function isSuperUser(): bool
+    {
+        return self::hasPermission(UserRole::SUPER_USER);
+    }
 }

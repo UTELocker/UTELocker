@@ -12,6 +12,7 @@ return array(
     'loading' => 'Loading...',
     'recoverPassword' => 'Recover Password',
     'sendPasswordLink' => 'Send Password Reset Link',
+    'description' => 'Description',
     'menu' => [
         'home' => 'Home',
         'dashboard' => 'Dashboard',
@@ -64,6 +65,8 @@ return array(
     'hour' => 'Hour(s)',
     'locker' => 'Locker',
     'code' => 'Code',
+    'type' => 'Type',
+    'close' => 'Close',
     'enums' => [
         'lockerStatus' => [
             'available' => 'Available',

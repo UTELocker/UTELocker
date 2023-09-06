@@ -69,26 +69,28 @@ Route::group(['middleware' => ['auth']], function () {
     });
 
     Route::group(['middleware' => ['auth'], 'prefix' => 'location'], function () {
+        $name = 'admin.location.locations';
+        Route::redirect('/', 'location/locations');
         Route::resource('locations', LocationController::class, [
             'names' => [
-                'index' => 'admin.location.locations.index',
-                'create' => 'admin.location.locations.create',
-                'store' => 'admin.location.locations.store',
-                'show' => 'admin.location.locations.show',
-                'edit' => 'admin.location.locations.edit',
-                'update' => 'admin.location.locations.update',
-                'destroy' => 'admin.location.locations.destroy',
+                'index' => $name.'.index',
+                'create' => $name.'.create',
+                'store' => $name.'.store',
+                'show' => $name.'.show',
+                'edit' => $name.'.edit',
+                'update' => $name.'.update',
+                'destroy' => $name.'.destroy',
             ],
         ]);
-        Route::resource('type', LocationTypeController::class, [
+        Route::resource('types', LocationTypeController::class, [
             'names' => [
-                'index' => 'admin.location.type.index',
-                'create' => 'admin.location.type.create',
-                'store' => 'admin.location.type.store',
-                'show' => 'admin.location.type.show',
-                'edit' => 'admin.location.type.edit',
-                'update' => 'admin.location.type.update',
-                'destroy' => 'admin.location.type.destroy',
+                'index' => 'admin.location.types.index',
+                'create' => 'admin.location.types.create',
+                'store' => 'admin.location.types.store',
+                'show' => 'admin.location.types.show',
+                'edit' => 'admin.location.types.edit',
+                'update' => 'admin.location.types.update',
+                'destroy' => 'admin.location.types.destroy',
             ],
         ]);
     });

@@ -26,7 +26,7 @@
         <div class="accordionItemContent pb-2">
             <x-sub-menu-item :link="route('admin.location.locations.index')"
                              :text="__('app.menu.locations')" />
-            <x-sub-menu-item :link="route('admin.location.type.index')"
+            <x-sub-menu-item :link="route('admin.location.types.index')"
                              :text="__('app.menu.locationTypes')" />
         </div>
     </x-menu-item>

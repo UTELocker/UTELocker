@@ -42,7 +42,7 @@ class LockerController extends Controller
             return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
-        return view('admin.clients.create', $this->data);
+        return view('admin.lockers.create', $this->data);
     }
 
     /**

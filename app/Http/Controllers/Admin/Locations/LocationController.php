@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers\Admin\Locations;
 
+use App\DataTables\LocationsDataTable;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->pageTitle = __('modules.locations.title');
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(LocationsDataTable $dataTable)
     {
-        //
+        return $dataTable->render('admin.locations.index', $this->data);
     }
 
     /**
