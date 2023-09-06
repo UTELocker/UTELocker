@@ -67,5 +67,11 @@ return array(
             'slots' => 'Slots',
             'bulkCreate' => 'Bulk Create Slots',
         ],
-    ]
+    ],
+    'locations' => [
+        'title' => 'Locations',
+    ],
+    'locationTypes' => [
+        'title' => 'Location Types',
+    ],
 );

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\Clients\ClientController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\Admin\Locations\LocationController;
+use App\Http\Controllers\Admin\Locations\LocationTypeController;
 use App\Http\Controllers\Admin\Lockers\LockerController;
 use App\Http\Controllers\Admin\Lockers\LockerSlotController;
 use App\Http\Controllers\Admin\Settings\AppSettingController;
@@ -64,6 +66,31 @@ Route::group(['middleware' => ['auth']], function () {
                 'update' => 'admin.lockers.slots.update',
                 'destroy' => 'admin.lockers.slots.destroy',
             ]);
+    });
+
+    Route::group(['middleware' => ['auth'], 'prefix' => 'location'], function () {
+        Route::resource('locations', LocationController::class, [
+            'names' => [
+                'index' => 'admin.location.locations.index',
+                'create' => 'admin.location.locations.create',
+                'store' => 'admin.location.locations.store',
+                'show' => 'admin.location.locations.show',
+                'edit' => 'admin.location.locations.edit',
+                'update' => 'admin.location.locations.update',
+                'destroy' => 'admin.location.locations.destroy',
+            ],
+        ]);
+        Route::resource('type', LocationTypeController::class, [
+            'names' => [
+                'index' => 'admin.location.type.index',
+                'create' => 'admin.location.type.create',
+                'store' => 'admin.location.type.store',
+                'show' => 'admin.location.type.show',
+                'edit' => 'admin.location.type.edit',
+                'update' => 'admin.location.type.update',
+                'destroy' => 'admin.location.type.destroy',
+            ],
+        ]);
     });
 
     Route::get(
