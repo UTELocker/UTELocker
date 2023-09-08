@@ -47,7 +47,7 @@ class Client extends Model
 
     public static function getClientList()
     {
-        if (User::hasPermission(\App\Enums\UserRole::SUPER_USER)) {
+        if (User::hasPermission(UserRole::SUPER_USER)) {
             return self::get();
         }
         return self::where('id', user()->client_id)->get();

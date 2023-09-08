@@ -75,5 +75,8 @@ return array(
             'broken' => 'Broken',
         ]
     ],
-    'language' => 'Language'
+    'language' => 'Language',
+    'lockerSlots' => 'Locker Slots',
+    'location' => 'Location',
+    'locationType' => 'Location Type'
 );

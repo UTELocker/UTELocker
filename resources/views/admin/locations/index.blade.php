@@ -34,11 +34,11 @@
         <div class="d-grid d-lg-flex d-md-flex action-bar">
             <div id="table-actions" class="flex-grow-1 align-items-center">
                 <x-forms.link-primary
-                    :link="route('admin.location.types.create')"
-                    class="mr-3 openRightModal float-left mb-2 mb-lg-0 mb-md-0" icon="plus"
+                    :link="route('admin.location.locations.create')"
+                    class="mr-3 float-left mb-2 mb-lg-0 mb-md-0" icon="plus"
                 >
                     @lang('app.add')
-                    @lang('app.locker')
+                    @lang('app.location')
                 </x-forms.link-primary>
             </div>
             <x-datatable.actions>

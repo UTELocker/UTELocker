@@ -21,9 +21,37 @@ class LocationTypesDataTable extends BaseDataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return (new EloquentDataTable($query))
-            ->addColumn('action', 'locationtypes.action')
-            ->setRowId('id');
+        $datatables = datatables()
+            ->eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('check', function ($row) {
+                return '<input type="checkbox" class="select-table-row" id="datatable-row-'
+                    . $row->id
+                    . '"  name="datatable_ids[]" value="'
+                    . $row->id
+                    . '" onclick="UTELocker.common.dataTableRowCheck(' . $row->id . ')">';
+            })
+            ->addColumn('action', function ($row) {
+                return view('admin.location-types.actions', compact('row'));
+            })
+            ->addColumn('code', function ($row) {
+                return ucfirst($row->code) . ' - ' . $row->description;
+            })
+            ->addColumn('client_name', function ($row) {
+                // link to client detail
+                return "<a href='" . route('admin.clients.show', $row->client_id) . "'>" . $row->client_name . "</a>";
+            })
+            ->addColumn('created_at', function ($row) {
+                return $row->created_at->format(globalSettings()->date_format);
+            })
+            ->smart(false)
+            ->setRowId(function ($row) {
+                return 'row-' . $row->id;
+            });
+
+        $datatables->rawColumns(['client_name', 'action', 'check']);
+
+        return $datatables;
     }
 
     /**
@@ -31,7 +59,18 @@ class LocationTypesDataTable extends BaseDataTable
      */
     public function query(LocationType $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model
+            ->newQuery()
+            ->leftJoin('clients', 'clients.id', '=', 'location_types.client_id')
+            ->select([
+                'location_types.id',
+                'location_types.code',
+                'location_types.description',
+                'location_types.created_at',
+                'location_types.updated_at',
+                'location_types.client_id',
+                'clients.name as client_name'
+            ]);
     }
 
     /**
@@ -39,21 +78,13 @@ class LocationTypesDataTable extends BaseDataTable
      */
     public function html(): HtmlBuilder
     {
-        return $this->builder()
-                    ->setTableId('locationtypes-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+        return $this->setBuilder('locationtypes-table', 2)
+            ->parameters([
+                'initComplete' => 'function () {
+                   window.LaravelDataTables["locationtypes-table"].buttons().container()
+                    .appendTo("#table-actions")
+                }',
+            ]);
     }
 
     /**
@@ -61,24 +92,35 @@ class LocationTypesDataTable extends BaseDataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+        $data = [
+            'check' => [
+                'title' => '<input type="checkbox" name="select_alField as $customField) {
+                    $data[] = [$customField->name => l_table"
+                    id="select-all-table" onclick="UTELocker.common.selectAllTable(this)">',
+                'exportable' => false,
+                'orderable' => false,
+                'searchable' => false
+            ],
+            '#' => [
+                'data' => 'DT_RowIndex',
+                'orderable' => false,
+                'searchable' => false,
+                'title' => '#'
+            ],
+            __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
+            __('app.client') => ['data' => 'client_name', 'name' => 'client_name', 'title' => __('app.client')],
+            __('app.createdAt') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('app.createdAt')]
         ];
-    }
 
-    /**
-     * Get the filename for export.
-     */
-    protected function filename(): string
-    {
-        return 'LocationTypes_' . date('YmdHis');
+        $action = [
+            Column::computed('action', __('app.action'))
+                ->exportable(false)
+                ->printable(false)
+                ->orderable(false)
+                ->searchable(false)
+                ->addClass('text-right pr-20')
+        ];
+
+        return array_merge($data, $action);
     }
 }

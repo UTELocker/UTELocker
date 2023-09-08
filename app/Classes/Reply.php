@@ -9,7 +9,6 @@ class Reply
      * @param string $message
      * @return array
      */
-
     public static function success($message)
     {
         return [
