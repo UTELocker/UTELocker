@@ -23,6 +23,8 @@ return array(
         'location' => 'Location',
         'locations' => 'Locations',
         'locationTypes' => 'Location Types',
+        'locker' => 'Locker',
+        'licenses' => 'Licenses',
     ],
     'datatable' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/English.json',
     'exportExcel' => 'Export Excel',
@@ -78,5 +80,9 @@ return array(
     'language' => 'Language',
     'lockerSlots' => 'Locker Slots',
     'location' => 'Location',
-    'locationType' => 'Location Type'
+    'locationType' => 'Location Type',
+    'link' => 'Link',
+    'to' => 'To',
+    'activeAt' => 'Active At',
+    'expireAt' => 'Expire At',
 );
