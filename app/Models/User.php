@@ -41,4 +41,9 @@ class User extends Authenticatable
     {
         return self::hasPermission(UserRole::SUPER_USER);
     }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
 }

@@ -50,15 +50,22 @@ class UserService extends BaseService
      */
     protected function formatInputData(&$inputs): void
     {
-        $inputs['password'] = bcrypt($inputs['password']);
-        if (!empty($inputs['avatar'])) {
-            $inputs['avatar'] = Files::upload(
-                $inputs['avatar'],
-                Files::USER_AVATAR_FOLDER,
-                width: 300,
-                options: ['isUser' => true]
-            );
-        }
+        $inputs['password'] = isset($inputs['password']) ? bcrypt($inputs['password']) : $this->model->password;
+
+        $inputs['avatar'] = !empty($inputs['avatar']) ? Files::upload(
+            $inputs['avatar'],
+            Files::USER_AVATAR_FOLDER,
+            width: 300,
+            options: ['isUser' => true]
+        ) : $this->model->avatar;
+
+        $inputs['client_id'] = $inputs['client_id'] ?? $this->model->client_id;
+        $inputs['type'] = $inputs['type'] ?? $this->model->type;
+        $inputs['name'] = $inputs['name'] ?? $this->model->name;
+        $inputs['email'] = $inputs['email'] ?? $this->model->email;
+        $inputs['mobile'] = $inputs['mobile'] ?? $this->model->mobile;
+        $inputs['gender'] = $inputs['gender'] ?? $this->model->gender;
+        $inputs['locale'] = $inputs['locale'] ?? $this->model->locale;
     }
 
     protected function setModelFields($inputs): void
@@ -82,7 +89,7 @@ class UserService extends BaseService
     public function update(User $user, array $inputs, array $options = []): user
     {
         $this->setModel($user);
-        if ($options['isPrefix']) {
+        if (isset($options['isPrefix']) && $options['isPrefix']) {
             $inputs = Common::mappingRemovePrefix($inputs, self::FORM_PREFIX);
         }
         $this->formatInputData($inputs);
@@ -90,5 +97,21 @@ class UserService extends BaseService
         $user->save();
 
         return $user;
+    }
+
+    public function getListClientByEmail($email){
+        $emails =
+            $this->model
+                ->where('email', $email)
+                ->select('client_id', 'id')
+                ->with('client:id,name')->get();
+        $listClient = [];
+        foreach ($emails as $email){
+            $listClient[] = [
+                'id' => $email->client_id,
+                'name' => $email->client->name
+            ];
+        }
+        return $listClient;
     }
 }
