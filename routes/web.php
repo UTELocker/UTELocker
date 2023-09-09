@@ -129,8 +129,6 @@ Route::group(['middleware' => ['auth']], function () {
         ->only(['index', 'edit', 'update'])
         ->names([
             'index' => 'admin.profileSettings.index',
-            'edit' => 'admin.profileSettings.edit',
-            'update' => 'admin.profileSettings.update',
         ]);
 });
 

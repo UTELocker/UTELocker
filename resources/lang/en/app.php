@@ -86,5 +86,6 @@ return array(
     'to' => 'To',
     'activeAt' => 'Active At',
     'expireAt' => 'Expire At',
-    'invite' => 'Invite member to UTELocker'
+    'invite' => 'Invite member to UTELocker',
+    'gender' => 'Gender'
 );

@@ -2,7 +2,9 @@
 
 namespace App\DataTables;
 
+use App\Models\Client;
 use App\Models\User;
+use App\View\Components\Client as ClientComponent;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -10,6 +12,8 @@ use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use App\Classes\CommonConstant;
 use App\View\Components\User as UserComponent;
+use App\Enums\UserRole;
+use App\Enums\UserGender;
 
 class UsersDataTable extends BaseDataTable
 {
@@ -47,6 +51,50 @@ class UsersDataTable extends BaseDataTable
         );
 
         $datatables->editColumn(
+            'type',
+            function($row) {
+                switch ($row->type) {
+                    case UserRole::SUPER_USER:
+                        return 'Super User';
+                    case UserRole::ADMIN:
+                        return 'Admin';
+                    case UserRole::NORMAL:
+                        return 'Normal User';
+                    default:
+                        return '';
+                }
+            }
+        );
+
+        $datatables->editColumn(
+            'gender',
+            function($row) {
+                switch ($row->gender) {
+                    case UserGender::MALE:
+                        return '<i class="fas fa-mars"></i> ' . __('app.male');
+                    case UserGender::FEMALE:
+                        return ' <i class="fas fa-venus"></i> ' . __('app.female');
+                    case UserGender::OTHER:
+                        return '<i class="fas fa-venus-mars"></i> ' . __('app.others');
+                    default:
+                        return '';
+                }
+            }
+        );
+
+        $datatables->editColumn('client', function ($row) {
+            if (!$row->client_id) {
+                return '';
+            }
+            $client = new Client();
+            $client->id = $row->client_id;
+            $client->name = $row->client_name;
+            $client->app_name = $row->client_app_name;
+            $client->logo = $row->client_logo;
+            return (new ClientComponent($client))->render();
+        });
+
+        $datatables->editColumn(
             'name',
             function($row) {
                 return (new UserComponent($row))->render();
@@ -63,7 +111,7 @@ class UsersDataTable extends BaseDataTable
             return 'row-' . $row->id;
         });
 
-        $datatables->rawColumns(['name', 'action', 'status', 'check']);
+        $datatables->rawColumns(['name', 'action', 'status', 'check', 'gender']);
 
         return $datatables;
     }
@@ -74,7 +122,15 @@ class UsersDataTable extends BaseDataTable
     public function query(User $model): QueryBuilder
     {
         if (User::hasPermission(\App\Enums\UserRole::SUPER_USER)) {
-            return $model->newQuery();
+            return $model->newQuery()
+                ->leftJoin('clients', 'clients.id', '=', 'users.client_id')
+                ->select([
+                    'users.*',
+                    'clients.name as client_name',
+                    'clients.app_name as client_app_name',
+                    'clients.id as client_id',
+                    'clients.logo as client_logo',
+                ]);
         }
         return $model->newQuery()->where('client_id', user()->client_id);
     }
@@ -119,6 +175,10 @@ class UsersDataTable extends BaseDataTable
                 'title' => '#'
             ],
             __('app.name') => ['data' => 'name', 'name' => 'name', 'exportable' => true, 'title' => __('app.name')],
+            __('app.client') => ['data' => 'client', 'name' => 'client', 'title' => __('app.client')],
+            __('app.type') => ['data' => 'type', 'name' => 'type', 'exportable' => true, 'title' => __('app.type')],
+            __('app.email') => ['data' => 'email', 'name' => 'email', 'exportable' => true, 'title' => __('app.email')],
+            __('app.gender') => ['data' => 'gender', 'name' => 'gender', 'exportable' => true, 'title' => __('app.gender')],
             __('app.status') => ['data' => 'status', 'name' => 'status', 'title' => __('app.status')],
         ];
 

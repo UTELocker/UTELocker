@@ -29,7 +29,7 @@
                     <a>
                         <div class="profileInfo d-flex align-items-center mr-1 flex-wrap">
                             <div class="profileImg mr-2">
-                                <img class="h-100" src="https://namha-uat.svute.com/assets/images/logoDefault.png"
+                                <img class="h-100" src="{{ getAvatarDefault(Auth()->user()->avatar) }}"
                                      alt="{{ Auth::user()->name }}">
                             </div>
                             <div class="ProfileData">
@@ -38,7 +38,7 @@
                             </div>
                         </div>
                     </a>
-                    <a href="{{ route('admin.users.show', Auth::user()->id) }}" data-toggle="tooltip"
+                    <a href="{{ route('admin.profileSettings.index', Auth::user()->id) }}" data-toggle="tooltip"
                        data-original-title="{{ __('app.menu.profileSetting') }}">
                         <i class="far fa-edit"></i>
                     </a>

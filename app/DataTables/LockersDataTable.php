@@ -134,7 +134,7 @@ class LockersDataTable extends BaseDataTable
                 'title' => '#'
             ],
             __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
-            __('aPpp.client') => ['data' => 'client', 'name' => 'client', 'title' => __('app.client')],
+            __('app.client') => ['data' => 'client', 'name' => 'client', 'title' => __('app.client')],
             __('app.lockerSlots') => [
                 'data' => 'locker_slot_type_count',
                 'name' => 'locker_slot_type_count',
