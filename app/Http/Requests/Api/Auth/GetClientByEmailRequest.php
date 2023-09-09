@@ -37,10 +37,4 @@ class GetClientByEmailRequest extends FormRequest
             ]
         ];
     }
-
-    public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
-    {
-        $response = $this->error($validator->errors()->first(), 422);
-        throw new \Illuminate\Validation\ValidationException($validator, $response);
-    }
 }

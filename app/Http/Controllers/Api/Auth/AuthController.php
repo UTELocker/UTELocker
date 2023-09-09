@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Classes\Reply;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Services\Admin\Users\UserService;
 use App\Services\Api\AuthService;
-use Illuminate\Http\Request;
 
 class AuthController extends Controller {
 
@@ -21,7 +21,7 @@ class AuthController extends Controller {
         $this->userService = $userService;
     }
 
-    public function login(Request $request) {
+    public function login(LoginRequest $request) {
         $res = $this->authService->login($request->all());
         if ($res) {
             return Reply::successWithData(
