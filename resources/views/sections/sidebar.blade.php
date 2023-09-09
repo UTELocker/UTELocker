@@ -5,15 +5,22 @@
             <div class="dropdown-toggle sidebar-brand d-flex align-items-center justify-content-between  w-100"
                  type="link" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <div class="sidebar-brand-name">
-                    <h1 class="mb-0 f-16 f-w-500 text-white-shade mt-0" data-placement="bottom"
-                        data-toggle="tooltip" data-original-title="UTELocker">
-                        <img src="https://namha-uat.svute.com/assets/images/logoDefault.png"
-                            alt="UTELocker logo"
-                        >
+                    <h1 class="mb-0 f-16 f-w-500 text-white-shade mt-0" data-placement="bottom" data-toggle="tooltip"
+                        data-original-title="{{ $appName }}">{{ $appName }}
+                        <i class="icon-arrow-down icons pl-2"></i>
                     </h1>
+                    <div class="mb-0 position-relative pro-name">
+                        <span class="bg-light-green rounded-circle"></span>
+                        <p class="f-13 text-lightest mb-0" data-placement="bottom" data-toggle="tooltip"
+                           data-original-title="{{ Auth::user()->name }}">{{ Auth::user()->name }}</p>
+                    </div>
                 </div>
-                <div class="sidebar-brand-logo text-white-shade f-12">
-                    <i class="icon-arrow-down icons pl-2"></i>
+                <div class="sidebar-brand-logo">
+                    @if (isset(user()->client->logo))
+                        <img src="{{ getLogoDefault(user()->client->logo)  }}">
+                    @else
+                        <img src="{{ getLogoDefault("")  }}">
+                    @endif
                 </div>
             </div>
             <div class="dropdown-menu dropdown-menu-right sidebar-brand-dropdown ml-3"
@@ -31,9 +38,9 @@
                             </div>
                         </div>
                     </a>
-                    <a href="#" data-toggle="tooltip"
-                       data-original-title="{{ __('app.menu.profileSettings') }}">
-                        <i class="side-icon bi bi-pencil-square"></i>
+                    <a href="{{ route('admin.users.show', Auth::user()->id) }}" data-toggle="tooltip"
+                       data-original-title="{{ __('app.menu.profileSetting') }}">
+                        <i class="far fa-edit"></i>
                     </a>
                 </div>
 
@@ -41,7 +48,7 @@
                    href="{{ route('logout') }}" onclick="event.preventDefault();
                 document.getElementById('logout-form').submit();">
                     @lang('app.logout')
-                    <i class="side-icon bi bi-power"></i>
+                    <i class="fas fa-power-off"></i>
                 </a>
             </div>
         </div>

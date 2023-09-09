@@ -24,6 +24,11 @@
                 :text="__('modules.settings.menu.app.menu')"
             />
         @endif
+        <x-settings.menu-item
+            :active="$activeMenu" menu="settings-profile"
+            :href="route('admin.profileSettings.index')"
+            :text="__('modules.settings.menu.profile.menu')"
+        />
     </ul>
 </div>
 

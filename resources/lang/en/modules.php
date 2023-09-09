@@ -42,6 +42,10 @@ return array(
             'app' => [
                 'menu' => 'System Settings',
                 'general' => 'General',
+            ],
+            'profile' => [
+                'menu' => 'Profile Settings',
+                'profile' => 'Profile'
             ]
         ],
         'dateFormat' => 'Date Format',

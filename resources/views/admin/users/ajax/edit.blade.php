@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-sm-12">
-        <x-form id="save-client-data-form" method="PUT">
+        <x-form id="save-user-data-form" method="PUT">
             <div class="add-client bg-white rounded">
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-top-grey">
                     User Details
@@ -130,7 +130,6 @@
 <script src="{{ asset('vendor/jquery/dropzone/dropzone.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-
         $('#random_password').click(function() {
             const randPassword = Math.random().toString(36).substr(2, 8);
 
@@ -152,13 +151,13 @@
         const url = "{{ route('admin.users.update', $user->id) }}";
         const data = $('#save-user-data-form').serialize();
 
-        saveClient(data, url, '#save-user-form');
+        saveUser(data, url, '#save-user-form');
     });
 
-    function saveClient(data, url, buttonSelector) {
+    function saveUser(data, url, buttonSelector) {
         $.easyAjax({
             url: url,
-            container: '#save-client-data-form',
+            container: '#save-user-data-form',
             type: "POST",
             disableButton: true,
             blockUI: true,

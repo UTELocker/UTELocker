@@ -25,6 +25,7 @@ return array(
         'locationTypes' => 'Location Types',
         'locker' => 'Locker',
         'licenses' => 'Licenses',
+        'profileSetting' => 'Profile Settings'
     ],
     'datatable' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/English.json',
     'exportExcel' => 'Export Excel',
@@ -85,4 +86,5 @@ return array(
     'to' => 'To',
     'activeAt' => 'Active At',
     'expireAt' => 'Expire At',
+    'invite' => 'Invite member to UTELocker'
 );

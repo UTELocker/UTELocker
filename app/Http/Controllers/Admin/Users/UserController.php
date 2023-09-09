@@ -191,11 +191,39 @@ class UserController extends Controller
         //
     }
 
-    public function invoices()
+    public function profile(string $id)
     {
+        $this->viewPermission = user()->hasPermission(UserRole::NORMAL);
+        $this->view = 'admin.users.ajax.profileSettings';
         $tab = request('tab');
-        $this->activeTab = $tab ?: 'profile';
-        $this->view = 'clients.users.ajax.invoices';
+        switch ($tab) {
+            case 'invoices':
+//                return $this->invoices();
+            case 'tests':
+//                return $this->payments();
+            default:
+                $this->view = 'admin.users.ajax.profileSettings';
+        }
+        $this->user = $this->userService->get($id);
+        if ($this->user->type != UserRole::SUPER_USER) {
+            $this->client = $this->clientService->get($this->user->client_id);
+        } else {
+            $this->client = NULL;
+        }
+        $this->languages = LanguageSetting::getEnabledLanguages();
+        if (request()->ajax()) {
+            $html = view($this->view, $this->data)->render();
 
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+        $this->activeTab = $tab ?: 'profile';
+        return view('admin.users.ajax.profileSettings', $this->data);
     }
+
+//    public function invoices()
+//    {
+//        $tab = request('tab');
+//        $this->activeTab = $tab ?: 'profile';
+//        $this->view = 'clients.users.ajax.invoices';
+//    }
 }

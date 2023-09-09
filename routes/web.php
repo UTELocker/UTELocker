@@ -9,8 +9,8 @@ use App\Http\Controllers\Admin\Locations\LocationTypeController;
 use App\Http\Controllers\Admin\Lockers\LockerController;
 use App\Http\Controllers\Admin\Lockers\LockerSlotController;
 use App\Http\Controllers\Admin\Settings\AppSettingController;
+use App\Http\Controllers\Admin\Settings\ProfileSettingController;
 use App\Http\Controllers\Admin\Users\UserController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -123,6 +123,14 @@ Route::group(['middleware' => ['auth']], function () {
             'index' => 'admin.settings.index',
             'edit' => 'admin.settings.edit',
             'update' => 'admin.settings.update',
+        ]);
+
+    Route::resource('profileSettings', ProfileSettingController::class)
+        ->only(['index', 'edit', 'update'])
+        ->names([
+            'index' => 'admin.profileSettings.index',
+            'edit' => 'admin.profileSettings.edit',
+            'update' => 'admin.profileSettings.update',
         ]);
 });
 
