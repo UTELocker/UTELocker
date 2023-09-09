@@ -5,6 +5,7 @@ namespace App\Services\Admin\Licenses;
 use App\Classes\Common;
 use App\Models\License;
 use App\Services\BaseService;
+use Carbon\Carbon;
 
 class LicenseService extends BaseService
 {
@@ -39,5 +40,19 @@ class LicenseService extends BaseService
         Common::assignField($this->model, 'client_id', $inputs);
         Common::assignField($this->model, 'active_at', $inputs);
         Common::assignField($this->model, 'expire_at', $inputs);
+    }
+
+    public function link($code, $clientId): bool
+    {
+        $license = $this->model->where('code', $code)->whereNull('client_id')->first();
+        if (!$license) {
+            return false;
+        }
+        $license->client_id = $clientId;
+        $license->active_at = Carbon::now();
+        $warrantyDuration = $license->locker->warranty_duration;
+        $license->expire_at = Carbon::now()->addYears($warrantyDuration);
+        $license->save();
+        return true;
     }
 }

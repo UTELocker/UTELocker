@@ -3,12 +3,22 @@
 namespace App\Models;
 
 use App\Traits\HasSiteGroup;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class License extends Model
 {
     use HasSiteGroup;
+
+    public function setActiveAtAttribute($value): void
+    {
+        if (!$value instanceof Carbon) {
+            $value = Carbon::parse($value);
+        }
+
+        $this->attributes['active_at'] = $value;
+    }
 
     public function locker(): BelongsTo
     {

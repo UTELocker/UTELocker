@@ -1,6 +1,7 @@
 (function ($) {
     $.fn.bulkCreate = function (options) {
         const bulkCreate = this;
+        const isEdit = options.isEdit;
         const rowTypes = {
             1 : '12',
             2 : '6-6',
@@ -145,25 +146,29 @@
                 <div class="block-wrapper">
                     <div class="block-control">
                         <div class="form-inline">
-                            <button
-                                class="btn btn-light btn-sm btn-edit-block"
-                                type="button"
-                            >
-                                <i class="fas fa-cog"></i>
-                            </button>
-                            <button
-                                class="btn btn-light btn-sm btn-move-block ml-1"
-                                type="button"
-                            >
-                                <i class="fas fa-arrows-alt"></i>
-                            </button>
-                            ${slot.type !== 'CPU' ? `
+                            ${slot.type !== 'EMPTY' ? `
                                 <button
-                                    class="btn btn-light btn-sm btn-delete-block ml-1"
+                                    class="btn btn-light btn-sm btn-edit-block"
                                     type="button"
                                 >
-                                    <i class="fas fa-trash"></i>
+                                    <i class="fas fa-cog"></i>
                                 </button>
+                            ` : ''}
+                            ${isEdit ? `
+                                <button
+                                    class="btn btn-light btn-sm btn-move-block ml-1"
+                                    type="button"
+                                >
+                                    <i class="fas fa-arrows-alt"></i>
+                                </button>
+                                ${slot.type !== 'CPU' ? `
+                                    <button
+                                        class="btn btn-light btn-sm btn-delete-block ml-1"
+                                        type="button"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                ` : ''}
                             ` : ''}
                         </div>
                     </div>
@@ -189,6 +194,21 @@
             dummySlotDiv.find('.btn-move-block').on('click', function () {
                 clipboard = modules[rowId][slotId];
                 removeSlot(rowId, slotId);
+            });
+
+            dummySlotDiv.find('.btn-edit-block').on('click', function () {
+                if (isEdit) {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Edit config is not available in edit mode.',
+                        icon: 'warning',
+                    });
+                } else {
+                    const getConfig = options.configRoute.getConfig;
+                    const url = getConfig.replace('slotId', slot.id);
+                    $(MODAL_LG + ' ' + MODAL_HEADING).html('...');
+                    $.ajaxModal(MODAL_LG, url);
+                }
             });
 
             return dummySlotDiv;
@@ -289,13 +309,14 @@
         const renderModules = function () {
             bulkCreate.empty();
 
-            bulkCreate.append(addRowDiv(1, 0));
+            isEdit && bulkCreate.append(addRowDiv(1, 0));
+
             modules.forEach((row, rowIndex) => {
                 const rowCount = row.length;
                 const colClass = 'col-' + (12 / rowCount);
                 const rowDiv = $('<div class="row row-layout row-height-medium"></div>');
                 const rowControlDiv = getRowControl(rowIndex);
-                rowDiv.append(rowControlDiv);
+                isEdit && rowDiv.append(rowControlDiv);
                 row.forEach((slot, slotId) => {
                     let slotDiv = null;
                     if (Object.keys(slot).length === 0 && slot.constructor === Object) {
@@ -310,7 +331,7 @@
                 bulkCreate.append(rowDiv);
             });
 
-            bulkCreate.append(addRowDiv(1, modules.length));
+            isEdit && bulkCreate.append(addRowDiv(1, modules.length));
         }
 
         $('#saveBulkCreate').on('click', function () {
@@ -320,7 +341,11 @@
                 errors.forEach((error) => {
                     errorMessage += `Row ${error.row + 1} Slot ${error.slot + 1}: ${error.message}\n`;
                 });
-                alert(errorMessage);
+                Swal.fire({
+                    title: 'Error!',
+                    text: errorMessage,
+                    icon: 'error',
+                });
                 return;
             }
 

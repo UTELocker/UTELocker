@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Admin\Lockers;
 
+use App\Classes\Reply;
+use App\Enums\LockerSlotStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Lockers\UpdateSlotRequest;
 use App\Services\Admin\Lockers\LockerService;
 use App\Services\Admin\Lockers\LockerSlotService;
 use Illuminate\Http\Request;
@@ -62,17 +65,25 @@ class LockerSlotController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $lockerId, string $slotId)
     {
-        //
+        $this->pageTitle = 'Edit Slot';
+        $this->view = 'admin.lockers.slots.bulk-update';
+        $this->lockerId = $lockerId;
+        $this->slot = $this->lockerSlotService->get($slotId);
+
+        return view($this->view, $this->data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateSlotRequest $request, string $lockerId, string $slotId)
     {
-        //
+        $form = $request->all();
+        $this->lockerSlotService->updateStatus($slotId, $form['status']);
+
+        return Reply::success('Updated Successfully');
     }
 
     /**

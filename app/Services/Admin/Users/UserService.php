@@ -59,7 +59,11 @@ class UserService extends BaseService
             options: ['isUser' => true]
         ) : $this->model->avatar;
 
-        $inputs['client_id'] = $inputs['client_id'] ?? $this->model->client_id;
+        if (!user()->isSuperUser()) {
+            $inputs['client_id'] = user()->client_id;
+        } else {
+            $inputs['client_id'] = $inputs['client_id'] ?? $this->model->client_id;
+        }
         $inputs['type'] = $inputs['type'] ?? $this->model->type;
         $inputs['name'] = $inputs['name'] ?? $this->model->name;
         $inputs['email'] = $inputs['email'] ?? $this->model->email;

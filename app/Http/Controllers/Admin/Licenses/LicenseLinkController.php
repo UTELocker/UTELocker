@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers\Admin\Licenses;
 
+use App\Classes\Reply;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Licenses\LinkLicenseRequest;
 use App\Models\Client;
+use App\Services\Admin\Licenses\LicenseService;
 use Illuminate\Http\Request;
 
 class LicenseLinkController extends Controller
 {
-    public function __construct()
+    private LicenseService $licenseService;
+
+    public function __construct(LicenseService $licenseService)
     {
         parent::__construct();
         $this->pageTitle = 'Link Licenses';
+        $this->licenseService = $licenseService;
     }
 
     /**
@@ -32,7 +37,10 @@ class LicenseLinkController extends Controller
      */
     public function store(LinkLicenseRequest $request)
     {
+        $inputs = $request->all();
+        $this->licenseService->link($inputs['code'], $inputs['client_id']);
 
+        return Reply::redirect(route('admin.licenses.index'), __('messages.recordLinked'));
     }
 
     /**

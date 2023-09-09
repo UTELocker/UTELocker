@@ -120,12 +120,17 @@ class LockerSlotService extends BaseService
         }
     }
 
-    private function update($lockerId, array $inputs)
+    private function update($slotId, array $inputs)
     {
-        $this->model = $this->get($lockerId);
+        $this->model = $this->get($slotId);
         $this->formatInputData($inputs);
         $this->setModelFields($inputs);
         $this->model->save();
         return $this->model;
+    }
+
+    public function updateStatus($slotId, $status)
+    {
+        $this->model->where('id', $slotId)->update(['status' => $status]);
     }
 }

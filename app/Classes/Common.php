@@ -2,6 +2,7 @@
 
 namespace App\Classes;
 
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
 class Common
@@ -40,5 +41,14 @@ class Common
     public static function emptyToNull($value)
     {
         return $value === '' || $value === 'null' ? null : $value;
+    }
+
+    public static function parseDate($date = null, $format = 'Y-m-d')
+    {
+        if (!$date) {
+            return null;
+        }
+
+        return Carbon::parse($date)->format($format);
     }
 }

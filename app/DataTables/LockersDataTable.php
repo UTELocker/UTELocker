@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\Client;
 use App\Models\Locker;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
@@ -9,6 +10,7 @@ use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use App\View\Components\Locker as LockerComponent;
+use App\View\Components\Client as ClientComponent;
 
 class LockersDataTable extends BaseDataTable
 {
@@ -40,6 +42,18 @@ class LockersDataTable extends BaseDataTable
             return (new LockerComponent($row))->render();
         });
 
+        $datatables->editColumn('client', function ($row) {
+            if (!$row->client_id) {
+                return '';
+            }
+            $client = new Client();
+            $client->id = $row->client_id;
+            $client->name = $row->client_name;
+            $client->app_name = $row->client_app_name;
+            $client->logo = $row->client_logo;
+            return (new ClientComponent($client))->render();
+        });
+
         $datatables->addColumn('created_at', function ($row) {
             return $row->created_at->format(globalSettings()->date_format);
         });
@@ -60,9 +74,24 @@ class LockersDataTable extends BaseDataTable
      */
     public function query(Locker $model): QueryBuilder
     {
-        return $model
+        $query = $model
             ->newQuery()
+            ->leftJoin('licenses', 'licenses.locker_id', '=', 'lockers.id')
+            ->leftJoin('clients', 'clients.id', '=', 'licenses.client_id')
+            ->select([
+                'lockers.*',
+                'clients.name as client_name',
+                'clients.app_name as client_app_name',
+                'clients.id as client_id',
+                'clients.logo as client_logo',
+            ])
             ->withCount('lockerSlotType');
+
+        if (!auth()->user()->isSuperUser()) {
+            $query->where('licenses.client_id', auth()->user()->client_id);
+        }
+
+        return $query;
     }
 
     /**
@@ -105,6 +134,7 @@ class LockersDataTable extends BaseDataTable
                 'title' => '#'
             ],
             __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
+            __('aPpp.client') => ['data' => 'client', 'name' => 'client', 'title' => __('app.client')],
             __('app.lockerSlots') => [
                 'data' => 'locker_slot_type_count',
                 'name' => 'locker_slot_type_count',

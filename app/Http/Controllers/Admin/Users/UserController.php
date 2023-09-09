@@ -23,6 +23,7 @@ class UserController extends Controller
 
     public function __construct(UserService $userService, ClientService $clientService)
     {
+        parent::__construct();
         $this->userService = $userService;
         $this->clientService = $clientService;
         $this->pageTitle = 'Users';

@@ -7,10 +7,14 @@ use App\Enums\LockerSlotType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Znck\Eloquent\Traits\BelongsToThrough;
 
 class Locker extends Model
 {
+    use BelongsToThrough;
+
     public const PREFIX_CODE = 'LOCKER';
+
     public function lockerSlots(): HasMany
     {
         return $this->hasMany(LockerSlot::class);

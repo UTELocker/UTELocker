@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Admin\Users;
 
+use App\Enums\UserRole;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserRequest extends FormRequest
@@ -21,7 +23,7 @@ class StoreUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'user_name' => 'required',
             'user_email' => 'required|email',
             'user_password' => 'nullable|required|min:8',
@@ -30,7 +32,12 @@ class StoreUserRequest extends FormRequest
             'user_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'user_locale' => 'required|string|in:en,vi',
             'user_type' => 'required|int|in:0,1,2',
-            'user_client_id' => 'required|exists:clients,id'
         ];
+
+        if (User::hasPermission(UserRole::SUPER_USER)) {
+            $rules['user_client_id'] = 'required|exists:clients,id';
+        }
+
+        return $rules;
     }
 }

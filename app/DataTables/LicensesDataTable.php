@@ -2,9 +2,11 @@
 
 namespace App\DataTables;
 
+use App\Classes\Common;
 use App\Models\License;
 use App\View\Components\Locker as LockerComponent;
 use App\View\Components\Client as ClientComponent;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -30,7 +32,7 @@ class LicensesDataTable extends BaseDataTable
                     . '" onclick="UTELocker.common.dataTableRowCheck(' . $row->id . ')">';
             })
             ->addColumn('action', function ($row) {
-                return view('admin.location-types.actions', compact('row'));
+                return view('admin.licenses.actions', compact('row'));
             })
             ->addColumn('locker', function ($row) {
                 return (new LockerComponent($row->locker))->render();
@@ -39,10 +41,10 @@ class LicensesDataTable extends BaseDataTable
                 return $row->siteGroup ? (new ClientComponent($row->siteGroup))->render() : '';
             })
             ->addColumn('active_at', function ($row) {
-                return $row->active_at?->format(globalSettings()->date_format);
+                return Common::parseDate($row->active_at, globalSettings()->date_format);
             })
             ->addColumn('expire_at', function ($row) {
-                return $row->expire_at?->format(globalSettings()->date_format);
+                return Common::parseDate($row->expire_at, globalSettings()->date_format);
             })
             ->addColumn('created_at', function ($row) {
                 return $row->created_at->format(globalSettings()->date_format);

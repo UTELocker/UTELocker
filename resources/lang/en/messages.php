@@ -12,4 +12,5 @@ return array(
     'recordSaved' => 'Record saved successfully.',
     'recordUpdated' => 'Record updated successfully.',
     'recordDeleted' => 'Record deleted successfully.',
+    'recordLinked' => 'Record linked successfully.',
 );
