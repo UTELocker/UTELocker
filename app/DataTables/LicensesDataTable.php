@@ -2,17 +2,15 @@
 
 namespace App\DataTables;
 
-use App\Models\Location;
+use App\Models\License;
+use App\View\Components\Locker as LockerComponent;
+use App\View\Components\Client as ClientComponent;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
-use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
-use Yajra\DataTables\Services\DataTable;
 
-class LocationsDataTable extends BaseDataTable
+class LicensesDataTable extends BaseDataTable
 {
     /**
      * Build the DataTable class.
@@ -34,15 +32,17 @@ class LocationsDataTable extends BaseDataTable
             ->addColumn('action', function ($row) {
                 return view('admin.location-types.actions', compact('row'));
             })
-            ->addColumn('code', function ($row) {
-                return ucfirst($row->code) . ' - ' . $row->description;
+            ->addColumn('locker', function ($row) {
+                return (new LockerComponent($row->locker))->render();
             })
-            ->addColumn('location_type', function ($row) {
-                return ucfirst($row->location_type_code) . ' - ' . $row->location_type_desc;
+            ->addColumn('client', function ($row) {
+                return $row->siteGroup ? (new ClientComponent($row->siteGroup))->render() : '';
             })
-            ->addColumn('client_name', function ($row) {
-                // link to client detail
-                return "<a href='" . route('admin.clients.show', $row->client_id) . "'>" . $row->client_name . "</a>";
+            ->addColumn('active_at', function ($row) {
+                return $row->active_at?->format(globalSettings()->date_format);
+            })
+            ->addColumn('expire_at', function ($row) {
+                return $row->expire_at?->format(globalSettings()->date_format);
             })
             ->addColumn('created_at', function ($row) {
                 return $row->created_at->format(globalSettings()->date_format);
@@ -52,7 +52,7 @@ class LocationsDataTable extends BaseDataTable
                 return 'row-' . $row->id;
             });
 
-        $datatables->rawColumns(['client_name', 'action', 'check']);
+        $datatables->rawColumns(['locker', 'client', 'action', 'check']);
 
         return $datatables;
     }
@@ -60,23 +60,11 @@ class LocationsDataTable extends BaseDataTable
     /**
      * Get the query source of dataTable.
      */
-    public function query(Location $model): QueryBuilder
+    public function query(License $model): QueryBuilder
     {
-        return $model
-            ->newQuery()
-            ->leftJoin('clients', 'clients.id', '=', 'locations.client_id')
-            ->leftJoin('location_types', 'locations.location_type_id', 'location_types.id')
-            ->select([
-                'locations.id',
-                'locations.code',
-                'locations.description',
-                'locations.created_at',
-                'locations.updated_at',
-                'locations.client_id',
-                'clients.name as client_name',
-                'location_types.code as location_type_code',
-                'location_types.description as location_type_desc'
-            ]);
+        return $model->newQuery()
+            ->userSiteGroup()
+            ->with(['locker']);
     }
 
     /**
@@ -84,13 +72,7 @@ class LocationsDataTable extends BaseDataTable
      */
     public function html(): HtmlBuilder
     {
-        return $this->setBuilder('locations-table', 2)
-            ->parameters([
-                'initComplete' => 'function () {
-                   window.LaravelDataTables["locations-table"].buttons().container()
-                    .appendTo("#table-actions")
-                }',
-            ]);
+        return $this->setBuilder('licenses-table', 2);
     }
 
     /**
@@ -114,9 +96,10 @@ class LocationsDataTable extends BaseDataTable
                 'title' => '#'
             ],
             __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
-            __('app.client') => ['data' => 'client_name', 'name' => 'client_name', 'title' => __('app.client')],
-            __('app.locationType')
-                => ['data' => 'location_type', 'name' => 'location_type', 'title' => __('app.locationType')],
+            __('app.locker') => ['data' => 'locker', 'name' => 'locker', 'title' => __('app.locker')],
+            __('app.client') => ['data' => 'client', 'name' => 'client', 'title' => __('app.client')],
+            __('app.activeAt') => ['data' => 'active_at', 'name' => 'active_at', 'title' => __('app.activeAt')],
+            __('app.expireAt') => ['data' => 'expire_at', 'name' => 'expire_at', 'title' => __('app.expireAt')],
             __('app.createdAt') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('app.createdAt')]
         ];
 

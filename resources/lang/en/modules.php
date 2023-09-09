@@ -70,6 +70,18 @@ return array(
     ],
     'locations' => [
         'title' => 'Locations',
+        'code' => 'Location Code',
+        'description' => 'Description',
+        'client' => 'Client',
+        'type' => 'Location Type',
+        'latitude' => 'Latitude',
+        'longitude' => 'Longitude',
+        'placeholders' => [
+            'code' => 'e.g. LAB001',
+            'description' => 'e.g. Laboratory on 1st floor, near the entrance',
+            'latitude' => 'e.g. 3.1390',
+            'longitude' => 'e.g. 101.6869',
+        ],
     ],
     'locationTypes' => [
         'title' => 'Location Types',

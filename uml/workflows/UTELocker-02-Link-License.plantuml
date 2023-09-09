@@ -1,0 +1,26 @@
+@startuml
+title Link License
+footer <i>UTE Locker - Workflow 02</i> - <b>Created date: 11/08/2023</b>
+skin rose
+
+start
+:Login;
+:Navigate to Licenses Page;
+if (User type is ADMIN) then (yes)
+    :Show lockers list;
+    :Click on Link License button;
+    :Show Link License form;
+    :Fill license key;
+    :Click on Link button;
+    if (License key is valid) then (yes)
+        :Add locker to client;
+        :Show success message;
+    else (no)
+        :Show error message;
+    endif
+    stop
+else (no)
+    :Throw Permission Denied;
+    stop
+endif
+@enduml

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\Clients\ClientController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\Admin\Licenses\LicenseController;
+use App\Http\Controllers\Admin\Licenses\LicenseLinkController;
 use App\Http\Controllers\Admin\Locations\LocationController;
 use App\Http\Controllers\Admin\Locations\LocationTypeController;
 use App\Http\Controllers\Admin\Lockers\LockerController;
@@ -51,6 +53,22 @@ Route::group(['middleware' => ['auth']], function () {
             'edit' => 'admin.lockers.edit',
             'update' => 'admin.lockers.update',
             'destroy' => 'admin.lockers.destroy',
+        ]);
+
+    Route::resource('licenses/link', LicenseLinkController::class)
+        ->except(['index', 'show'])
+        ->names([
+            'create' => 'admin.licenses.link.create',
+            'store' => 'admin.licenses.link.store',
+            'show' => 'admin.licenses.link.show',
+            'edit' => 'admin.licenses.link.edit',
+            'update' => 'admin.licenses.link.update',
+            'destroy' => 'admin.licenses.link.destroy',
+        ]);
+    Route::resource('licenses', LicenseController::class)
+        ->only(['index'])
+        ->names([
+            'index' => 'admin.licenses.index',
         ]);
 
     Route::group(['middleware' => ['auth'], 'prefix' => 'lockers/{locker}'], function () {

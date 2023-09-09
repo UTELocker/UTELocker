@@ -10,6 +10,14 @@ class LocationType extends Model
 {
     use HasSiteGroup;
 
+    public static function getLocationTypeList()
+    {
+        if (User::hasPermission(\App\Enums\UserRole::SUPER_USER)) {
+            return self::get();
+        }
+        return self::where('client_id', user()->client_id)->get();
+    }
+
     public function locations(): HasMany
     {
         return $this->hasMany(Location::class);

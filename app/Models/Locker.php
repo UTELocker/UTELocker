@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\LockerSlotStatus;
+use App\Enums\LockerSlotType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,6 +20,12 @@ class Locker extends Model
     {
         return $this->hasMany(LockerSlot::class)
             ->where('status', LockerSlotStatus::AVAILABLE);
+    }
+
+    public function lockerSlotType(): HasMany
+    {
+        return $this->hasMany(LockerSlot::class)
+            ->where('type', LockerSlotType::SLOT);
     }
 
     public function location(): BelongsTo

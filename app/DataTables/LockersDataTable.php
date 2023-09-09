@@ -50,7 +50,7 @@ class LockersDataTable extends BaseDataTable
             return 'row-' . $row->id;
         });
 
-        $datatables->rawColumns(['name', 'action', 'check']);
+        $datatables->rawColumns(['code', 'action', 'check']);
 
         return $datatables;
     }
@@ -60,7 +60,9 @@ class LockersDataTable extends BaseDataTable
      */
     public function query(Locker $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model
+            ->newQuery()
+            ->withCount('lockerSlotType');
     }
 
     /**
@@ -103,6 +105,11 @@ class LockersDataTable extends BaseDataTable
                 'title' => '#'
             ],
             __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
+            __('app.lockerSlots') => [
+                'data' => 'locker_slot_type_count',
+                'name' => 'locker_slot_type_count',
+                'title' => __('app.lockerSlots')
+            ],
             __('app.createdAt') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('app.createdAt')]
         ];
 

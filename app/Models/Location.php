@@ -13,6 +13,9 @@ class Location extends Model
 {
     use HasSiteGroup;
 
+    public const DEFAULT_LATITUDE = 10.851006947089;
+    public const DEFAULT_LONGITUDE = 106.77199491765;
+
     public function lockers(): HasMany
     {
         return $this->hasMany(Locker::class);

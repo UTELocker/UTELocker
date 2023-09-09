@@ -2,16 +2,24 @@
 
 namespace App\Http\Controllers\Admin\Locations;
 
+use App\Classes\Reply;
 use App\DataTables\LocationsDataTable;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Locations\StoreLocationRequest;
+use App\Models\Client;
+use App\Models\LocationType;
+use App\Services\Admin\Locations\LocationService;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
-    public function __construct()
+    private LocationService $locationService;
+
+    public function __construct(LocationService $locationService)
     {
         parent::__construct();
         $this->pageTitle = __('modules.locations.title');
+        $this->locationService = $locationService;
     }
 
     /**
@@ -27,15 +35,34 @@ class LocationController extends Controller
      */
     public function create()
     {
-        //
+        $this->pageTitle = 'Create Location';
+        $this->view = 'admin.locations.ajax.create';
+        $this->location = $this->locationService->new();
+        $this->clients = Client::getClientList();
+        $this->locationTypes = LocationType::getLocationTypeList();
+
+        if (request()->ajax()) {
+            $html = view($this->view, $this->data)->render();
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+
+        return view('admin.locations.create', $this->data);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreLocationRequest $request)
     {
-        //
+        $this->locationService->add($request->all());
+
+        $redirectUrl = urldecode($request->redirect_url);
+
+        if ($redirectUrl == '') {
+            $redirectUrl = route('admin.location.locations.index');
+        }
+
+        return Reply::successWithData(__('messages.recordSaved'), ['redirectUrl' => $redirectUrl]);
     }
 
     /**

@@ -66,18 +66,15 @@
     <div class="content-wrapper">
         <div class="d-grid d-lg-flex d-md-flex action-bar">
             <div id="table-actions" class="flex-grow-1 align-items-center">
-                @if (user()->isSuperUser())
-                    <x-forms.link-primary
-                        :link="route('admin.lockers.create')"
-                        class="mr-3 openRightModal float-left mb-2 mb-lg-0 mb-md-0" icon="plus"
-                    >
-                        @lang('app.add')
-                        @lang('app.locker')
-                    </x-forms.link-primary>
-                @endif
+                <x-forms.button-primary
+                    id="link-license"
+                    class="mr-3 float-left mb-2 mb-lg-0 mb-md-0" icon="link"
+                >
+                    @lang('app.link')
+                    @lang('app.to')
+                    @lang('app.locker')
+                </x-forms.button-primary>
             </div>
-            <x-datatable.actions>
-            </x-datatable.actions>
         </div>
         <div class="d-flex flex-column w-tables rounded mt-3 bg-white table-responsive">
             {!! $dataTable->table(['class' => 'table table-hover border-0 w-100']) !!}
@@ -89,35 +86,14 @@
     @include('sections.datatables_js')
 
     <script>
-        $('#lockers-table').on('preXhr.dt', function(e, settings, data) {
-            const dateRangePicker = $('#datatableRange').data('daterangepicker');
-            let startDate = $('#datatableRange').val();
-            let endDate;
-
-            if (startDate === '') {
-                startDate = null;
-                endDate = null;
-            } else {
-                startDate = dateRangePicker.startDate.format('YYYY-MM-DD');
-                endDate = dateRangePicker.endDate.format('YYYY-MM-DD');
-            }
-
-            data['startDate'] = startDate;
-            data['endDate'] = endDate;
-        });
-
         const showTable = () => {
-            window.LaravelDataTables["lockers-table"].draw(false);
+            window.LaravelDataTables["licenses-table"].draw(false);
         }
 
-        $(document).ready(function () {
-            @if (!is_null(request('start')) && !is_null(request('end')))
-            $('#datatableRange').val('{{ request('start') }}' +
-                ' @lang("app.to") ' + '{{ request('end') }}');
-            $('#datatableRange').data('daterangepicker').setStartDate("{{ request('start') }}");
-            $('#datatableRange').data('daterangepicker').setEndDate("{{ request('end') }}");
-            showTable();
-            @endif
-        })
+        $('#link-license').click(function () {
+            const url = "{{ route('admin.licenses.link.create') }}";
+            $(MODAL_LG + ' ' + MODAL_HEADING).html('...');
+            $.ajaxModal(MODAL_LG, url);
+        });
     </script>
 @endpush
