@@ -41,9 +41,12 @@ class LockerService extends BaseService
         $this->new();
         $this->formatInputData($inputs);
         $this->setModelFields($inputs);
-        DB::transaction(function () {
+        DB::transaction(function () use ($inputs) {
             $this->model->save();
-            $this->licenseService->add(['locker_id' => $this->model->id]);
+            $this->licenseService->add([
+                'locker_id' => $this->model->id,
+                'warranty_duration' => $inputs['warranty_duration'],
+            ]);
             $this->addDefaultSlots();
         });
         return $this->model;

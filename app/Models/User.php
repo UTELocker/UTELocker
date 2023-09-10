@@ -42,6 +42,11 @@ class User extends Authenticatable
         return self::hasPermission(UserRole::SUPER_USER);
     }
 
+    public static function isAdmin(): bool
+    {
+        return self::hasPermission(UserRole::ADMIN);
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);

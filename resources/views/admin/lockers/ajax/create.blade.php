@@ -29,18 +29,31 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <x-forms.date-picker
                                     fieldId="date_of_manufacture"
                                     :fieldLabel="__('modules.lockers.dateOfManufacture')"
                                     fieldName="date_of_manufacture"
+                                    fieldRequired="true"
                                     :fieldPlaceholder="__('placeholders.code')"
                                     :fieldValue="$locker->date_of_manufacture ?? ''">
                                 </x-forms.date-picker>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <x-forms.text
+                                    fieldId="warranty_duration"
+                                    :fieldLabel="__('modules.lockers.warrantyDuration')"
+                                    fieldName="warranty_duration"
+                                    fieldRequired="true"
+                                    :fieldPlaceholder="__('modules.lockers.placeholders.warrantyDuration')"
+                                    :fieldValue="$locker->warranty_duration ?? ''">
+                                </x-forms.text>
+                            </div>
+                            <div class="col-md-4">
                                 <x-forms.select fieldId="status" :fieldLabel="__('modules.lockers.status')"
-                                                fieldName="status">
+                                                fieldName="status"
+                                                fieldRequired="true"
+                                >
                                     @foreach(
                                         \App\Enums\LockerStatus::getDescriptions([\App\Enums\LockerStatus::IN_USE])
                                         as $key => $status

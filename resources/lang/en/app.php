@@ -25,6 +25,9 @@ return array(
         'locationTypes' => 'Location Types',
         'locker' => 'Locker',
         'licenses' => 'Licenses',
+        'payment' => 'Payment',
+        'paymentMethods' => 'Payment Methods',
+        'paymentTransactions' => 'Payment Transactions',
         'profileSetting' => 'Profile Settings'
     ],
     'datatable' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/English.json',
@@ -86,6 +89,7 @@ return array(
     'to' => 'To',
     'activeAt' => 'Active At',
     'expireAt' => 'Expire At',
+    'paymentMethod' => 'Payment Method',
     'invite' => 'Invite member to UTELocker',
     'gender' => 'Gender'
 );

@@ -40,6 +40,7 @@ class LicenseService extends BaseService
         Common::assignField($this->model, 'client_id', $inputs);
         Common::assignField($this->model, 'active_at', $inputs);
         Common::assignField($this->model, 'expire_at', $inputs);
+        Common::assignField($this->model, 'warranty_duration', $inputs);
     }
 
     public function link($code, $clientId): bool
@@ -50,7 +51,7 @@ class LicenseService extends BaseService
         }
         $license->client_id = $clientId;
         $license->active_at = Carbon::now();
-        $warrantyDuration = $license->locker->warranty_duration;
+        $warrantyDuration = $license->warranty_duration;
         $license->expire_at = Carbon::now()->addYears($warrantyDuration);
         $license->save();
         return true;

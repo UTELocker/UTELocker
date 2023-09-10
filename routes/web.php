@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\Locations\LocationController;
 use App\Http\Controllers\Admin\Locations\LocationTypeController;
 use App\Http\Controllers\Admin\Lockers\LockerController;
 use App\Http\Controllers\Admin\Lockers\LockerSlotController;
+use App\Http\Controllers\Admin\Payments\PaymentController;
+use App\Http\Controllers\Admin\Payments\PaymentMethodController;
 use App\Http\Controllers\Admin\Settings\AppSettingController;
 use App\Http\Controllers\Admin\Settings\ProfileSettingController;
 use App\Http\Controllers\Admin\Users\UserController;
@@ -130,6 +132,28 @@ Route::group(['middleware' => ['auth']], function () {
         ->names([
             'index' => 'admin.profileSettings.index',
         ]);
+
+    Route::group(['middleware' => ['auth'], 'prefix' => 'payment'], function () {
+        Route::get('/', [PaymentController::class, 'index'])
+            ->name('admin.payment.index');
+        Route::prefix('transactions')->group(function () {
+            Route::get('/', [PaymentController::class, 'transactions'])
+                ->name('admin.payment.transactions');
+            Route::get('/{transaction}', [PaymentController::class, 'transaction'])
+                ->name('admin.payment.transaction');
+        });
+        Route::resource('methods', PaymentMethodController::class)
+            ->names([
+                'index' => 'admin.payment.methods.index',
+                'create' => 'admin.payment.methods.create',
+                'store' => 'admin.payment.methods.store',
+                'show' => 'admin.payment.methods.show',
+                'edit' => 'admin.payment.methods.edit',
+                'update' => 'admin.payment.methods.update',
+                'destroy' => 'admin.payment.methods.destroy',
+            ]);
+    });
+
 });
 
 Route::group(['middleware' => ['auth']], function () {

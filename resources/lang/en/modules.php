@@ -62,9 +62,12 @@ return array(
         'image' => 'Image',
         'dateOfManufacture' => 'Date of Manufacture',
         'status' => 'Status',
+        'warrantyDuration' => 'Warranty Duration',
         'placeholders' => [
             'code' => 'e.g. LOCKER001',
             'description' => 'e.g. Locker on 1st floor, near the entrance',
+            'dateOfManufacture' => 'e.g. 2020-01-01',
+            'warrantyDuration' => 'e.g. 2',
         ],
         'tabs' => [
             'details' => 'Details',
@@ -90,4 +93,16 @@ return array(
     'locationTypes' => [
         'title' => 'Location Types',
     ],
+    'paymentMethod' => [
+        'title' => 'Payment Methods',
+        'create' => 'Create Payment Method',
+        'details' => 'Payment Method Details',
+        'code' => 'Payment Method Code',
+        'name' => 'Payment Method Name',
+        'type' => 'Payment Method Type',
+        'placeholders' => [
+            'code' => 'e.g. ZALOPAY001',
+            'name' => 'e.g. ZaLoPay',
+        ],
+    ]
 );

@@ -11,15 +11,6 @@ class License extends Model
 {
     use HasSiteGroup;
 
-    public function setActiveAtAttribute($value): void
-    {
-        if (!$value instanceof Carbon) {
-            $value = Carbon::parse($value);
-        }
-
-        $this->attributes['active_at'] = $value;
-    }
-
     public function locker(): BelongsTo
     {
         return $this->belongsTo(Locker::class);

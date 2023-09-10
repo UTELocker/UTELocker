@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Licenses;
 
 use App\DataTables\LicensesDataTable;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class LicenseController extends Controller
 {
