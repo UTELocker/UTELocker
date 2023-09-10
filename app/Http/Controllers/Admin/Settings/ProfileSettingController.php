@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Settings;
 
 use App\Classes\Files;
+use App\Enums\UserGender;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\LanguageSetting;
@@ -41,6 +42,8 @@ class ProfileSettingController extends BaseSettingController
         $this->user_avatar = Files::getImageUrl($this->user->avatar, Files::USER_AVATAR_FOLDER, Files::USER_UPLOAD_FOLDER);
         $this->clients = Client::getClientList();
         $this->languages = LanguageSetting::getEnabledLanguages();
+        $this->user_gender = UserGender::getDescriptions();
+        $this->user_role = UserRole::getDescriptions();
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
             return Reply::dataOnly([
