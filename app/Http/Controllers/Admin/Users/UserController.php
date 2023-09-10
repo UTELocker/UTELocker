@@ -14,6 +14,7 @@ use App\Services\Admin\Users\UserService;
 use App\Services\Admin\Clients\ClientService;
 use App\Http\Requests\Admin\Users\StoreUserRequest;
 use App\Http\Requests\Admin\Users\UpdateUserRequest;
+use App\Enums\UserGender;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -141,6 +142,8 @@ class UserController extends Controller
         $this->clients = Client::getClientList();
         $this->languages = LanguageSetting::getEnabledLanguages();
         $this->user_avatar = Files::getImageUrl($this->user->avatar, Files::USER_AVATAR_FOLDER, Files::USER_UPLOAD_FOLDER);
+        $this->user_gender = UserGender::getDescriptions();
+        $this->user_role = UserRole::getDescriptions();
         $this->pageTitle = __('app.update') . ' ' . __('app.user');
 
         if (request()->ajax()) {

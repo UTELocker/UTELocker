@@ -69,17 +69,18 @@
                             <div class="col-md-4">
                                 <x-forms.select fieldId="user_gender" :fieldLabel="__('modules.profile.gender')"
                                                 fieldName="user_gender">
-                                    <option value="0">@lang('app.male')</option>
-                                    <option value="1">@lang('app.female')</option>
-                                    <option value="2">@lang('app.others')</option>
+                                    @foreach ($user_gender as $key => $value)
+                                        <option @if ($key == $user->gender) selected @endif value="{{ $key }}">{{ $value }}</option>
+                                    @endforeach
                                 </x-forms.select>
                             </div>
                             @if ($user->type != \App\Enums\UserRole::SUPER_USER)
                                 <div class="col-md-4">
                                     <x-forms.select fieldId="user_type" :fieldLabel="__('modules.users.usertype')"
                                                     fieldName="user_type">
-                                        <option value="1">@lang('app.admin')</option>
-                                        <option value="2">@lang('app.user')</option>
+                                        @foreach ($user_role as $key => $value)
+                                            <option @if ($key == $user->type) selected @endif value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
                                     </x-forms.select>
                                 </div>
                             @endif
@@ -91,7 +92,7 @@
                                     <x-forms.select fieldId="user_client_id" :fieldLabel="__('modules.users.client')"
                                                     fieldName="user_client_id" :disabled="(user()->type != \App\Enums\UserRole::SUPER_USER)" search="true">
                                         @foreach($clients as $client)
-                                            <option value={{ $client->id }}}>{{ $client->name }}</option>
+                                            <option @if ($user->client_id == $client->id) selected @endif value={{ $client->id }}}>{{ $client->name }}</option>
                                         @endforeach
                                     </x-forms.select>
                                 </div>
