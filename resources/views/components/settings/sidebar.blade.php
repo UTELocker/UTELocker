@@ -29,6 +29,13 @@
             :href="route('admin.profileSettings.index')"
             :text="__('modules.settings.menu.profile.menu')"
         />
+        @if (user()->hasPermission(\App\Enums\UserRole::ADMIN))
+            <x-settings.menu-item
+                :active="$activeMenu" menu="settings-site-group"
+                :href="route('admin.siteGroupSettings.index')"
+                :text="__('modules.settings.menu.site-group.menu')"
+            />
+        @endif
     </ul>
 </div>
 
