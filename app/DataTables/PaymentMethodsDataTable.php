@@ -2,17 +2,17 @@
 
 namespace App\DataTables;
 
+use App\Classes\CommonConstant;
+use App\Models\Client;
 use App\Models\PaymentMethod;
+use App\View\Components\Client as ClientComponent;
+use App\View\Components\Datatable\Status;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
-use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
-use Yajra\DataTables\Services\DataTable;
 
-class PaymentMethodsDataTable extends DataTable
+class PaymentMethodsDataTable extends BaseDataTable
 {
     /**
      * Build the DataTable class.
@@ -21,9 +21,45 @@ class PaymentMethodsDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return (new EloquentDataTable($query))
-            ->addColumn('action', 'paymentmethods.action')
-            ->setRowId('id');
+        $datatables = datatables()->eloquent($query);
+        $datatables->addIndexColumn();
+
+        $datatables->addColumn('action', function ($row) {
+            return view('admin.payments.payment-methods.actions', compact('row'));
+        });
+
+        $datatables->addColumn('code', function ($row) {
+            return ucfirst($row->code);
+        });
+
+        $datatables->editColumn(
+            'status',
+            function ($row) {
+                return (new Status($row->active))->render();
+            }
+        );
+
+        if (auth()->user()->isSuperUser()) {
+            $datatables->editColumn('client', function ($row) {
+                if (!$row->client_id) {
+                    return '';
+                }
+                $client = new Client();
+                $client->id = $row->client_id;
+                $client->name = $row->client_name;
+                $client->app_name = $row->client_app_name;
+                $client->logo = $row->client_logo;
+                return (new ClientComponent($client))->render();
+            });
+        }
+
+        $datatables->addColumn('created_at', function ($row) {
+            return $row->created_at->format(globalSettings()->date_format);
+        });
+
+        $datatables->rawColumns(['status']);
+
+        return $datatables;
     }
 
     /**
@@ -31,7 +67,22 @@ class PaymentMethodsDataTable extends DataTable
      */
     public function query(PaymentMethod $model): QueryBuilder
     {
-        return $model->newQuery();
+        $query = $model
+            ->newQuery()
+            ->leftJoin('clients', 'clients.id', '=', 'payment_methods.client_id')
+            ->select(
+                'payment_methods.*',
+                'clients.name as client_name',
+                'clients.app_name as client_app_name',
+                'clients.id as client_id',
+                'clients.logo as client_logo'
+            );
+
+        if (!auth()->user()->isSuperUser()) {
+            $query->where('payment_methods.client_id', auth()->user()->client_id);
+        }
+
+        return $query;
     }
 
     /**
@@ -39,21 +90,7 @@ class PaymentMethodsDataTable extends DataTable
      */
     public function html(): HtmlBuilder
     {
-        return $this->builder()
-                    ->setTableId('paymentmethods-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+        return $this->setBuilder('paymentmethods-table', 2);
     }
 
     /**
@@ -61,24 +98,34 @@ class PaymentMethodsDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+        $data = [
+            '#' => [
+                'data' => 'DT_RowIndex',
+                'orderable' => false,
+                'searchable' => false,
+                'title' => '#'
+            ],
+            __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
+            __('app.name') => ['data' => 'code', 'name' => 'code', 'title' => __('app.name')],
+            __('app.status') => ['data' => 'status', 'name' => 'status', 'title' => __('app.status')],
+            __('app.createdAt') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('app.createdAt')]
         ];
-    }
 
-    /**
-     * Get the filename for export.
-     */
-    protected function filename(): string
-    {
-        return 'PaymentMethods_' . date('YmdHis');
+        if (auth()->user()->isSuperUser()) {
+            $data = array_merge($data, [
+                __('app.client') => ['data' => 'client', 'name' => 'client', 'title' => __('app.client')],
+            ]);
+        }
+
+        $action = [
+            Column::computed('action', __('app.action'))
+                ->exportable(false)
+                ->printable(false)
+                ->orderable(false)
+                ->searchable(false)
+                ->addClass('text-right pr-20')
+        ];
+
+        return array_merge($data, $action);
     }
 }

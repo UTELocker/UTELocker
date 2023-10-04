@@ -9,7 +9,7 @@ use Illuminate\View\Component;
 class Text extends BaseFormComponent
 {
     public $fieldHelp;
-    public $fieldReadOnly;
+    public ?bool $fieldReadOnly;
     /**
      * Create a new component instance.
      */

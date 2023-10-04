@@ -12,6 +12,10 @@ mix.scripts([
         'node_modules/dropify/src/js/dropify.js',
         'node_modules/sweetalert2/dist/sweetalert2.all.min.js',
         'node_modules/bootstrap-select/js/bootstrap-select.js',
+        'node_modules/quill/dist/quill.min.js',
+        'node_modules/quill-emoji/dist/quill-emoji.js',
+        'node_modules/quill-mention/dist/quill.mention.min.js',
+        'node_modules/quill-magic-url/dist/index.js',
 
         'resources/js/app.js',
         'resources/js/main.js',

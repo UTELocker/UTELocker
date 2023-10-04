@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\Client;
 use App\Models\User;
 use App\View\Components\Client as ClientComponent;
+use App\View\Components\Datatable\Status;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -41,28 +42,19 @@ class UsersDataTable extends BaseDataTable
         $datatables->editColumn(
             'status',
             function ($row) {
-                if ($row->active == CommonConstant::DATABASE_YES) {
-                    return ' <i class="fa fa-circle mr-1 text-light-green f-10"></i>' . __('app.active');
-                }
-                else {
-                    return '<i class="fa fa-circle mr-1 text-red f-10"></i>' . __('app.inactive');
-                }
+                return (new Status($row->active))->render();
             }
         );
 
         $datatables->editColumn(
             'type',
             function($row) {
-                switch ($row->type) {
-                    case UserRole::SUPER_USER:
-                        return 'Super User';
-                    case UserRole::ADMIN:
-                        return 'Admin';
-                    case UserRole::NORMAL:
-                        return 'Normal User';
-                    default:
-                        return '';
-                }
+                return match ($row->type) {
+                    UserRole::SUPER_USER => 'Super User',
+                    UserRole::ADMIN => 'Admin',
+                    UserRole::NORMAL => 'Normal User',
+                    default => '',
+                };
             }
         );
 
@@ -121,7 +113,7 @@ class UsersDataTable extends BaseDataTable
      */
     public function query(User $model): QueryBuilder
     {
-        if (User::hasPermission(\App\Enums\UserRole::SUPER_USER)) {
+        if (User::hasPermission(UserRole::SUPER_USER)) {
             return $model->newQuery()
                 ->leftJoin('clients', 'clients.id', '=', 'users.client_id')
                 ->select([
