@@ -131,38 +131,5 @@
             });
         });
     </script>
-    <script>
-        let quillArray = {};
-        const quillConfig = {
-            modules: {
-                magicUrl: {
-                    urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(tel:[\S]+)/g,
-                    globalRegularExpression: /(https?:\/\/|www\.|tel:)[\S]+/g,
-                },
-                toolbar: [
-                    [{
-                        header: [1, 2, 3, 4, 5, false]
-                    }],
-                    [{
-                        'list': 'ordered'
-                    }, {
-                        'list': 'bullet'
-                    }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    ['image', 'code-block', 'link','video'],
-                    [{
-                        'direction': 'rtl'
-                    }],
-                    ['clean']
-                ]
-            },
-            placeholder: 'Compose an epic...',
-            theme: 'snow'
-        };
-
-        const initQuill = (selector, config = quillConfig) => {
-            const quillEditor = new Quill(selector, config);
-        };
-    </script>
 </body>
 </html>

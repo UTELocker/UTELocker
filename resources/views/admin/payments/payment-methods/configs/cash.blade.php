@@ -17,6 +17,6 @@
 </div>
 <script>
     $(document).ready(function() {
-        initQuill('#config_detail_id');
+        UTELocker.common.initQuill('#config_detail_id');
     });
 </script>
