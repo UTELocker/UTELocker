@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\Payments\PaymentController;
 use App\Http\Controllers\Admin\Payments\PaymentMethodController;
 use App\Http\Controllers\Admin\Settings\AppSettingController;
 use App\Http\Controllers\Admin\Settings\ProfileSettingController;
+use App\Http\Controllers\Admin\Settings\SiteGroupSettingController;
 use App\Http\Controllers\Admin\Users\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -127,11 +128,17 @@ Route::group(['middleware' => ['auth']], function () {
             'update' => 'admin.settings.update',
         ]);
 
-    Route::resource('profileSettings', ProfileSettingController::class)
-        ->only(['index', 'edit', 'update'])
+    Route::resource('settings/site-group', SiteGroupSettingController::class)
+        ->only(['index', 'update'])
         ->names([
-            'index' => 'admin.profileSettings.index',
+            'index' => 'admin.siteGroupSettings.index',
+            'update' => 'admin.siteGroupSettings.update'
         ]);
+
+    Route::get(
+        'settings/profile',
+        [ProfileSettingController::class, 'index']
+    )->name('admin.profileSettings.index');
 
     Route::group(['middleware' => ['auth'], 'prefix' => 'payment'], function () {
         Route::get('/', [PaymentController::class, 'index'])

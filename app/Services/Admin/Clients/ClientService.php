@@ -54,6 +54,10 @@ class ClientService extends BaseService
         Common::assignField($this->model, 'logo', $inputs);
         Common::assignField($this->model, 'address', $inputs);
         Common::assignField($this->model, 'website', $inputs);
+        Common::assignField($this->model, 'date_format', $inputs);
+        Common::assignField($this->model, 'time_format', $inputs);
+        Common::assignField($this->model, 'timezone', $inputs);
+        Common::assignField($this->model, 'locale', $inputs);
     }
 
     public function get($id)

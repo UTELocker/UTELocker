@@ -35,6 +35,8 @@ return array(
     'accountSettings' => [
         'changeLanguage' => 'Change Language',
         'companyAddress' => 'Company Address',
+        'language' => 'Language',
+        'appLanguageInfo' => "Application's default language"
     ],
     'settings' => [
         'settings' => 'Settings',
@@ -46,6 +48,10 @@ return array(
             'profile' => [
                 'menu' => 'Profile Settings',
                 'profile' => 'Profile'
+            ],
+            'site-group' => [
+                'menu' => 'Site Group',
+                'site-group' => 'Site Group'
             ]
         ],
         'dateFormat' => 'Date Format',
