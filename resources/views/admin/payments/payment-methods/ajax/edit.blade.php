@@ -14,6 +14,7 @@
                                     :fieldLabel="__('modules.paymentMethod.code')"
                                     fieldName="code"
                                     fieldRequired="true"
+                                    field-read-only="true"
                                     :fieldPlaceholder="__('modules.paymentMethod.placeholders.code')"
                                     :fieldValue="$paymentMethod->code ?? ''">
                                 </x-forms.text>
@@ -35,6 +36,7 @@
                                     fieldId="type"
                                     :fieldLabel="__('modules.paymentMethod.type')"
                                     fieldRequired="true"
+                                    :disabled="true"
                                     fieldName="type">
                                     @foreach(
                                         \App\Enums\PaymentMethodType::getDescriptions(
@@ -42,10 +44,9 @@
                                         )
                                         as $key => $type
                                     )
-                                        <option
-                                            value="{{ $key }}"
-                                            {{ $paymentMethod->type == $key ? 'selected' : '' }}
-                                        >{{ $type }}</option>
+                                        @if($paymentMethod->type == $key)
+                                            <option value="{{ $key }}" selected>{{ $type }}</option>
+                                        @endif
                                     @endforeach
                                 </x-forms.select>
                             </div>
@@ -66,6 +67,19 @@
                                 </x-forms.select>
                             </div>
                         </div>
+
+                    </div>
+                </div>
+                <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
+                    {{ __('modules.paymentMethod.configs') }}
+                </h4>
+                <div class="row p-20">
+                    <div class="col-lg-12">
+                        @switch($paymentMethod->type)
+                            @case(\App\Enums\PaymentMethodType::CASH)
+                                @include('admin.payments.payment-methods.configs.cash')
+                            @case(\App\Enums\PaymentMethodType::BANK_TRANSFER)
+                        @endswitch
                     </div>
                 </div>
                 <x-forms.actions>

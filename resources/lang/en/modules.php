@@ -97,6 +97,7 @@ return array(
         'title' => 'Payment Methods',
         'create' => 'Create Payment Method',
         'details' => 'Payment Method Details',
+        'configs' => 'Payment Method Configs',
         'code' => 'Payment Method Code',
         'name' => 'Payment Method Name',
         'type' => 'Payment Method Type',
@@ -104,5 +105,8 @@ return array(
             'code' => 'e.g. ZALOPAY001',
             'name' => 'e.g. ZaLoPay',
         ],
+        'configFieldset' => [
+            'information' => 'Information',
+        ]
     ]
 );

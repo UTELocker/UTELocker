@@ -51,4 +51,12 @@ class Common
 
         return Carbon::parse($date)->format($format);
     }
+
+    public static function getYesNoOptions(): array
+    {
+        return [
+            ['value' => CommonConstant::DATABASE_YES, 'text' => 'Yes'],
+            ['value' => CommonConstant::DATABASE_NO, 'text' => 'No'],
+        ];
+    }
 }

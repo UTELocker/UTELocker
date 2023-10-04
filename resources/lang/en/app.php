@@ -28,7 +28,8 @@ return array(
         'payment' => 'Payment',
         'paymentMethods' => 'Payment Methods',
         'paymentTransactions' => 'Payment Transactions',
-        'profileSetting' => 'Profile Settings'
+        'profileSetting' => 'Profile Settings',
+        'booking' => 'Booking',
     ],
     'datatable' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/English.json',
     'exportExcel' => 'Export Excel',

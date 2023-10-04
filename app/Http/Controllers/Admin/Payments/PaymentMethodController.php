@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Admin\Payments;
 
 use App\Classes\Reply;
 use App\DataTables\PaymentMethodsDataTable;
+use App\Enums\PaymentMethodType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Payments\StorePaymentMethodRequest;
+use App\Libs\PaymentMethodConfig\CashPaymentMethodConfig;
 use App\Services\Admin\Payments\PaymentMethodService;
 use Illuminate\Http\Request;
 
 class PaymentMethodController extends Controller
 {
     private PaymentMethodService $paymentMethodService;
+
     public function __construct(PaymentMethodService $paymentMethodService)
     {
         parent::__construct();
@@ -53,7 +56,7 @@ class PaymentMethodController extends Controller
 
         if ($paymentMethod) {
             return Reply::redirect(
-                route('admin.payment.payment-methods.edit', $paymentMethod->id),
+                route('admin.payment.methods.edit', $paymentMethod->id),
                 'Payment Method Added Successfully'
             );
         }
@@ -74,7 +77,20 @@ class PaymentMethodController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $this->pageTitle = 'Edit Payment Method';
+        $this->view = 'admin.payments.payment-methods.ajax.edit';
+        $this->paymentMethod = $this->paymentMethodService->get($id);
+        $this->paymentMethodConfig = match ($this->paymentMethod->type) {
+            PaymentMethodType::CASH => (new CashPaymentMethodConfig($this->paymentMethod->config))->getConfigs(),
+            default => null,
+        };
+
+        if (request()->ajax()) {
+            $html = view($this->view, $this->data)->render();
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+
+        return view('admin.payments.payment-methods.create', $this->data);
     }
 
     /**

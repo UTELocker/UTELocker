@@ -3,6 +3,7 @@
 namespace App\Services\Admin\Payments;
 
 use App\Classes\Common;
+use App\Classes\CommonConstant;
 use App\Models\PaymentMethod;
 use App\Services\BaseService;
 
@@ -16,6 +17,7 @@ class PaymentMethodService extends BaseService
     public function initDefaultData(): static
     {
         $this->model->config = '{}';
+        $this->model->active = CommonConstant::DATABASE_NO;
         return $this;
     }
 
@@ -38,6 +40,7 @@ class PaymentMethodService extends BaseService
         Common::assignField($this->model, 'code', $inputs);
         Common::assignField($this->model, 'name', $inputs);
         Common::assignField($this->model, 'type', $inputs);
+        Common::assignField($this->model, 'active', $inputs);
         Common::assignField($this->model, 'client_id', $inputs);
     }
 }
