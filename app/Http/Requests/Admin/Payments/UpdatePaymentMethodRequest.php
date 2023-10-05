@@ -3,9 +3,10 @@
 namespace App\Http\Requests\Admin\Payments;
 
 use App\Enums\PaymentMethodType;
+use App\Models\PaymentMethod;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePaymentMethodRequest extends FormRequest
+class UpdatePaymentMethodRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +23,21 @@ class StorePaymentMethodRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'code' => 'required|unique:payment_methods,code,client_id' . user()->client_id,
+        $rules = [
             'name' => 'required|min:3|max:50',
             'active' => 'required|in:Y,N',
-            'type' => 'required|in:' . implode(',', array_keys(
-                PaymentMethodType::getDescriptions(PaymentMethodType::getNotAvailableTypes()))),
         ];
+
+        $paymentMethod = PaymentMethod::findOrFail($this->route('method'));
+
+        switch ($paymentMethod->type) {
+            case PaymentMethodType::CASH:
+                $rules['config_detail'] = 'required|string';
+                break;
+            default:
+                break;
+        }
+
+        return $rules;
     }
 }

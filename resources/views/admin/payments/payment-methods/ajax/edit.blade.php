@@ -1,6 +1,7 @@
 <div class="row">
     <div class="col-sm-12">
         <x-form id="save-payment-method-data-form">
+            @method('PUT')
             <div class="add-client bg-white rounded">
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
                     {{ __('modules.paymentMethod.details') }}
@@ -99,12 +100,19 @@
 </div>
 
 <script>
+    const quillIdArr = [];
     $(document).ready(function() {
         UTELocker.common.init(RIGHT_MODAL);
     });
 
     $('#save-payment-method-form').click(function() {
-        const url = "{{ route('admin.payment.methods.store') }}";
+        const url = "{{ route('admin.payment.methods.update', $paymentMethod->id) }}";
+
+        quillIdArr.forEach(function(quillId) {
+            const quill = $(quillId).find('.ql-editor').html();
+            $(quillId + '-text').val(quill);
+        });
+
         const data = $('#save-payment-method-data-form').serialize();
 
         savePaymentMethod(data, url, '#save-payment-method-form');

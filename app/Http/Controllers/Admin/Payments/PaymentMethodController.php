@@ -7,6 +7,7 @@ use App\DataTables\PaymentMethodsDataTable;
 use App\Enums\PaymentMethodType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Payments\StorePaymentMethodRequest;
+use App\Http\Requests\Admin\Payments\UpdatePaymentMethodRequest;
 use App\Libs\PaymentMethodConfig\CashPaymentMethodConfig;
 use App\Services\Admin\Payments\PaymentMethodService;
 use Illuminate\Http\Request;
@@ -96,9 +97,18 @@ class PaymentMethodController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdatePaymentMethodRequest $request, string $id)
     {
-        //
+        $paymentMethod = $this->paymentMethodService->update($request->all(), $id);
+
+        if ($paymentMethod) {
+            return Reply::redirect(
+                route('admin.payment.methods.edit', $paymentMethod->id),
+                'Payment Method Updated Successfully'
+            );
+        }
+
+        return Reply::error('Something went wrong');
     }
 
     /**

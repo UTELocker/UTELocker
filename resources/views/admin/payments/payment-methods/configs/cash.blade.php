@@ -18,5 +18,6 @@
 <script>
     $(document).ready(function() {
         UTELocker.common.initQuill('#config_detail_id');
+        quillIdArr.push('#config_detail_id');
     });
 </script>

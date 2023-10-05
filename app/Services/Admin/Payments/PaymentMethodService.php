@@ -43,4 +43,10 @@ class PaymentMethodService extends BaseService
         Common::assignField($this->model, 'active', $inputs);
         Common::assignField($this->model, 'client_id', $inputs);
     }
+
+    public function update(array $all, string $id)
+    {
+        $this->model = $this->get($id);
+
+    }
 }
