@@ -16,6 +16,14 @@ class Common
         return $result;
     }
 
+    public static function removeField($inputs, $field): array
+    {
+        if (array_key_exists($field, $inputs)) {
+            unset($inputs[$field]);
+        }
+        return $inputs;
+    }
+
     public static function assignField(
         $model,
         $field,

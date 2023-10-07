@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Payments\StorePaymentMethodRequest;
 use App\Http\Requests\Admin\Payments\UpdatePaymentMethodRequest;
 use App\Libs\PaymentMethodConfig\CashPaymentMethodConfig;
+use App\Libs\PaymentMethodConfig\PaymentMethodLoader;
 use App\Services\Admin\Payments\PaymentMethodService;
 use Illuminate\Http\Request;
 
@@ -55,14 +56,13 @@ class PaymentMethodController extends Controller
     {
         $paymentMethod = $this->paymentMethodService->add($request->all());
 
-        if ($paymentMethod) {
-            return Reply::redirect(
-                route('admin.payment.methods.edit', $paymentMethod->id),
-                'Payment Method Added Successfully'
-            );
+        $redirectUrl = urldecode($request->redirect_url);
+
+        if ($redirectUrl == '') {
+            $redirectUrl = route('admin.payment.methods.edit', $paymentMethod->id);
         }
 
-        return Reply::error('Something went wrong');
+        return Reply::successWithData(__('Payment Method Added Successfully'), ['redirectUrl' => $redirectUrl]);
     }
 
     /**
@@ -81,10 +81,10 @@ class PaymentMethodController extends Controller
         $this->pageTitle = 'Edit Payment Method';
         $this->view = 'admin.payments.payment-methods.ajax.edit';
         $this->paymentMethod = $this->paymentMethodService->get($id);
-        $this->paymentMethodConfig = match ($this->paymentMethod->type) {
-            PaymentMethodType::CASH => (new CashPaymentMethodConfig($this->paymentMethod->config))->getConfigs(),
-            default => null,
-        };
+        $this->paymentMethodConfig = PaymentMethodLoader::load(
+            $this->paymentMethod->type,
+            $this->paymentMethod->config
+        );
 
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
@@ -102,13 +102,13 @@ class PaymentMethodController extends Controller
         $paymentMethod = $this->paymentMethodService->update($request->all(), $id);
 
         if ($paymentMethod) {
-            return Reply::redirect(
-                route('admin.payment.methods.edit', $paymentMethod->id),
-                'Payment Method Updated Successfully'
+            return Reply::successWithData(
+                __('Payment Method Updated Successfully'),
+                ['redirectUrl' => route('admin.payment.methods.edit', $paymentMethod->id)]
             );
         }
 
-        return Reply::error('Something went wrong');
+        return Reply::error(__('Payment Method Update Failed'));
     }
 
     /**

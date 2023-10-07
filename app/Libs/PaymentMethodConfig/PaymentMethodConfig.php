@@ -3,7 +3,7 @@
 namespace App\Libs\PaymentMethodConfig;
 
 
-class PaymentMethodConfig implements IPaymentMethodConfig
+abstract class PaymentMethodConfig implements IPaymentMethodConfig
 {
     protected array $config = [];
 
@@ -33,8 +33,13 @@ class PaymentMethodConfig implements IPaymentMethodConfig
         return $this->config[$fieldName] ?? null;
     }
 
+    abstract public static function getViewPath(): string;
+
+    abstract public static function getDefaultConfigs(): array;
+
     public function build(): string
     {
         return json_encode($this->config);
     }
+
 }

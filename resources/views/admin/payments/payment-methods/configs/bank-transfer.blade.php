@@ -9,11 +9,11 @@
             <div id="config_detail_id">
                 {!!
                     $paymentMethodConfig->getConfigs()
-                    [\App\Libs\PaymentMethodConfig\CashPaymentMethodConfig::CASH_PMC_DETAILS]
+                    [\App\Libs\PaymentMethodConfig\BankTransferPaymentMethodConfig::BANK_TRANSFER_PMC_DETAILS]
                 !!}
             </div>
             <textarea
-                name="{{ \App\Libs\PaymentMethodConfig\CashPaymentMethodConfig::CASH_PMC_DETAILS }}"
+                name="{{ \App\Libs\PaymentMethodConfig\BankTransferPaymentMethodConfig::BANK_TRANSFER_PMC_DETAILS }}"
                 id="config_detail_id-text"
                 class="d-none"></textarea>
         </div>

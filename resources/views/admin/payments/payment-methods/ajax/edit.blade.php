@@ -76,11 +76,7 @@
                 </h4>
                 <div class="row p-20">
                     <div class="col-lg-12">
-                        @switch($paymentMethod->type)
-                            @case(\App\Enums\PaymentMethodType::CASH)
-                                @include('admin.payments.payment-methods.configs.cash')
-                            @case(\App\Enums\PaymentMethodType::BANK_TRANSFER)
-                        @endswitch
+                        @include($paymentMethodConfig->getViewPath())
                     </div>
                 </div>
                 <x-forms.actions>

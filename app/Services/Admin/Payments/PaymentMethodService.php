@@ -4,8 +4,11 @@ namespace App\Services\Admin\Payments;
 
 use App\Classes\Common;
 use App\Classes\CommonConstant;
+use App\Libs\PaymentMethodConfig\PaymentMethodLoader;
 use App\Models\PaymentMethod;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class PaymentMethodService extends BaseService
 {
@@ -21,7 +24,7 @@ class PaymentMethodService extends BaseService
         return $this;
     }
 
-    public function add(array $inputs)
+    public function add(array $inputs): Model
     {
         $this->new();
         $this->formatInputData($inputs);
@@ -30,23 +33,43 @@ class PaymentMethodService extends BaseService
         return $this->model;
     }
 
-    protected function formatInputData(&$inputs)
+    protected function formatInputData(&$inputs): void
     {
-        $inputs['client_id'] = user()->client_id;
+        $inputs['client_id'] = $this->model->client_id ?? user()->client_id;
+        $inputs['code'] = $inputs['code'] ?? $this->model->code;
+        $inputs['type'] = $inputs['type'] ?? $this->model->type;
+        $inputs['config'] = $this->getPaymentMethodConfig($inputs);
     }
 
-    protected function setModelFields($inputs)
+    private function getPaymentMethodConfig(array $inputs): string
+    {
+        $type = $inputs['type'];
+        $paymentMethodConfig = PaymentMethodLoader::load($type, PaymentMethodLoader::getConfigFromInputs($inputs));
+        return $paymentMethodConfig->build();
+    }
+
+    protected function setModelFields($inputs): void
     {
         Common::assignField($this->model, 'code', $inputs);
         Common::assignField($this->model, 'name', $inputs);
         Common::assignField($this->model, 'type', $inputs);
         Common::assignField($this->model, 'active', $inputs);
         Common::assignField($this->model, 'client_id', $inputs);
+        Common::assignField($this->model, 'config', $inputs);
     }
 
-    public function update(array $all, string $id)
+    public function update(array $inputs, string $id)
     {
         $this->model = $this->get($id);
+        $inputs = Common::removeField($inputs, 'code');
+        $inputs = Common::removeField($inputs, 'type');
+        $this->formatInputData($inputs);
+        $this->setModelFields($inputs);
 
+        DB::transaction(function () {
+            $this->model->save();
+        });
+
+        return $this->model;
     }
 }

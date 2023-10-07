@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Admin\Payments;
 
 use App\Enums\PaymentMethodType;
+use App\Libs\PaymentMethodConfig\BankTransferPaymentMethodConfig;
+use App\Libs\PaymentMethodConfig\CashPaymentMethodConfig;
 use App\Models\PaymentMethod;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -32,7 +34,11 @@ class UpdatePaymentMethodRequest extends FormRequest
 
         switch ($paymentMethod->type) {
             case PaymentMethodType::CASH:
-                $rules['config_detail'] = 'required|string';
+                $rules[CashPaymentMethodConfig::CASH_PMC_DETAILS] = 'required|string';
+                break;
+            case PaymentMethodType::BANK_TRANSFER:
+                $rules[BankTransferPaymentMethodConfig::BANK_TRANSFER_PMC_DETAILS] = 'required|string';
+                $rules[BankTransferPaymentMethodConfig::BANK_TRANSFER_PMC_QR_CODE] = 'required|string';
                 break;
             default:
                 break;
