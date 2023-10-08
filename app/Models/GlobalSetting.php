@@ -44,6 +44,12 @@ class GlobalSetting extends Model
         'dS M Y' => 'Do MMM YYYY',
     ];
 
+    const TIME_FORMATS = [
+        'h:i A' => 'h:i A',
+        'h:i a' => 'h:i a',
+        'H:i' => 'H:i'
+    ];
+
     const SELECT2_SHOW_COUNT = 20;
 
     public function getLogoUrlAttribute()

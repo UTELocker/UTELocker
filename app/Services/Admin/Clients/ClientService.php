@@ -43,6 +43,17 @@ class ClientService extends BaseService
         if (!empty($inputs['logo'])) {
             $inputs['logo'] = Files::upload($inputs['logo'], Files::CLIENT_LOGO_FOLDER, width: 300);
         }
+        $inputs['name'] = $inputs['name'] ?? $this->model->name;
+        $inputs['app_name'] = $inputs['app_name'] ?? $this->model->app_name;
+        $inputs['email'] = $inputs['email'] ?? $this->model->email;
+        $inputs['phone'] = $inputs['phone'] ?? $this->model->phone;
+        $inputs['logo'] = $inputs['logo'] ?? $this->model->logo;
+        $inputs['address'] = $inputs['address'] ?? $this->model->address;
+        $inputs['website'] = $inputs['website'] ?? $this->model->website;
+        $inputs['date_format'] = $inputs['date_format'] ?? $this->model->date_format;
+        $inputs['locale'] = $inputs['locale'] ?? $this->model->locale;
+        $inputs['time_format'] = $inputs['time_format'] ?? $this->model->time_format;
+        $inputs['timezone'] = $inputs['timezone'] ?? $this->model->timezone;
     }
 
     protected function setModelFields($inputs): void

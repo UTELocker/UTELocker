@@ -8,14 +8,18 @@ use App\Models\GlobalSetting;
 use App\Models\User;
 use DateTimeZone;
 use Illuminate\Http\Request;
+use App\Services\Admin\Settings\SettingService;
+use App\Http\Requests\Admin\Settings\UpdateSettingRequest;
 
 class AppSettingController extends BaseSettingController
 {
-    public function __construct()
+    protected SettingService $settingService;
+    public function __construct(SettingService $settingService)
     {
         parent::__construct();
         $this->pageTitle = __('modules.settings.settings');
         $this->activeSettingMenu = 'settings-app';
+        $this->settingService = $settingService;
         $this->middleware(function ($request, $next) {
             return user()->canAccess(UserRole::ADMIN)
                 ? $next($request)
@@ -28,6 +32,10 @@ class AppSettingController extends BaseSettingController
      */
     public function index()
     {
+        $this->editPermission = User::hasPermission(UserRole::SUPER_USER);
+        if (!$this->editPermission) {
+            abort(403);
+        }
         $tab = request('tab');
         $this->view = 'admin.settings.app.ajax.general';
         $this->activeTab = $tab ?: 'general';
@@ -58,8 +66,22 @@ class AppSettingController extends BaseSettingController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateSettingRequest $request, string $id)
     {
-        //
+        $this->editPermission = User::hasPermission(UserRole::SUPER_USER);
+        if (!$this->editPermission) {
+            abort(403);
+        }
+        $this->globalSetting = $this->settingService->get($id);
+        $form = $request->only(['date_format', 'locale', 'time_format', 'timezone']);
+        $this->settingService->update($this->globalSetting, $form, ['isPrefix' => false]);
+
+        $redirectUrl = urldecode($request->redirect_url);
+
+        if ($redirectUrl == '') {
+            $redirectUrl = route('admin.dashboard');
+        }
+
+        return Reply::successWithData(__('messages.recordUpdated'), ['redirectUrl' => $redirectUrl]);
     }
 }

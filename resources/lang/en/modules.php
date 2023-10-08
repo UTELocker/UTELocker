@@ -23,7 +23,9 @@ return array(
         'companyEmail' => 'Official Email',
         'officePhoneNumber' => 'Official Phone Number',
         'companyLogo' => 'Company Logo',
-        'address' => 'Company Address'
+        'address' => 'Company Address',
+        'appName' => 'App Name',
+        'clientInfo' => 'Client Info'
     ],
     'profile' => [
         'profilePicture' => 'Profile Picture',

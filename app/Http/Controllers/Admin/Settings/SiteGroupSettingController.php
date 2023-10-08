@@ -12,10 +12,11 @@ use DateTimeZone;
 use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Services\Admin\Clients\ClientService;
+use App\Http\Requests\Admin\Settings\UpdateSettingRequest;
+
 class SiteGroupSettingController extends BaseSettingController
 {
     protected ClientService $clientService;
-    public const FORM_PREFIX = 'client_';
 
     public function __construct(ClientService $clientService)
     {
@@ -32,13 +33,16 @@ class SiteGroupSettingController extends BaseSettingController
 
     public function index()
     {
+        $this->editPermission = User::hasPermission(UserRole::ADMIN);
+        if (!$this->editPermission) {
+            abort(403);
+        }
         $tab = request('tab');
         $this->view = 'admin.settings.siteGroup.ajax.siteGroupSettings';
         $this->activeTab = $tab ?: 'siteGroupSettings';
         $this->timezones = DateTimeZone::listIdentifiers();
         $this->dateFormat = array_keys(GlobalSetting::DATE_FORMATS);
         $this->dateObject = now();
-
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
             return Reply::dataOnly([
@@ -51,20 +55,12 @@ class SiteGroupSettingController extends BaseSettingController
         return view('admin.settings.siteGroup.index', $this->data);
     }
 
-    private function getDataWithPrefix($prefix, $form): array
-    {
-        return array_filter($form, function ($key) use ($prefix) {
-            return str_starts_with($key, $prefix);
-        }, ARRAY_FILTER_USE_KEY);
-    }
-
-    public function update(Request $request, string $id)
+    public function update(UpdateSettingRequest $request, string $id)
     {
         $this->editPermission = User::hasPermission(UserRole::ADMIN);
         if (!$this->editPermission) {
             abort(403);
         }
-
         $this->client = $this->clientService->get($id);
         $form =  $request->only(['date_format', 'time_format', 'timezone', 'locale']);
         $this->clientService->update($this->client, $form, ['isPrefix' => false]);
@@ -74,7 +70,7 @@ class SiteGroupSettingController extends BaseSettingController
         if ($redirectUrl == '') {
             $redirectUrl = route('admin.dashboard');
         }
-
+        clearSessionSettings();
         return Reply::successWithData(__('messages.recordUpdated'), ['redirectUrl' => $redirectUrl]);
     }
 }

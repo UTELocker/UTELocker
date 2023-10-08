@@ -102,16 +102,15 @@
                 </x-forms.select>
             </div>
         @endif
-        <div class="w-100 border-top-grey set-btns">
-            <x-settings.form-actions>
-                <x-forms.button-primary
-                    id="save-profile-form"
-                    class="mr-3"
-                    icon="check">@lang('app.save')
-                </x-forms.button-primary>
-            </x-settings.form-actions>
-        </div>
     </div>
+</div>
+
+<div class="w-100 border-top-grey set-btns">
+    <x-settings.form-actions>
+        <x-forms.button-primary id="save-profile-form" class="mr-3" icon="check">
+            {{ __('app.save') }}
+        </x-forms.button-primary>
+    </x-settings.form-actions>
 </div>
 <script src="{{ asset('vendor/jquery/dropzone/dropzone.min.js') }}"></script>
 <script>

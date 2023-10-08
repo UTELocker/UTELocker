@@ -21,17 +21,17 @@
 @endsection
 @push('scripts')
     <script>
-        $('#save-form').click(function () {
-            {{--const url = "{{ route('admin.settings.update', siteGroup()->id) }}";--}}
-            {{--$.easyAjax({--}}
-            {{--    url: url,--}}
-            {{--    container: '#editSettings',--}}
-            {{--    type: "POST",--}}
-            {{--    disableButton: true,--}}
-            {{--    blockUI: true,--}}
-            {{--    buttonSelector: "#save-form",--}}
-            {{--    data: $('#editSettings').serialize(),--}}
-            {{--})--}}
+        $('#save-app-settings-form').click(function () {
+            const url = "{{ route('admin.settings.update', siteGroupOrGlobalSetting()->id) }}";
+            $.easyAjax({
+                url: url,
+                container: '#editSettings',
+                type: "POST",
+                disableButton: true,
+                blockUI: true,
+                buttonSelector: "#save-app-settings-form",
+                data: $('#editSettings').serialize(),
+            })
         });
     </script>
 @endpush

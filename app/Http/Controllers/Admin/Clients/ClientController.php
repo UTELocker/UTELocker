@@ -96,12 +96,30 @@ class ClientController extends Controller
 
     public function show(string $id)
     {
+        $this->viewPermission = user()->hasPermission(UserRole::NORMAL);
+        $this->view = 'admin.users.ajax.clientDetail';
+        $this->client = $this->clientService->get($id);
+        $tab = request('tab');
+        switch ($tab) {
+            case 'invoices':
+//                return $this->invoices();
+            case 'tests':
+//                return $this->payments();
+            default:
+                $this->view = 'admin.clients.ajax.clientDetail';
+        }
+        $this->languages = LanguageSetting::getEnabledLanguages();
+        if (request()->ajax()) {
+            $html = view($this->view, $this->data)->render();
+
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+        $this->activeTab = $tab ?: 'client-detail';
         $this->viewPermission = user()->canAccess(UserRole::ADMIN);
         if (!$this->viewPermission) {
             abort(403);
         }
-        $this->client = $this->clientService->get($id);
-        dd($this->client);
+        return view('admin.clients.ajax.show', $this->data);
     }
 
     public function edit(string $id)

@@ -51,6 +51,12 @@ if (!function_exists('siteGroup')) {
 
         return false;
     }
+
+    function clearSessionSettings()
+    {
+        session()->forget('siteGroup');
+        session()->forget('user');
+    }
 }
 
 if (!function_exists('companyOrGlobalSetting')) {
@@ -86,3 +92,4 @@ if (!function_exists('languageSettings')) {
     }
 
 }
+

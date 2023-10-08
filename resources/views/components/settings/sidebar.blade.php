@@ -24,11 +24,6 @@
                 :text="__('modules.settings.menu.app.menu')"
             />
         @endif
-        <x-settings.menu-item
-            :active="$activeMenu" menu="settings-profile"
-            :href="route('admin.profileSettings.index')"
-            :text="__('modules.settings.menu.profile.menu')"
-        />
         @if (user()->hasPermission(\App\Enums\UserRole::ADMIN))
             <x-settings.menu-item
                 :active="$activeMenu" menu="settings-site-group"
@@ -36,6 +31,11 @@
                 :text="__('modules.settings.menu.site-group.menu')"
             />
         @endif
+        <x-settings.menu-item
+            :active="$activeMenu" menu="settings-profile"
+            :href="route('admin.profileSettings.index')"
+            :text="__('modules.settings.menu.profile.menu')"
+        />
     </ul>
 </div>
 
