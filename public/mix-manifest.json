@@ -1,5 +1,7 @@
 {
+    "/js/portalMain.js": "/js/portalMain.js",
     "/css/main.css": "/css/main.css",
+    "/css/portalApp.css": "/css/portalApp.css",
     "/js/main.js": "/js/main.js",
     "/js/bulkCreate.js": "/js/bulkCreate.js"
 }

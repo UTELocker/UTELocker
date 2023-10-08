@@ -38,7 +38,6 @@ final class PaymentMethodType extends Enum
     {
         return [
             self::PAYPAL,
-            self::ZALOPAY,
         ];
     }
 }

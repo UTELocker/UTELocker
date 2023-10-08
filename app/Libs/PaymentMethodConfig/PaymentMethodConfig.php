@@ -41,5 +41,4 @@ abstract class PaymentMethodConfig implements IPaymentMethodConfig
     {
         return json_encode($this->config);
     }
-
 }

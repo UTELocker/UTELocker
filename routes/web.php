@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Bookings\BookingController;
 use App\Http\Controllers\Admin\Clients\ClientController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Licenses\LicenseController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Admin\Settings\AppSettingController;
 use App\Http\Controllers\Admin\Settings\ProfileSettingController;
 use App\Http\Controllers\Admin\Settings\SiteGroupSettingController;
 use App\Http\Controllers\Admin\Users\UserController;
+use App\Http\Controllers\PortalController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +35,8 @@ Route::get('/', function () {
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('portal', [PortalController::class, 'index'])->name('portal');
+    Route::get('portal/{any}', [PortalController::class, 'index'])->where('any', '.*');
 });
 
 Route::group(['middleware' => ['auth']], function () {
@@ -68,6 +72,7 @@ Route::group(['middleware' => ['auth']], function () {
             'update' => 'admin.licenses.link.update',
             'destroy' => 'admin.licenses.link.destroy',
         ]);
+
     Route::resource('licenses', LicenseController::class)
         ->only(['index'])
         ->names([
@@ -116,10 +121,16 @@ Route::group(['middleware' => ['auth']], function () {
         ]);
     });
 
+    Route::group(['middleware' => ['auth'], 'prefix' => 'bookings'], function () {
+        Route::get('/', [BookingController::class, 'index'])
+            ->name('admin.bookings.index');
+    });
+
     Route::get(
         'settings/change-language',
         [AppSettingController::class, 'changeLanguage']
     )->name('admin.settings.change-language');
+
     Route::resource('settings', AppSettingController::class)
         ->only(['index', 'edit', 'update', 'change-language'])
         ->names([

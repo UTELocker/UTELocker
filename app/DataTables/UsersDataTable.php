@@ -11,7 +11,6 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use App\Classes\CommonConstant;
 use App\View\Components\User as UserComponent;
 use App\Enums\UserRole;
 use App\Enums\UserGender;

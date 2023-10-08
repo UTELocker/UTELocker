@@ -4,10 +4,12 @@ namespace App\Services\Admin\Users;
 
 use App\Classes\Common;
 use App\Classes\Files;
+use App\Enums\UserRole;
 use App\Exceptions\ApiException;
 use App\Models\User;
 use App\Services\BaseService;
 use App\Services\Wallets\WalletService;
+use Cassandra\Type\UserType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 

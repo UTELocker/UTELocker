@@ -30,6 +30,7 @@ return array(
         'paymentTransactions' => 'Payment Transactions',
         'profileSetting' => 'Profile Settings',
         'booking' => 'Booking',
+        'bookings' => 'Bookings',
     ],
     'datatable' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/English.json',
     'exportExcel' => 'Export Excel',

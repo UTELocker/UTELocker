@@ -1,0 +1,14 @@
+@import "variables";
+
+#mainHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo {
+    float: left;
+    color: $lightGrey;
+    margin-right: 10px;
+    font-size: x-large;
+    font-weight: bold;
+}

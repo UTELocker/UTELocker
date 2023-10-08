@@ -1,4 +1,6 @@
 const mix = require('laravel-mix');
+const vueVersion = 3;
+const webpack = require('webpack');
 
 mix.scripts([
         'public/vendor/moment/moment-with-locales.min.js',
@@ -28,3 +30,8 @@ mix.scripts([
 mix.scripts([
     'resources/js/bulkCreate.js',
 ], 'public/js/bulkCreate.js')
+
+// Portal app
+mix.js('resources/js/portalApp/portalMain.js', 'public/js/portalMain.js')
+    .vue({version: vueVersion})
+    .sass('resources/scss/portalApp.scss', 'public/css/portalApp.css')
