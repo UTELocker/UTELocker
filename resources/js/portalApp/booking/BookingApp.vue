@@ -1,10 +1,13 @@
 <template>
-    <h1>
-        Booking App
-    </h1>
+    <Layout>
+
+    </Layout>
 </template>
 <script>
+import Layout from "../components/layouts/Layout.vue";
+
 export default {
     name: "BookingApp",
+    components: {Layout},
 }
 </script>
