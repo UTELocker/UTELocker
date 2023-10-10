@@ -82,6 +82,7 @@ return array(
             'slots' => 'Slots',
             'bulkCreate' => 'Bulk Create Slots',
         ],
+        'lockerPicture' => 'Locker Picture',
     ],
     'locations' => [
         'title' => 'Locations',

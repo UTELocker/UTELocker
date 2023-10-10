@@ -4,6 +4,7 @@ namespace App\Services\Admin\Locations;
 
 use App\Classes\Common;
 use App\Models\Location;
+use App\Models\Locker;
 use App\Services\BaseService;
 use Illuminate\Support\Facades\DB;
 
@@ -51,4 +52,37 @@ class LocationService extends BaseService
         Common::assignField($this->model, 'latitude', $inputs);
         Common::assignField($this->model, 'longitude', $inputs);
     }
+
+    public function getWithLocker()
+    {
+        return $this->model->select(
+            'id',
+            'code',
+            'description',
+            'client_id',
+            'latitude',
+            'longitude',
+        )
+            ->where('client_id', user()->client->id)
+            ->with('lockers:id,code,description,location_id,image,status')
+            ->get();
+    }
+
+    public function getLocationsOfClient($locker)
+    {
+        $client = Locker::getClient($locker->id);
+        if (!isset($client->id)) {
+            return [];
+        }
+        $location =  $this->model->where('client_id', $client->id)->get();
+        $locationArr = [];
+        foreach ($location as $value) {
+            $locationArr[$value->id] = [
+                'description' => $value->description,
+                'code' => $value->code,
+            ];
+        }
+        return $locationArr;
+    }
+
 }

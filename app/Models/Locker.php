@@ -48,4 +48,10 @@ class Locker extends Model
         }
         return $code;
     }
+
+    public static function getClient($lockerId)
+    {
+        $license = License::where('locker_id', $lockerId)->first();
+        return Client::where('id', $license->client_id)->first();
+    }
 }

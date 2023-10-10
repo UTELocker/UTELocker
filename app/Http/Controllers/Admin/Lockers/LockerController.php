@@ -4,20 +4,31 @@ namespace App\Http\Controllers\Admin\Lockers;
 
 use App\Classes\Reply;
 use App\DataTables\LockersDataTable;
+use App\Enums\LockerStatus;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Lockers\StoreLockerRequest;
+use App\Http\Requests\Admin\Lockers\UpdateLockerRequest;
+use App\Models\Location;
+use App\Models\Locker;
+use App\Models\User;
+use App\Services\Admin\Locations\LocationService;
 use App\Services\Admin\Lockers\LockerService;
 use Illuminate\Http\Request;
 
 class LockerController extends Controller
 {
     private LockerService $lockerService;
+    private LocationService $locationService;
 
-    public function __construct(LockerService $lockerService)
-    {
+    public function __construct(
+        LockerService $lockerService,
+        LocationService $locationService
+    ){
         parent::__construct();
         $this->pageTitle = __('modules.lockers.title');
         $this->lockerService = $lockerService;
+        $this->locationService = $locationService;
     }
 
     /**
@@ -114,15 +125,51 @@ class LockerController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $this->editPermission = User::canAccess(UserRole::ADMIN);
+        if (!$this->editPermission) {
+            abort(403);
+        }
+        $this->locker = $this->lockerService->get($id);
+        $this->locations = $this->locationService->getLocationsOfClient($this->locker);
+        $this->pageTitle = __('app.update') . ' ' . __('app.locker');
+
+        if (request()->ajax()) {
+            $this->view = 'admin.lockers.ajax.edit';
+            $html = view($this->view, $this->data)->render();
+
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+
+        $this->view = 'admin.lockers.ajax.edit';
+
+        return view('admin.lockers.create', $this->data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateLockerRequest $request, string $id)
     {
-        //
+        $this->editPermission = User::canAccess(UserRole::ADMIN);
+        if (!$this->editPermission) {
+            abort(403);
+        }
+        $form = $request->all();
+        $this->locker = $this->lockerService->get($id);
+        $this->lockerService->update($this->locker, $form);
+
+        $redirectUrl = urldecode($request->redirect_url);
+
+        if ($redirectUrl == '') {
+            $redirectUrl = route('admin.lockers.index');
+        }
+
+        if($request->add_more == 'true') {
+            $html = $this->create();
+            return Reply::successWithData(__('messages.recordSaved'), ['html' => $html, 'add_more' => true]);
+        }
+
+        return Reply::successWithData(__('messages.recordSaved'), ['redirectUrl' => $redirectUrl]);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Client;
+use App\Models\Location;
 use App\Models\Locker;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
@@ -11,6 +12,7 @@ use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use App\View\Components\Locker as LockerComponent;
 use App\View\Components\Client as ClientComponent;
+use App\View\Components\Location as LocationComponent;
 
 class LockersDataTable extends BaseDataTable
 {
@@ -54,6 +56,17 @@ class LockersDataTable extends BaseDataTable
             return (new ClientComponent($client))->render();
         });
 
+        $datatables->editColumn('location', function ($row) {
+            if (!$row->location_id) {
+                return '';
+            }
+            $location = new Location();
+            $location->id = $row->location_id;
+            $location->description = $row->location_description;
+            $location->code = $row->location_code;
+            return (new LocationComponent($location))->render();
+        });
+
         $datatables->addColumn('created_at', function ($row) {
             return $row->created_at->format(globalSettings()->date_format);
         });
@@ -78,12 +91,16 @@ class LockersDataTable extends BaseDataTable
             ->newQuery()
             ->leftJoin('licenses', 'licenses.locker_id', '=', 'lockers.id')
             ->leftJoin('clients', 'clients.id', '=', 'licenses.client_id')
+            ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
             ->select([
                 'lockers.*',
                 'clients.name as client_name',
                 'clients.app_name as client_app_name',
                 'clients.id as client_id',
                 'clients.logo as client_logo',
+                'locations.description as location_description',
+                'locations.id as location_id',
+                'locations.code as location_code',
             ])
             ->withCount('lockerSlotType');
 
@@ -140,6 +157,7 @@ class LockersDataTable extends BaseDataTable
                 'name' => 'locker_slot_type_count',
                 'title' => __('app.lockerSlots')
             ],
+            __('app.location') => ['data' => 'location', 'name' => 'location', 'title' => __('app.location')],
             __('app.createdAt') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('app.createdAt')]
         ];
 

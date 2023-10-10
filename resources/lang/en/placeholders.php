@@ -12,4 +12,5 @@ return array(
     'description' => 'e.g. Lab 1, Lab 2, ...',
     'companyEmail' => 'e.g. admin@hcmute.edu.vn',
     'code' => 'e.g. CODE001',
+    'date_of_manufacture' => 'e.g. 2017-01-01',
 );

@@ -52,9 +52,19 @@ class LockerService extends BaseService
         return $this->model;
     }
 
+    public function update(Locker $locker, array $inputs, array $options = []): locker
+    {
+        $this->setModel($locker);
+        $this->formatInputData($inputs);
+        $this->setModelFields($inputs);
+        $locker->save();
+
+        return $locker;
+    }
+
     protected function formatInputData(&$inputs)
     {
-        if (!empty($inputs['image'])) {
+        if (isset($inputs['image'])) {
             $inputs['image'] = Files::upload($inputs['image'], 'client-locker', width: 300);
         }
         if (!empty($inputs['date_of_manufacture'])) {
@@ -72,6 +82,7 @@ class LockerService extends BaseService
         Common::assignField($this->model, 'status', $inputs);
         Common::assignField($this->model, 'description', $inputs);
         Common::assignField($this->model, 'image', $inputs);
+        Common::assignField($this->model, 'location_id', $inputs);
     }
 
     private function addDefaultSlots()
@@ -95,5 +106,9 @@ class LockerService extends BaseService
             $modules[$slot->row][$slot->column] = $slot->toArray();
         }
         return $modules;
+    }
+
+    public function get($id) {
+        return $this->model->findOrfail($id);
     }
 }
