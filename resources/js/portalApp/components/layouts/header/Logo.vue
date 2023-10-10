@@ -1,7 +1,7 @@
 <template>
     <h1>
         <a id="logo" href="/">
-            <img alt="logo" src="/images/default/logoDefault.png" />
+            <img alt="logo" src="https://next.antdv.com/assets/logo.1ef800a8.svg" />
             UTELocker
         </a>
     </h1>
