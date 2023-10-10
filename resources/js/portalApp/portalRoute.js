@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Layout from "./components/layouts/Layout.vue";
 import BookingApp from "./booking/BookingApp.vue";
+import WalletApp from "./wallet/WalletApp.vue";
 
 const routes = [
     {
         path: '/portal',
         name: 'portal',
-        component: Layout,
+        component: BookingApp,
     },
     {
-        path: '/portal/wallet',
+        path: '/wallet',
         name: 'wallet',
-        component: Layout,
+        component: WalletApp,
     }
 ];
 

@@ -10,7 +10,7 @@
             <router-link to="/portal">Portal</router-link>
         </a-menu-item>
         <a-menu-item key="wallet">
-            <router-link to="/portal/wallet">UTEPay</router-link>
+            <router-link to="/wallet">UTEPay</router-link>
         </a-menu-item>
     </a-menu>
 </template>
@@ -33,7 +33,7 @@ export default defineComponent({
             () => route.path,
             pathname => {
                 const modules = pathname.split('/');
-                if (pathname === '/portal/wallet') {
+                if (pathname === '/wallet') {
                     activeMenuItem.value = 'wallet';
                 } else {
                     activeMenuItem.value = 'portal';
@@ -50,7 +50,7 @@ export default defineComponent({
     },
 });
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 #nav {
     height: 100%;
     font-size: 14px;
