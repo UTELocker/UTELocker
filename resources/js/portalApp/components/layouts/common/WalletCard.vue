@@ -28,5 +28,8 @@ export default defineComponent({
 .placeholder {
     height: 116px;
 }
+.ant-card-bordered {
+    border-radius: 0;
+}
 
 </style>

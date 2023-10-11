@@ -13,7 +13,7 @@
                     width="60%"
                 >
                     <WalletCard />
-                    <Menu :menus="dataSource" :active-menu-item="activeMenuItem" />
+                    <Menu :menus="menuConstant" :active-menu-item="activeMenuItem" />
                 </a-drawer>
                 <div class="drawer-handle" @click="handleClickShowButton">
                     <close-outlined v-if="visible" :style="iconStyle" />
@@ -27,7 +27,7 @@
                             <div>
                                 <WalletCard />
                             </div>
-                            <Menu :menus="dataSource" :active-menu-item="activeMenuItem" />
+                            <Menu :menus="menuConstant" :active-menu-item="activeMenuItem" />
                         </section>
                     </a-affix>
                 </a-col>
@@ -49,11 +49,17 @@ import {useRoute} from "vue-router";
 import {useWindowScroll} from "@vueuse/core";
 import { CloseOutlined, MenuOutlined, LinkOutlined } from '@ant-design/icons-vue';
 import Footer from "./Footer.vue";
-import Menu from "./header/Menu.vue";
+import Menu from "./Menu.vue";
 import WalletCard from "./common/WalletCard.vue";
+import menuConstant from "../../constants/menuConstant";
 
 export default defineComponent({
     name: "Layout",
+    computed: {
+        menuConstant() {
+            return menuConstant
+        }
+    },
     components: {
         WalletCard,
         Menu,
@@ -75,6 +81,10 @@ export default defineComponent({
             };
         });
 
+        const activeMenuItem = computed(() => {
+            return route.path.split('/')[1];
+        });
+
         const handleClickShowButton = () => {
             visible.value = !visible.value;
         };
@@ -88,6 +98,7 @@ export default defineComponent({
             iconStyle: {
                 fontSize: '20px',
             },
+            activeMenuItem,
         };
     },
 });
