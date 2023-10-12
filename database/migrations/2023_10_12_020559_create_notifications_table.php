@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('client_id')->nullable()->constrained('clients');
             $table->foreignId('owner_id')->nullable()->constrained('users');
             $table->text('content');
-            $table->char('is_read')->default(\App\Classes\CommonConstant::DATABASE_YES);
+            $table->char('is_read')->default(\App\Classes\CommonConstant::DATABASE_NO);
             $table->timestamps();
         });
     }
