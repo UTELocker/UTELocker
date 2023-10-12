@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('notification.{type}.{client_id}.{owner_id}', function (
+    $user,
+    $type,
+    $client_id,
+    $owner_id
+) {
+    return $user->id === $owner_id && $user->client_id === $client_id;
 });

@@ -14,12 +14,14 @@ use App\Models\Locker;
 use App\Models\User;
 use App\Services\Admin\Locations\LocationService;
 use App\Services\Admin\Lockers\LockerService;
+use App\Traits\HandleNotification;
 use Illuminate\Http\Request;
 
 class LockerController extends Controller
 {
     private LockerService $lockerService;
     private LocationService $locationService;
+    use HandleNotification;
 
     public function __construct(
         LockerService $lockerService,
@@ -178,5 +180,14 @@ class LockerController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function event() {
+        $this->sendNotifcaion(
+            \App\Enums\NotificationType::REPORT,
+            'test Report',
+            2,
+            1,
+        );
     }
 }

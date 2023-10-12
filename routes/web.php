@@ -187,4 +187,6 @@ Route::group(['middleware' => ['auth']], function () {
         ]);
 });
 
+Route::get('/event', [LockerController::class, 'event'])->name('event');
+
 require __DIR__.'/auth.php';
