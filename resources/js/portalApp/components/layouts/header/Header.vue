@@ -90,8 +90,7 @@ export default defineComponent({
             cancelButtonProps,
             isMobile: globalConfig.isMobile,
             headerClassName: {
-                clearfix: true,
-                'home-header': isHome.value,
+                clearfix: true
             },
             responsive: globalConfig.responsive,
             onTriggerSearching

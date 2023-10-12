@@ -37,6 +37,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('portal', [PortalController::class, 'index'])->name('portal');
     Route::get('portal/{any}', [PortalController::class, 'index'])->where('any', '.*');
+    Route::get('wallet', [PortalController::class, 'index'])->name('wallet');
+    Route::get('wallet/{any}', [PortalController::class, 'index'])->where('any', '.*');
 });
 
 Route::group(['middleware' => ['auth']], function () {

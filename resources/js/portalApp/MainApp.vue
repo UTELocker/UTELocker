@@ -2,7 +2,7 @@
     <a-style-provider :hash-priority="hashPriority">
         <a-config-provider :theme="themeConfig">
             <SiteToken>
-                <router-view></router-view>
+                <Layout />
             </SiteToken>
         </a-config-provider>
     </a-style-provider>
@@ -14,6 +14,7 @@ import {theme as antdTheme} from 'ant-design-vue';
 import {useRoute} from "vue-router";
 import useMediaQuery from "./hooks/useMediaQuery";
 import {GLOBAL_CONFIG} from "./SymbolKey";
+import Layout from "./components/layouts/Layout.vue";
 
 const getAlgorithm = (themes = []) =>
     themes
@@ -28,6 +29,7 @@ const getAlgorithm = (themes = []) =>
 export default defineComponent({
     name: "MainApp",
     components: {
+        Layout,
         SiteToken,
     },
     setup() {
