@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Users\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Locations\LocationsController;
+use App\Http\Controllers\Api\Lockers\LockersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,11 +32,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [UserController::class, 'update'])->name('api.user.update');
     });
     Route::prefix('locations')->group(function () {
-        Route::get('/', [UserController::class, 'get'])->name('api.location.get');
-        Route::get('/{id}', [UserController::class, 'show'])->name('api.location.show');
+        Route::get('/', [LocationsController::class, 'get'])->name('api.location.get');
     });
     Route::prefix('lockers')->group(function () {
-        Route::get('/', [UserController::class, 'get'])->name('api.locker.get');
-        Route::get('/{id}', [UserController::class, 'show'])->name('api.locker.show');
+        Route::get('/', [LockersController::class, 'get'])->name('api.locker.get');
+        Route::get('/{id}/modules', [LockersController::class, 'getModules'])->name('api.locker.getModules');
     });
 });
