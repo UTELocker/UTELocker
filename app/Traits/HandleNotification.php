@@ -6,6 +6,7 @@ use App\Classes\CommonConstant;
 use App\Enums\NotificationType;
 use App\Events\NotificationProcessed;
 use App\Models\Notification;
+use Illuminate\Support\Facades\DB;
 
 trait HandleNotification {
 
@@ -18,16 +19,27 @@ trait HandleNotification {
         $parentId = null,
         $options = [],
     ){
-        $notification = new Notification();
-        $notification->parent_table = $parentTable;
-        $notification->parent_id = $parentId;
-        $notification->type = $type;
-        $notification->content = $content;
-        $notification->client_id = $client_id;
-        $notification->owner_id = $owner_id;
-        $notification->save();
-
-        event(new NotificationProcessed($notification, $options));
+        DB::transaction(function () use (
+            $type,
+            $content,
+            $owner_id,
+            $client_id,
+            $parentTable,
+            $parentId,
+            $options
+        ) {
+            $notification = new Notification();
+            $notification->type = $type;
+            $notification->content = $content;
+            $notification->owner_id = $owner_id;
+            $notification->client_id = $client_id;
+            $notification->parent_table = $parentTable;
+            $notification->parent_id = $parentId;
+            $notification->save();
+            event(new NotificationProcessed($notification, $options));
+            return true;
+        });
+        return false;
     }
 
     public function changeStatusNotification($id, $status = true){
