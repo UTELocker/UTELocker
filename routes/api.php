@@ -27,19 +27,30 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'get'])->name('api.user.get');
         Route::post('/', [UserController::class, 'update'])->name('api.user.update');
     });
+
     Route::prefix('locations')->group(function () {
         Route::get('/', [LocationsController::class, 'get'])->name('api.location.get');
     });
+
     Route::prefix('lockers')->group(function () {
         Route::get('/', [LockersController::class, 'get'])->name('api.locker.get');
-        Route::get('/{id}/modules', [LockersController::class, 'getModules'])->name('api.locker.getModules');
+        Route::post('/{id}/modules', [LockersController::class, 'getModules'])->name('api.locker.getModules');
     });
+
     Route::prefix('bookings')->group(function () {
         Route::get('/', [BookingsController::class, 'getOfUser'])->name('api.bookings.getOfUser');
         Route::get('/{id}', [BookingsController::class, 'show'])->name('api.bookings.show');
+        Route::post('/', [BookingsController::class, 'store'])->name('api.bookings.store');
+        Route::put('/{id}', [BookingsController::class, 'update'])->name('api.bookings.update');
+        Route::delete('/{id}', [BookingsController::class, 'destroy'])->name('api.bookings.destroy');
+    });
+
+    Route::prefix('search')->group(function () {
+        Route::post('/lockers', [LockersController::class, 'search'])->name('api.locker.search');
     });
 });

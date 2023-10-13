@@ -3,6 +3,7 @@
 namespace App\Services\Admin\Bookings;
 
 use App\Classes\Common;
+use App\Enums\BookingStatus;
 use App\Models\Booking;
 use App\Models\Location;
 use App\Models\Locker;
@@ -23,6 +24,19 @@ class BookingsService extends BaseService
         return $this;
     }
 
+    public function addListBooking(array $inputs)
+    {
+        $listSlotsId = $inputs['list_slots_id'];
+        $listBookings = [];
+        foreach ($listSlotsId as $slotId) {
+            DB::transaction(function () use ($slotId, $inputs, &$listBookings) {
+                $inputs['locker_slot_id'] = $slotId;
+                $listBookings[] = $this->add($inputs);
+            });
+        }
+        return $listBookings;
+    }
+
     public function add(array $inputs)
     {
         $this->new();
@@ -37,7 +51,15 @@ class BookingsService extends BaseService
 
     protected function formatInputData(&$inputs)
     {
+        $inputs['pin_code'] = $inputs['pin_code'] ?? $this->randomPinCode();
+        $inputs['client_id'] = $inputs['client_id'] ?? auth()->user()->client_id;
+        $inputs['owner_id'] = $inputs['owner_id'] ?? auth()->user()->id;
+        $inputs['status'] = $inputs['status'] ?? BookingStatus::APPROVED;
+    }
 
+    private function randomPinCode()
+    {
+        return rand(100000, 999999);
     }
 
     protected function setModelFields($inputs)
@@ -47,17 +69,12 @@ class BookingsService extends BaseService
         Common::assignField($this->model, 'owner_id', $inputs);
         Common::assignField($this->model, 'status', $inputs);
         Common::assignField($this->model, 'pin_code', $inputs);
-        Common::assignField($this->model, 'created_at', $inputs);
         Common::assignField($this->model, 'start_date', $inputs);
         Common::assignField($this->model, 'end_date', $inputs);
     }
 
     public function get($id) {
         return $this->model->findOrfail($id);
-    }
-
-    public function getAll() {
-        return $this->model->all();
     }
 
     public function getAllOfUser($userId, $clientId) {

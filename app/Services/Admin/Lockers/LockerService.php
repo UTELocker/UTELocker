@@ -4,8 +4,10 @@ namespace App\Services\Admin\Lockers;
 
 use App\Classes\Common;
 use App\Classes\Files;
+use App\Enums\BookingStatus;
 use App\Enums\LockerSlotStatus;
 use App\Enums\LockerSlotType;
+use App\Enums\LockerStatus;
 use App\Models\Locker;
 use App\Services\Admin\Licenses\LicenseService;
 use App\Services\BaseService;
@@ -108,7 +110,57 @@ class LockerService extends BaseService
         return $modules;
     }
 
+    public function getModulesAvailableBooking(Locker $locker, $slotsNotAvailable)
+    {
+        $modules = [];
+        $slots = $locker->lockerSlots;
+
+        foreach ($slots as $slot) {
+            $modules[$slot->row][$slot->column] = $slot->toArray();
+            if ($slot->type === LockerSlotType::SLOT) {
+                $modules[$slot->row][$slot->column]['statusSlot'] =
+                    in_array($slot->id, $slotsNotAvailable) ?
+                        LockerSlotStatus::BOOKED :
+                        LockerSlotStatus::AVAILABLE;
+            } else {
+                $modules[$slot->row][$slot->column]['statusSlot'] = LockerSlotStatus::LOCKED;
+            }
+
+        }
+
+        return $modules;
+    }
+
     public function get($id) {
         return $this->model->findOrfail($id);
+    }
+
+    public function search($inputs) {
+        $startDate = $inputs['start_date'];
+        $endDate = $inputs['end_date'];
+        $numberSlot = $inputs['number_slots'] ?? 1;
+
+        return $this->model
+            ->select(
+                'lockers.id', 'lockers.code', 'lockers.image', 'lockers.description',
+                'lockers.status', 'locations.description as address'
+            )
+            ->join('locations', 'locations.id', '=', 'lockers.location_id')
+            ->where('lockers.status', '==', LockerStatus::IN_USE)
+            ->withCount(['lockerSlots' => function ($query) use($startDate, $endDate) {
+                $query->where('type', LockerSlotType::SLOT)
+                    ->whereNotIn('id', function ($q) use ($startDate, $endDate) {
+                        $q->select('locker_slot_id')
+                        ->from('bookings')
+                        ->where(function ($q) {
+                            $q->where('status', BookingStatus::PENDING)
+                                ->orWhere('status', BookingStatus::APPROVED);
+                        })
+                        ->whereBetween('start_date', [$startDate, $endDate])
+                        ->orWhereBetween('end_date', [$startDate, $endDate]);
+                    });
+            }])
+            ->having('locker_slots_count', '>=', $numberSlot)
+            ->get();
     }
 }

@@ -25,4 +25,9 @@ class LockerSlot extends Model
         }
         return $listNameSlots;
     }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

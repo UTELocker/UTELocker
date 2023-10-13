@@ -3,6 +3,8 @@
 namespace App\Services\Admin\Lockers;
 
 use App\Classes\Common;
+use App\Enums\BookingStatus;
+use App\Enums\LockerSlotType;
 use App\Models\LockerSlot;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
@@ -132,5 +134,22 @@ class LockerSlotService extends BaseService
     public function updateStatus($slotId, $status)
     {
         $this->model->where('id', $slotId)->update(['status' => $status]);
+    }
+
+    public function getSlotNotAvailable($lockerId, mixed $startDate, mixed $endDate)
+    {
+        return $this->model->where('locker_id', $lockerId)
+            ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->where('locker_slots.type', '=', LockerSlotType::SLOT)
+            ->where(function ($q) {
+                $q->where('bookings.status', BookingStatus::PENDING)
+                    ->orWhere('bookings.status', BookingStatus::APPROVED);
+            })
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('bookings.start_date', [$startDate, $endDate])
+                    ->orWhereBetween('bookings.end_date', [$startDate, $endDate]);
+            })
+            ->select('locker_slots.id')
+            ->get()->pluck('id')->toArray();
     }
 }
