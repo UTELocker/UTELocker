@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\Users\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Locations\LocationsController;
 use App\Http\Controllers\Api\Lockers\LockersController;
-
+use App\Http\Controllers\Api\Bookings\BookingsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,5 +37,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('lockers')->group(function () {
         Route::get('/', [LockersController::class, 'get'])->name('api.locker.get');
         Route::get('/{id}/modules', [LockersController::class, 'getModules'])->name('api.locker.getModules');
+    });
+    Route::prefix('bookings')->group(function () {
+        Route::get('/', [BookingsController::class, 'getOfUser'])->name('api.bookings.getOfUser');
+        Route::get('/{id}', [BookingsController::class, 'show'])->name('api.bookings.show');
     });
 });
