@@ -63,11 +63,8 @@ class BookingsController extends Controller
 
     public function destroy($id)
     {
-        $bookings = $this->bookingsService->delete($id);
-//        return Reply::successWithData('Delete bookings successfully',
-//            [
-//                'data' => $bookings
-//            ]);
+        $this->bookingsService->delete($id);
+        return Reply::success('Delete bookings successfully');
     }
 
     public function changePassword(ChangePassRequest $request)
@@ -83,5 +80,16 @@ class BookingsController extends Controller
         } else {
             return Reply::error('Change password failed');
         }
+    }
+
+    public function getHistoriesBooking()
+    {
+        $userId = \auth()->user()->id;
+        $clientId = \auth()->user()->client_id;
+        $bookings = $this->bookingsService->getHistoriesBooking($userId, $clientId);
+        return Reply::successWithData('Get histories booking successfully',
+            [
+                'data' => $bookings
+            ]);
     }
 }

@@ -11,7 +11,6 @@ class Booking extends Model
 {
     use HasSiteGroup;
     use BelongsToThrough;
-
     public function lockerSlot(): BelongsTo
     {
         return $this->belongsTo(LockerSlot::class);

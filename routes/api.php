@@ -55,4 +55,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('search')->group(function () {
         Route::post('/lockers', [LockersController::class, 'search'])->name('api.locker.search');
     });
+
+    Route::prefix('histories')->group(function () {
+        Route::get('/booking', [BookingsController::class, 'getHistoriesBooking'])->name('api.histories.get');
+    });
 });

@@ -4,6 +4,7 @@ namespace App\Services\Admin\Bookings;
 
 use App\Classes\Common;
 use App\Enums\BookingStatus;
+use App\Enums\HistoryLimitTime;
 use App\Models\Booking;
 use App\Models\Location;
 use App\Models\Locker;
@@ -81,6 +82,10 @@ class BookingsService extends BaseService
         return $this->model
             ->where('bookings.owner_id', $userId)
             ->where('bookings.client_id', $clientId)
+            ->where(function ($query) {
+                $query->where('bookings.status', BookingStatus::APPROVED)
+                    ->orWhere('bookings.status', BookingStatus::PENDING);
+            })
             ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
             ->leftJoin('lockers', 'locker_slots.locker_id', '=', 'lockers.id')
             ->leftJoin('locations', 'lockers.location_id', '=', 'locations.id')
@@ -161,5 +166,34 @@ class BookingsService extends BaseService
         $booking->pin_code = $this->randomPinCode();
         $booking->save();
         return $booking;
+    }
+
+    public function delete($id)
+    {
+        $booking = $this->model->findOrfail($id);
+        $booking->status = BookingStatus::CANCELLED;
+        $booking->save();
+        return $booking;
+    }
+
+    public function getHistoriesBooking($userId, $clientId) {
+        return $this->model
+            ->where('bookings.owner_id', $userId)
+            ->where('bookings.client_id', $clientId)
+            ->where('bookings.start_date', '>=', Carbon::now()->subMonths(HistoryLimitTime::LIMIT_MONTH_BOOKING))
+            ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->leftJoin('lockers', 'locker_slots.locker_id', '=', 'lockers.id')
+            ->leftJoin('locations', 'lockers.location_id', '=', 'locations.id')
+            ->select(
+                'bookings.pin_code', 'bookings.status', 'bookings.start_date',
+                'bookings.end_date', 'bookings.created_at', 'bookings.id',
+                'locker_slots.row', 'locker_slots.column', 'locker_slots.locker_id',
+                'locker_slots.config', 'lockers.image',
+                'locations.description as address', 'locations.latitude', 'locations.longitude'
+            )
+            ->orderBy('locker_slots.locker_id', 'asc')
+            ->orderBy('locker_slots.row', 'asc')
+            ->orderBy('locker_slots.column', 'asc')
+            ->get();
     }
 }
