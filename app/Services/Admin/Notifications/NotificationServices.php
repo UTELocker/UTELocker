@@ -7,7 +7,7 @@ use App\Classes\CommonConstant;
 use App\Models\Notification;
 use App\Services\BaseService;
 
-class NotificationsServices extends BaseService
+class NotificationServices extends BaseService
 {
     public function __construct()
     {

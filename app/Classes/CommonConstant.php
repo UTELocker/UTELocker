@@ -24,4 +24,6 @@ class CommonConstant
     const INNER_INVALID_LIMIT = 1007;
 
     const INNER_RELATED_RESOURCE_NOT_EXISTS = 1010;
+
+    const LIMIT_MONTH_BOOKING = 6;
 }

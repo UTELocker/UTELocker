@@ -4,9 +4,9 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Users\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Locations\LocationsController;
-use App\Http\Controllers\Api\Lockers\LockersController;
-use App\Http\Controllers\Api\Bookings\BookingsController;
-use App\Http\Controllers\Api\Notifications\NotificationsController;
+use App\Http\Controllers\Api\Lockers\LockerController;
+use App\Http\Controllers\Api\Bookings\BookingController;
+use App\Http\Controllers\Api\Notifications\NotificationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -39,31 +39,31 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('lockers')->group(function () {
-        Route::get('/', [LockersController::class, 'get'])->name('api.locker.get');
-        Route::post('/{id}/modules', [LockersController::class, 'getModules'])->name('api.locker.getModules');
+        Route::get('/', [LockerController::class, 'get'])->name('api.locker.get');
+        Route::post('/{id}/modules', [LockerController::class, 'getModules'])->name('api.locker.getModules');
     });
 
     Route::prefix('bookings')->group(function () {
-        Route::get('/', [BookingsController::class, 'getOfUser'])->name('api.bookings.getOfUser');
-        Route::get('/{id}', [BookingsController::class, 'show'])->name('api.bookings.show');
-        Route::post('/', [BookingsController::class, 'store'])->name('api.bookings.store');
-        Route::put('/{id}', [BookingsController::class, 'update'])->name('api.bookings.update');
-        Route::delete('/{id}', [BookingsController::class, 'destroy'])->name('api.bookings.destroy');
-        Route::post('/change-password', [BookingsController::class, 'changePassword'])
+        Route::get('/', [BookingController::class, 'getOfUser'])->name('api.bookings.getOfUser');
+        Route::get('/{id}', [BookingController::class, 'show'])->name('api.bookings.show');
+        Route::post('/', [BookingController::class, 'store'])->name('api.bookings.store');
+        Route::put('/{id}', [BookingController::class, 'update'])->name('api.bookings.update');
+        Route::delete('/{id}', [BookingController::class, 'destroy'])->name('api.bookings.destroy');
+        Route::post('/change-password', [BookingController::class, 'changePassword'])
             ->name('api.bookings.changePassword');
     });
 
     Route::prefix('search')->group(function () {
-        Route::post('/lockers', [LockersController::class, 'search'])->name('api.locker.search');
+        Route::post('/lockers', [LockerController::class, 'search'])->name('api.locker.search');
     });
 
     Route::prefix('histories')->group(function () {
-        Route::get('/booking', [BookingsController::class, 'getHistoriesBooking'])->name('api.histories.get');
+        Route::get('/booking', [BookingController::class, 'getHistoriesBooking'])->name('api.histories.get');
     });
 
     Route::prefix('notifications')->group(function () {
-        Route::get('/', [NotificationsController::class, 'get'])->name('api.notifications.get');
-        Route::put('/{id}/status', [NotificationsController::class, 'updateStatus'])
+        Route::get('/', [NotificationController::class, 'get'])->name('api.notifications.get');
+        Route::put('/{id}/status', [NotificationController::class, 'updateStatus'])
             ->name('api.notifications.update.status');
     });
 });

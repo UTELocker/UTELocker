@@ -13,19 +13,6 @@ class LockerSlot extends Model
         return $this->belongsTo(Locker::class);
     }
 
-    public static function getListNameSlots($listSlotS)
-    {
-        $numberSlot = 1;
-        $listNameSlots = [];
-        foreach ($listSlotS as $slot) {
-            if ($slot->type === LockerSlotType::SLOT) {
-                $listNameSlots[$slot->row . '-' . $slot->column] = $numberSlot;
-                $numberSlot++;
-            }
-        }
-        return $listNameSlots;
-    }
-
     public function bookings()
     {
         return $this->hasMany(Booking::class);
