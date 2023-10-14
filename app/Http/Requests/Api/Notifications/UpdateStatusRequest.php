@@ -26,7 +26,7 @@ class UpdateStatusRequest extends FormRequest
             'id' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    $userId = \auth()->user()->id;
+                    $userId = user()->id;
                     $notification = Notification::where('id', $value)->where('owner_id', $userId)->first();
                     if (!$notification) {
                         $fail('Notification not found');

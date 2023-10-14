@@ -32,7 +32,7 @@ class ChangePassRequest extends FormRequest
                         $fail('Booking not found');
                         return;
                     }
-                    $idUsers = auth()->user()->id;
+                    $idUsers = user()->id;
                     if ($booking->owner_id != $idUsers) {
                         $fail('Booking not found');
                         return;

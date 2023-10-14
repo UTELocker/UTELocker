@@ -5,22 +5,22 @@ namespace App\Http\Controllers\Api\Notifications;
 use App\Classes\Reply;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Notifications\UpdateStatusRequest;
-use App\Services\Admin\Notifications\NotificationsServices;
+use App\Services\Admin\Notifications\NotificationServices;
 use Illuminate\Http\Request;
 
-class NotificationsController extends Controller
+class NotificationController extends Controller
 {
-    public ?NotificationsServices $notificationsService;
+    public ?NotificationServices $notificationService;
 
-    public function __construct(NotificationsServices $notificationsService)
+    public function __construct(NotificationServices $notificationService)
     {
-        $this->notificationsService = $notificationsService;
+        $this->notificationService = $notificationService;
     }
 
     public function get()
     {
-        $userId = \auth()->user()->id;
-        $notifications = $this->notificationsService->getOfUser($userId);
+        $userId = user()->id;
+        $notifications = $this->notificationService->getOfUser($userId);
         return Reply::successWithData('Get notifications successfully',
             [
                 'data' => $notifications
@@ -29,7 +29,7 @@ class NotificationsController extends Controller
 
     public function updateStatus($id, UpdateStatusRequest $request)
     {
-        $this->notificationsService->updateStatus($id);
+        $this->notificationService->updateStatus($id);
         return Reply::success('Update status successfully');
     }
 }

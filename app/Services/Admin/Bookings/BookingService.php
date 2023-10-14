@@ -3,6 +3,7 @@
 namespace App\Services\Admin\Bookings;
 
 use App\Classes\Common;
+use App\Classes\CommonConstant;
 use App\Enums\BookingStatus;
 use App\Enums\HistoryLimitTime;
 use App\Models\Booking;
@@ -13,7 +14,7 @@ use App\Services\BaseService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class BookingsService extends BaseService
+class BookingService extends BaseService
 {
     public function __construct(Booking $model)
     {
@@ -112,7 +113,7 @@ class BookingsService extends BaseService
                     ->orderBy('row', 'asc')
                     ->orderBy('column', 'asc')
                     ->get();
-                $listNameSlotInLocker = LockerSlot::getListNameSlots($listSlotInLocker);
+                $listNameSlotInLocker = Common::getListNameSlots($listSlotInLocker);
             }
 
             $startDateTime = explode(' ', $booking->start_date);
@@ -180,7 +181,7 @@ class BookingsService extends BaseService
         return $this->model
             ->where('bookings.owner_id', $userId)
             ->where('bookings.client_id', $clientId)
-            ->where('bookings.start_date', '>=', Carbon::now()->subMonths(HistoryLimitTime::LIMIT_MONTH_BOOKING))
+            ->where('bookings.start_date', '>=', Carbon::now()->subMonths(CommonConstant::LIMIT_MONTH_BOOKING))
             ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
             ->leftJoin('lockers', 'locker_slots.locker_id', '=', 'lockers.id')
             ->leftJoin('locations', 'lockers.location_id', '=', 'locations.id')

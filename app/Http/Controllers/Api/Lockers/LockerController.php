@@ -10,7 +10,7 @@ use App\Services\Admin\Lockers\LockerService;
 use App\Services\Admin\Lockers\LockerSlotService;
 use Illuminate\Http\Request;
 
-class LockersController extends Controller
+class LockerController extends Controller
 {
     public ?LockerService $lockerService;
     public ?LockerSlotService $lockerSlotService;

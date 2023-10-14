@@ -2,6 +2,7 @@
 
 namespace App\Classes;
 
+use App\Enums\LockerSlotType;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
@@ -66,5 +67,18 @@ class Common
             ['value' => CommonConstant::DATABASE_YES, 'text' => 'Yes'],
             ['value' => CommonConstant::DATABASE_NO, 'text' => 'No'],
         ];
+    }
+
+    public static function getListNameSlots($listSlotS)
+    {
+        $numberSlot = 1;
+        $listNameSlots = [];
+        foreach ($listSlotS as $slot) {
+            if ($slot->type === LockerSlotType::SLOT) {
+                $listNameSlots[$slot->row . '-' . $slot->column] = $numberSlot;
+                $numberSlot++;
+            }
+        }
+        return $listNameSlots;
     }
 }
