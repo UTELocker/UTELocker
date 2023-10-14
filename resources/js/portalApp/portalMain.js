@@ -5,6 +5,7 @@ import router from "./portalRoute";
 import './portalMain.scss';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import store from "./stores/store";
 
 const app = createApp(MainApp);
 
@@ -23,5 +24,6 @@ router.afterEach((to, from) => {
 });
 
 app.use(Antd);
+app.use(store);
 app.use(router);
 app.mount("#portalApp");

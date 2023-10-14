@@ -80,21 +80,19 @@
 <script>
 import Layout from "../components/layouts/Layout.vue";
 import {ref, defineComponent} from "vue";
+import {mapActions, mapState} from "vuex";
 
 export default defineComponent({
     name: "BookingApp",
     components: {
         Layout,
     },
+    computed: {
+        ...mapState({
+            locations: state => state.moduleBase.locations,
+        }),
+    },
     setup() {
-        const locations = ref([
-            {value: '1', label: 'Location 1'},
-            {value: '2', label: 'Location 2'},
-            {value: '3', label: 'Location 3'},
-            {value: '4', label: 'Location 4'},
-            {value: '5', label: 'Location 5'},
-            {value: '6', label: 'Location 6'}
-        ]);
         const selectedLocation = ref([]);
 
         const onRangePickerChange = (value, dateString) => {
@@ -116,7 +114,6 @@ export default defineComponent({
         ]);
 
         return {
-            locations,
             selectedLocation,
             handleSelectLocation,
             onRangePickerChange,
@@ -124,5 +121,13 @@ export default defineComponent({
             lockers,
         };
     },
+    methods: {
+        ...mapActions({
+            loadLocations: "moduleBase/loadLocations",
+        }),
+    },
+    created() {
+        this.loadLocations();
+    }
 });
 </script>

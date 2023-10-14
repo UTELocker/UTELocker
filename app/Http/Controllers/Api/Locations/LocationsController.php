@@ -14,12 +14,14 @@ class LocationsController extends Controller
     public function __construct(
         LocationService $locationService
     ) {
+        parent::__construct();
         $this->locationService = $locationService;
     }
 
     public function get() {
         $locations = $this->locationService->getWithLocker()->toArray();
-        return Reply::successWithData('Get List Location Successfully', $locations);
+        return Reply::successWithData('Get List Location Successfully', [
+            'data' => $locations
+        ]);
     }
-
 }
