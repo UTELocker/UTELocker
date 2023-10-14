@@ -151,4 +151,15 @@ class BookingsService extends BaseService
 
         return $result;
     }
+
+    public function changePassword($id, $oldPassword)
+    {
+        $booking = $this->model->findOrfail($id);
+        if ($booking->pin_code !== $oldPassword) {
+            return false;
+        }
+        $booking->pin_code = $this->randomPinCode();
+        $booking->save();
+        return $booking;
+    }
 }

@@ -48,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [BookingsController::class, 'store'])->name('api.bookings.store');
         Route::put('/{id}', [BookingsController::class, 'update'])->name('api.bookings.update');
         Route::delete('/{id}', [BookingsController::class, 'destroy'])->name('api.bookings.destroy');
+        Route::post('/change-password', [BookingsController::class, 'changePassword'])
+            ->name('api.bookings.changePassword');
     });
 
     Route::prefix('search')->group(function () {

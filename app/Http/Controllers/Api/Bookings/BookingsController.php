@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Bookings;
 
 use App\Classes\Reply;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\bookings\ChangePassRequest;
 use App\Http\Requests\Api\Bookings\StoreBookingRequest;
 use App\Services\Admin\Bookings\BookingsService;
 use App\View\Components\Auth;
@@ -67,5 +68,20 @@ class BookingsController extends Controller
 //            [
 //                'data' => $bookings
 //            ]);
+    }
+
+    public function changePassword(ChangePassRequest $request)
+    {
+        $idBooking = $request->get('id');
+        $oldPassword = $request->get('oldPassword');
+        $bookings = $this->bookingsService->changePassword($idBooking, $oldPassword);
+        if ($bookings) {
+            return Reply::successWithData('Change password successfully',
+                [
+                    'data' => $bookings
+                ]);
+        } else {
+            return Reply::error('Change password failed');
+        }
     }
 }

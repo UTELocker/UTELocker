@@ -58,19 +58,4 @@ class StoreBookingRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator)
-    {
-        $errors = $validator->errors()->toArray();
-        $errors = array_map(function ($error) {
-            return $error[0];
-        }, $errors);
-
-        throw new ValidationException($validator, response()->json([
-            'status' => 'fail',
-            'error_name' => 'Validation error',
-            'message' => 'The given data was invalid.',
-            'data' => $errors,
-        ], 422));
-
-    }
 }
