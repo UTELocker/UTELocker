@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Locations\LocationsController;
 use App\Http\Controllers\Api\Lockers\LockersController;
 use App\Http\Controllers\Api\Bookings\BookingsController;
+use App\Http\Controllers\Api\Notifications\NotificationsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -58,5 +59,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('histories')->group(function () {
         Route::get('/booking', [BookingsController::class, 'getHistoriesBooking'])->name('api.histories.get');
+    });
+
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationsController::class, 'get'])->name('api.notifications.get');
+        Route::put('/{id}/status', [NotificationsController::class, 'updateStatus'])
+            ->name('api.notifications.update.status');
     });
 });
