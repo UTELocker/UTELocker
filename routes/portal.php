@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Lockers\LockerController;
 use App\Http\Controllers\Api\Users\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Locations\LocationsController;
@@ -11,5 +12,9 @@ use App\Http\Controllers\Api\Notifications\NotificationsController;
 Route::prefix('api-portal')->group(function () {
     Route::prefix('locations')->group(function () {
         Route::get('/', [LocationsController::class, 'get'])->name('portal.location.get');
+    });
+
+    Route::prefix('lockers')->group(function () {
+        Route::get('get-available', [LockerController::class, 'availableLockers'])->name('portal.locker.available');
     });
 });

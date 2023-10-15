@@ -13,6 +13,7 @@
 </head>
 <body>
     <div id="portalApp"></div>
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script type="module" src="{{mix('js/portalMain.js')}}"></script>
 </body>
 </html>

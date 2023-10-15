@@ -3,19 +3,20 @@
         <section class="markdown">
             <h1>Find a locker</h1>
             <section class="markdown">
-                <p>Select a locker to book</p>
+                <p>Select a locker to book {{isLoading}}</p>
             </section>
         </section>
         <a-card :style="{backgroundColor: 'var(--purple-3)'}">
             <a-row :gutter="16">
-                <a-col :span="12">
+                <a-col :span="10">
                     <a-row>
                         <a-col :span="24">
                             <a-select
-                                v-model:value="selectedLocation"
+                                v-model:value="this.formModel.selectedLocation"
+                                :disabled="isLoading"
                                 :options="locations"
                                 mode="multiple"
-                                @change="handleSelectLocation"
+                                @change="this.setFormModel('selectedLocation', $event)"
                                 placeholder="Select a location"
                                 style="width: 100%"
                                 :size="size"
@@ -23,13 +24,13 @@
                         </a-col>
                     </a-row>
                 </a-col>
-                <a-col :span="6">
+                <a-col :span="8">
                     <a-row>
                         <a-col :span="24">
                             <a-range-picker
                                 showTime
                                 format="DD/MM/YYYY HH:mm"
-                                @change="onRangePickerChange"
+                                @change="this.onRangePickerChange"
                                 :size="size"
                                 style="width: 100%"
                             />
@@ -52,7 +53,13 @@
                 <a-col :span="2">
                     <a-row>
                         <a-col :span="24">
-                            <a-button type="primary" :size="size" style="width: 100%">
+                            <a-button
+                                type="primary"
+                                :size="size"
+                                style="width: 100%"
+                                @click="this.submit()"
+                                :loading="isSubmitLoading"
+                            >
                                 Search
                             </a-button>
                         </a-col>
@@ -60,7 +67,6 @@
                 </a-col>
             </a-row>
         </a-card>
-
         <section class="markdown" v-if="lockers.length > 0">
             <h2>Available lockers</h2>
             <div class="site-card-wrapper">
@@ -92,18 +98,18 @@ export default defineComponent({
             locations: state => state.moduleBase.locations,
         }),
     },
+    data() {
+        return {
+            formModel: {
+                selectedLocation: [],
+                startDate: null,
+                endDate: null,
+            },
+            isLoading: false,
+            isSubmitLoading: false,
+        };
+    },
     setup() {
-        const selectedLocation = ref([]);
-
-        const onRangePickerChange = (value, dateString) => {
-            console.log('Selected Time: ', value);
-            console.log('Formatted Selected Time: ', dateString);
-        };
-
-        const handleSelectLocation = (value) => {
-            selectedLocation.value = value;
-        };
-
         const lockers = ref([
             {value: '1', label: 'Locker 1'},
             {value: '2', label: 'Locker 2'},
@@ -114,9 +120,6 @@ export default defineComponent({
         ]);
 
         return {
-            selectedLocation,
-            handleSelectLocation,
-            onRangePickerChange,
             size: 'large',
             lockers,
         };
@@ -124,10 +127,38 @@ export default defineComponent({
     methods: {
         ...mapActions({
             loadLocations: "moduleBase/loadLocations",
+            loadLockers: "moduleBooking/loadAvailableLockers",
         }),
+        setFormModel(key, value) {
+            this.formModel[key] = value;
+        },
+        onRangePickerChange(value, dateString) {
+            this.setFormModel('startDate', dateString[0]);
+            this.setFormModel('endDate', dateString[1]);
+        },
+        validateForm() {
+
+
+            return true;
+        },
+        submit() {
+            if (this.validateForm()) {
+                this.isSubmitLoading = true;
+                this.loadLockers({
+                    locationIds: this.formModel.selectedLocation,
+                    startDate: this.formModel.startDate,
+                    endDate: this.formModel.endDate,
+                }).then(() => {
+                    this.isSubmitLoading = false;
+                });
+            }
+        },
     },
     created() {
-        this.loadLocations();
+        this.isLoading = true;
+        this.loadLocations().then(() => {
+            this.isLoading = false;
+        });
     }
 });
 </script>
