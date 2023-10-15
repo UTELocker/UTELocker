@@ -63,4 +63,15 @@ class LockerController extends Controller
             ]
         );
     }
+
+    public function availableLockers(Request $request) {
+        dd($request->all());
+        $res = $this->lockerService->availableLockers();
+        return Reply::successWithData(
+            'Get list lockers successfully',
+            [
+                'data' => $res,
+            ]
+        );
+    }
 }
