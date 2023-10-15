@@ -136,20 +136,24 @@ class LockerSlotService extends BaseService
         $this->model->where('id', $slotId)->update(['status' => $status]);
     }
 
-    public function getSlotNotAvailable($lockerId, mixed $startDate, mixed $endDate)
+    public function getSlotWithStatusIsBooked($lockerId, mixed $startDate, mixed $endDate)
     {
-        return $this->model->where('locker_id', $lockerId)
+        $statusPending = BookingStatus::PENDING;
+        $statusApproved = BookingStatus::APPROVED;
+
+        return $this->model->where('locker_slots.locker_id', $lockerId)
             ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
-            ->where('locker_slots.type', '=', LockerSlotType::SLOT)
-            ->where(function ($q) {
-                $q->where('bookings.status', BookingStatus::PENDING)
-                    ->orWhere('bookings.status', BookingStatus::APPROVED);
-            })
             ->where(function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('bookings.start_date', [$startDate, $endDate])
-                    ->orWhereBetween('bookings.end_date', [$startDate, $endDate]);
+                $q->where(function ($q) use ($startDate, $endDate) {
+                    $q->whereBetween('bookings.start_date', [$startDate, $endDate])
+                        ->orWhereBetween('bookings.end_date', [$startDate, $endDate]);
+                })
+                ->orWhere('bookings.id', null);
             })
-            ->select('locker_slots.id')
-            ->get()->pluck('id')->toArray();
+            ->select(
+                'locker_slots.*',
+                DB::raw("CASE WHEN bookings.status not in ('{$statusPending}', '{$statusApproved}') and bookings.id is not null THEN false WHEN bookings.id is null THEN false ELSE true END as statusSlot")
+            )
+            ->get();
     }
 }

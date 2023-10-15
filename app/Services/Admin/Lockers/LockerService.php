@@ -110,22 +110,13 @@ class LockerService extends BaseService
         return $modules;
     }
 
-    public function getModulesAvailableBooking(Locker $locker, $slotsNotAvailable)
+    public function getModulesWithStatusIsBooked($listSlots)
     {
         $modules = [];
-        $slots = $locker->lockerSlots;
+        $slots = $listSlots;
 
         foreach ($slots as $slot) {
             $modules[$slot->row][$slot->column] = $slot->toArray();
-            if ($slot->type === LockerSlotType::SLOT) {
-                $modules[$slot->row][$slot->column]['statusSlot'] =
-                    in_array($slot->id, $slotsNotAvailable) ?
-                        LockerSlotStatus::BOOKED :
-                        LockerSlotStatus::AVAILABLE;
-            } else {
-                $modules[$slot->row][$slot->column]['statusSlot'] = LockerSlotStatus::LOCKED;
-            }
-
         }
 
         return $modules;
@@ -139,6 +130,7 @@ class LockerService extends BaseService
         $startDate = $inputs['start_date'];
         $endDate = $inputs['end_date'];
         $numberSlot = $inputs['number_slots'] ?? 1;
+        $locations = $inputs['locations_id'] ?? null;
 
         return $this->model
             ->select(
@@ -146,6 +138,9 @@ class LockerService extends BaseService
                 'lockers.status', 'locations.description as address'
             )
             ->join('locations', 'locations.id', '=', 'lockers.location_id')
+            ->when($locations, function ($query, $locations) {
+                $query->whereIn('locations.id', $locations);
+            })
             ->where('lockers.status', '==', LockerStatus::IN_USE)
             ->withCount(['lockerSlots' => function ($query) use($startDate, $endDate) {
                 $query->where('type', LockerSlotType::SLOT)

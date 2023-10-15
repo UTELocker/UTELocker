@@ -27,6 +27,8 @@ class SearchLockersRequest extends FormRequest
             'start_date' => 'required|date_format:Y-m-d H:i:s',
             'end_date' => 'required|date_format:Y-m-d H:i:s|after:start_date',
             'number_slots' => 'nullable|integer|min:1',
+            'locations_id' => 'nullable|array',
+            'locations_id.*' => 'integer|exists:locations,id',
         ];
     }
 }
