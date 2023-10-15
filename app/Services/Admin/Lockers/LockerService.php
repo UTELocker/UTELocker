@@ -100,25 +100,13 @@ class LockerService extends BaseService
         }
     }
 
-    public function getModules(Locker $locker)
+    public function getModules($slotList = null, Locker $locker = null): array
     {
         $modules = [];
-        $slots = $locker->lockerSlots;
+        $slots = $slotList ?: $locker->lockerSlots;
         foreach ($slots as $slot) {
             $modules[$slot->row][$slot->column] = $slot->toArray();
         }
-        return $modules;
-    }
-
-    public function getModulesWithStatusIsBooked($listSlots)
-    {
-        $modules = [];
-        $slots = $listSlots;
-
-        foreach ($slots as $slot) {
-            $modules[$slot->row][$slot->column] = $slot->toArray();
-        }
-
         return $modules;
     }
 
@@ -129,8 +117,8 @@ class LockerService extends BaseService
     public function search($inputs) {
         $startDate = $inputs['start_date'];
         $endDate = $inputs['end_date'];
-        $numberSlot = $inputs['number_slots'] ?? 1;
-        $locations = $inputs['locations_id'] ?? null;
+        $numberSlot = $inputs['number_of_slot'] ?? 1;
+        $locations = $inputs['location_ids'] ?? null;
 
         return $this->model
             ->select(

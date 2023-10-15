@@ -111,7 +111,7 @@ class LockerController extends Controller
     private function bulkCreate()
     {
         $this->view = 'admin.lockers.slots.bulk-create';
-        $this->modules = $this->lockerService->getModules($this->locker);
+        $this->modules = $this->lockerService->getModules(locker: $this->locker);
         $this->isEdit = user()->isSuperUser();
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();

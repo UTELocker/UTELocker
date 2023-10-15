@@ -3,7 +3,7 @@
         <section class="markdown">
             <h1>Find a locker</h1>
             <section class="markdown">
-                <p>Select a locker to book {{isLoading}}</p>
+                <p>Select a locker to book</p>
             </section>
         </section>
         <a-card :style="{backgroundColor: 'var(--purple-3)'}">
@@ -29,7 +29,7 @@
                         <a-col :span="24">
                             <a-range-picker
                                 showTime
-                                format="DD/MM/YYYY HH:mm"
+                                format="YYYY-MM-DD HH:mm"
                                 @change="this.onRangePickerChange"
                                 :size="size"
                                 style="width: 100%"
@@ -67,15 +67,25 @@
                 </a-col>
             </a-row>
         </a-card>
-        <section class="markdown" v-if="lockers.length > 0">
+        <section class="markdown" v-if="availableLockers.length > 0">
             <h2>Available lockers</h2>
             <div class="site-card-wrapper">
                 <a-row :gutter="16">
-                    <a-col :xs="24" :sm="24" :md="12" :lg="8" :xl="6" v-for="locker in lockers" :key="locker.value">
-                        <a-card :title="locker.label" :style="{marginBottom: '20px'}" hoverable>
-                            <p>Card content</p>
-                            <p>Card content</p>
-                            <p>Card content</p>
+                    <a-col :xs="24" :sm="24" :md="12" :lg="8" :xl="6" v-for="locker in availableLockers" :key="locker.id">
+                        <a-card
+                            :title="locker.description"
+                            :style="{marginBottom: '20px'}"
+                            @click="this.$router.push({
+                                name: 'booking.locker',
+                                params: {id: locker.id},
+                                query: {
+                                    startDate: this.formModel.startDate,
+                                    endDate: this.formModel.endDate,
+                                }
+                            })"
+                            hoverable>
+                            <p>Address: {{locker.address}}</p>
+                            <p>Available slots: {{locker.locker_slots_count}}</p>
                         </a-card>
                     </a-col>
                 </a-row>
@@ -85,7 +95,7 @@
 </template>
 <script>
 import Layout from "../components/layouts/Layout.vue";
-import {ref, defineComponent} from "vue";
+import {defineComponent} from "vue";
 import {mapActions, mapState} from "vuex";
 
 export default defineComponent({
@@ -96,6 +106,7 @@ export default defineComponent({
     computed: {
         ...mapState({
             locations: state => state.moduleBase.locations,
+            availableLockers: state => state.moduleBooking.availableLockers,
         }),
     },
     data() {
@@ -110,18 +121,8 @@ export default defineComponent({
         };
     },
     setup() {
-        const lockers = ref([
-            {value: '1', label: 'Locker 1'},
-            {value: '2', label: 'Locker 2'},
-            {value: '3', label: 'Locker 3'},
-            {value: '4', label: 'Locker 4'},
-            {value: '5', label: 'Locker 5'},
-            {value: '6', label: 'Locker 6'}
-        ]);
-
         return {
             size: 'large',
-            lockers,
         };
     },
     methods: {
@@ -137,8 +138,6 @@ export default defineComponent({
             this.setFormModel('endDate', dateString[1]);
         },
         validateForm() {
-
-
             return true;
         },
         submit() {

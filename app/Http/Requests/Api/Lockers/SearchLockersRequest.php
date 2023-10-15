@@ -24,11 +24,11 @@ class SearchLockersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'start_date' => 'required|date_format:Y-m-d H:i:s',
-            'end_date' => 'required|date_format:Y-m-d H:i:s|after:start_date',
+            'start_date' => 'required|date_format:Y-m-d H:i',
+            'end_date' => 'required|date_format:Y-m-d H:i|after:start_date',
             'number_slots' => 'nullable|integer|min:1',
-            'locations_id' => 'nullable|array',
-            'locations_id.*' => 'integer|exists:locations,id',
+            'location_ids' => 'nullable|array',
+            'location_ids.*' => 'integer|exists:locations,id',
         ];
     }
 }

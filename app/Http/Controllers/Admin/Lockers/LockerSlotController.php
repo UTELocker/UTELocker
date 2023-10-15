@@ -34,7 +34,7 @@ class LockerSlotController extends Controller
     {
         $form = $request->all();
         $locker = $this->lockerService->get($locker);
-        $oldSlots = $this->lockerService->getModules($locker);
+        $oldSlots = $this->lockerService->getModules(locker: $locker);
         $this->lockerSlotService->bulkUpdate($locker->id, $oldSlots, $form);
     }
 

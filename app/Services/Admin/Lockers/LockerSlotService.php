@@ -152,7 +152,11 @@ class LockerSlotService extends BaseService
             })
             ->select(
                 'locker_slots.*',
-                DB::raw("CASE WHEN bookings.status not in ('{$statusPending}', '{$statusApproved}') and bookings.id is not null THEN false WHEN bookings.id is null THEN false ELSE true END as statusSlot")
+                DB::raw(
+                    "CASE WHEN bookings.status not in ('$statusPending', '$statusApproved')" .
+                    "and bookings.id is not null THEN false WHEN bookings.id is null THEN false ELSE true " .
+                    "END as statusSlot"
+                )
             )
             ->get();
     }

@@ -39,7 +39,7 @@ class LockerController extends Controller
 
         $locker = $this->lockerService->get($id);
         $listSlots = $this->lockerSlotService->getSlotWithStatusIsBooked($id, $startDate, $endDate);
-        $module = $this->lockerService->getModulesWithStatusIsBooked($listSlots);
+        $module = $this->lockerService->getModules($listSlots);
 
         ksort($module);
 
@@ -56,17 +56,6 @@ class LockerController extends Controller
 
     public function search(SearchLockersRequest $request) {
         $res = $this->lockerService->search($request->all());
-        return Reply::successWithData(
-            'Get list lockers successfully',
-            [
-                'data' => $res,
-            ]
-        );
-    }
-
-    public function availableLockers(Request $request) {
-        dd($request->all());
-        $res = $this->lockerService->availableLockers();
         return Reply::successWithData(
             'Get list lockers successfully',
             [

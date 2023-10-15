@@ -2,12 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 import BookingApp from "./booking/BookingApp.vue";
 import WalletApp from "./wallet/WalletApp.vue";
 import SelectLockerApp from "./booking/SelectLockerApp.vue";
+import OverviewApp from "./overview/OverviewApp.vue";
 
 const routes = [
     {
         path: '/portal',
         name: 'portal',
-        component: BookingApp,
+        component: OverviewApp,
         children: [
             {
                 path: 'booking',
@@ -16,7 +17,7 @@ const routes = [
             },
             {
                 path: 'booking/:id',
-                name: 'booking-id',
+                name: 'booking.locker',
                 component: SelectLockerApp,
             }
         ]
@@ -30,7 +31,6 @@ const routes = [
 
 export default createRouter({
     history: createWebHistory(),
-    fallback: false,
     routes,
     scrollBehavior: to => {
         if (to.hash) {
