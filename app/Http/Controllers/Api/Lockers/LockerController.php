@@ -38,8 +38,8 @@ class LockerController extends Controller
         $startDate = $request->start_date;
 
         $locker = $this->lockerService->get($id);
-        $listSlots = $this->lockerSlotService->getSlotWithStatusIsBooked($id, $startDate, $endDate);
-        $module = $this->lockerService->getModules($listSlots);
+        $listSlotsNotAvailable = $this->lockerSlotService->getSlotsNotAvailable($id, $startDate, $endDate);
+        $module = $this->lockerService->getModulesAvailableBooking($locker, $listSlotsNotAvailable);
 
         ksort($module);
 

@@ -110,6 +110,27 @@ class LockerService extends BaseService
         return $modules;
     }
 
+    public function getModulesAvailableBooking(Locker $locker, $slotsNotAvailable)
+    {
+        $modules = [];
+        $slots = $locker->lockerSlots;
+
+        foreach ($slots as $slot) {
+            $modules[$slot->row][$slot->column] = $slot->toArray();
+            if ($slot->type === LockerSlotType::SLOT) {
+                $modules[$slot->row][$slot->column]['statusSlot'] =
+                    in_array($slot->id, $slotsNotAvailable) ?
+                        LockerSlotStatus::BOOKED :
+                        LockerSlotStatus::AVAILABLE;
+            } else {
+                $modules[$slot->row][$slot->column]['statusSlot'] = LockerSlotStatus::LOCKED;
+            }
+
+        }
+
+        return $modules;
+    }
+
     public function get($id) {
         return $this->model->findOrfail($id);
     }
