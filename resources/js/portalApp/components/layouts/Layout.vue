@@ -43,7 +43,7 @@
 </template>
 <script>
 import Header from "./header/Header.vue";
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, ref, watch} from "vue";
 import {GLOBAL_CONFIG} from "../../SymbolKey";
 import {useRoute} from "vue-router";
 import {useWindowScroll} from "@vueuse/core";
@@ -52,15 +52,17 @@ import Footer from "./Footer.vue";
 import Menu from "./Menu.vue";
 import WalletCard from "./common/WalletCard.vue";
 import menuConstant from "../../constants/menuConstant";
+import OverviewApp from "../../overview/OverviewApp.vue";
 
 export default defineComponent({
     name: "Layout",
     computed: {
         menuConstant() {
             return menuConstant
-        }
+        },
     },
     components: {
+        OverviewApp,
         WalletCard,
         Menu,
         Footer,
@@ -81,8 +83,10 @@ export default defineComponent({
             };
         });
 
-        const activeMenuItem = computed(() => {
-            return route.path.split('/')[1];
+        const activeMenuItem = ref('/portal');
+
+        watch(() => route.path, () => {
+            activeMenuItem.value = route.path;
         });
 
         const handleClickShowButton = () => {

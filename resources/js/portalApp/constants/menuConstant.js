@@ -1,32 +1,36 @@
 export default  {
+    booking : {
+        title: 'New Booking',
+        path: '/portal/booking',
+    },
     portal : {
         title: 'Portal',
-        type: 'Portal',
-        path: '/portal',
-    },
-    locations : {
-        title: 'Locations',
-        type: 'Portal',
-        path: '/portal/locations',
-    },
-    history : {
-        title: 'History',
-        type: 'Portal',
-        path: '/portal/history',
-    },
-    booking : {
-        title: 'Booking',
-        type: 'Portal',
-        path: '/portal/booking',
+        children: [
+            {
+                title: 'Overview',
+                path: '/portal',
+            },
+            {
+                title: 'Locations',
+                path: '/portal/locations',
+            },
+            {
+                title: 'Historical Bookings',
+                path: '/portal/histories',
+            },
+        ]
     },
     wallet : {
         title: 'Wallet',
-        type: 'Wallet',
-        path: '/wallet',
+        children: [
+            {
+                title: 'Overview',
+                path: '/wallet',
+            },
+            {
+                title: 'Transactions',
+                path: '/wallet/transactions',
+            }
+        ]
     },
-    transactions : {
-        title: 'Transactions',
-        type: 'Wallet',
-        path: '/wallet/transactions',
-    }
 }

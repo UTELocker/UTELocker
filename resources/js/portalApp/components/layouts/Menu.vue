@@ -11,10 +11,7 @@
                     <a-menu-item-group :key="m.order" :title="m.title">
                         <template v-for="n in m.children">
                             <a-menu-item v-if="n.path" :key="n.path">
-                                <a v-if="n.target" :target="n.target" :href="n.path">
-                                    <span>{{ n.title }}</span>
-                                </a>
-                                <router-link v-else :to="n.path">
+                                <router-link :to="n.path">
                                     <span>{{ n.title }}</span>
                                 </router-link>
                             </a-menu-item>
@@ -23,10 +20,7 @@
                 </template>
                 <template v-else>
                     <a-menu-item :key="m.path">
-                        <a v-if="m.target" :target="m.target" :href="m.path">
-                            {{ m.title }}
-                        </a>
-                        <router-link v-else :to="m.path">
+                        <router-link :to="m.path">
                             {{ m.title }}
                         </router-link>
                     </a-menu-item>
@@ -36,9 +30,8 @@
     </a-config-provider>
 </template>
 <script>
-import {computed, defineComponent, inject, ref, watch} from "vue";
+import {computed, defineComponent, inject} from "vue";
 import useSiteToken from "../../hooks/useSiteToken";
-import {useRoute} from "vue-router";
 
 export default defineComponent({
     name: "Menu",
@@ -54,7 +47,6 @@ export default defineComponent({
     },
     setup(props) {
         const siteToken = useSiteToken();
-        const route = useRoute();
         const themeMode = inject('themeMode');
         const colorBgContainer = computed(() => siteToken.value.token.colorBgContainer);
         return {

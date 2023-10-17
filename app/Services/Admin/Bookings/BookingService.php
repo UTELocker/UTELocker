@@ -10,6 +10,7 @@ use App\Models\Booking;
 use App\Models\Location;
 use App\Models\Locker;
 use App\Models\LockerSlot;
+use App\Models\User;
 use App\Services\BaseService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -79,10 +80,10 @@ class BookingService extends BaseService
         return $this->model->findOrfail($id);
     }
 
-    public function getAllOfUser($userId, $clientId) {
+    public function getBookingActivities(User $user) {
         return $this->model
-            ->where('bookings.owner_id', $userId)
-            ->where('bookings.client_id', $clientId)
+            ->where('bookings.owner_id', $user->id)
+            ->where('bookings.client_id', $user->client_id)
             ->where(function ($query) {
                 $query->where('bookings.status', BookingStatus::APPROVED)
                     ->orWhere('bookings.status', BookingStatus::PENDING);
@@ -155,7 +156,7 @@ class BookingService extends BaseService
             ];
         }
 
-        return $result;
+        return $result ?? [];
     }
 
     public function changePassword($id, $oldPassword)
@@ -177,10 +178,10 @@ class BookingService extends BaseService
         return $booking;
     }
 
-    public function getHistoriesBooking($userId, $clientId) {
+    public function getHistoriesBooking(User $user) {
         return $this->model
-            ->where('bookings.owner_id', $userId)
-            ->where('bookings.client_id', $clientId)
+            ->where('bookings.owner_id', $user->id)
+            ->where('bookings.client_id', $user->client_id)
             ->where('bookings.start_date', '>=', Carbon::now()->subMonths(CommonConstant::LIMIT_MONTH_BOOKING))
             ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
             ->leftJoin('lockers', 'locker_slots.locker_id', '=', 'lockers.id')

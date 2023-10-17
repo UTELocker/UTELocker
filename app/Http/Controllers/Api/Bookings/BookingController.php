@@ -16,18 +16,18 @@ class BookingController extends Controller
 
     public function __construct(BookingService $bookingService)
     {
+        parent::__construct();
         $this->bookingService = $bookingService;
     }
 
-    public function getOfUser()
+    public function getBookingActivities()
     {
-        $userId = user()->id;
-        $clientId = user()->client_id;
-        $bookings = $this->bookingService->getAllOfUser($userId, $clientId);
+        $bookings = $this->bookingService->getBookingActivities(user());
         return Reply::successWithData('Get bookings successfully',
             [
                 'data' => $this->bookingService->fomartOutputApi($bookings)
-            ]);
+            ]
+        );
     }
 
     public function show($id)
@@ -36,7 +36,8 @@ class BookingController extends Controller
         return Reply::successWithData('Get bookings successfully',
             [
                 'data' => $bookings
-            ]);
+            ]
+        );
     }
 
     public function store(StoreBookingRequest $request)
@@ -46,7 +47,8 @@ class BookingController extends Controller
         return Reply::successWithData('Create bookings successfully',
             [
                 'data' => $bookings
-            ]);
+            ]
+        );
     }
 
     public function update(Request $request, $id)
@@ -84,12 +86,11 @@ class BookingController extends Controller
 
     public function getHistoriesBooking()
     {
-        $userId = user()->id;
-        $clientId = user()->client_id;
-        $bookings = $this->bookingService->getHistoriesBooking($userId, $clientId);
+        $bookings = $this->bookingService->getHistoriesBooking(user());
         return Reply::successWithData('Get histories booking successfully',
             [
                 'data' => $bookings
-            ]);
+            ]
+        );
     }
 }

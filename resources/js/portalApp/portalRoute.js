@@ -9,18 +9,16 @@ const routes = [
         path: '/portal',
         name: 'portal',
         component: OverviewApp,
-        children: [
-            {
-                path: 'booking',
-                name: 'booking',
-                component: BookingApp,
-            },
-            {
-                path: 'booking/:id',
-                name: 'booking.locker',
-                component: SelectLockerApp,
-            }
-        ]
+    },
+    {
+        path: '/portal/booking',
+        name: 'booking',
+        component: BookingApp,
+    },
+    {
+        path: '/portal/booking/:id',
+        name: 'booking.locker',
+        component: SelectLockerApp,
     },
     {
         path: '/wallet',
