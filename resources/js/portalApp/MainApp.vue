@@ -88,5 +88,15 @@ export default defineComponent({
         );
         return { globalConfig, themeConfig, hashPriority };
     },
+    methods: {
+        ...mapActions({
+            loadSettings: 'moduleBase/loadSettings',
+            loadUser: 'moduleBase/loadUser',
+        }),
+    },
+    created() {
+        this.loadUser();
+        this.loadSettings();
+    }
 });
 </script>

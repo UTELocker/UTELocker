@@ -5,6 +5,8 @@ const namespaced = true;
 
 const state = {
     locations: [],
+    settings: {},
+    user: {},
     bookingActivities: [],
 }
 
@@ -16,6 +18,12 @@ const getters = {
 const mutations = {
     setLocations(state, locations) {
         state.locations = locations;
+    },
+    setSettings(state, settings) {
+        state.settings = settings;
+    },
+    setUser(state, user) {
+        state.user = user;
     },
     setBookingActivities(state, bookingActivities) {
         state.bookingActivities = bookingActivities;
@@ -35,6 +43,12 @@ const actions = {
 
             commit('setLocations', locations);
         });
+    },
+    loadSettings({ commit }) {
+        commit('setSettings', window.settings);
+    },
+    loadUser({ commit }) {
+        commit('setUser', window.user);
     },
     loadBookingActivities({ commit }) {
         get(API.GET_BOOKING_ACTIVITIES()).then(response => {

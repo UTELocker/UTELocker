@@ -14,6 +14,8 @@ class PortalController extends Controller
             'layouts.portal',
             [
                 'pageTitle' => 'UTELocker Portal',
+                'user' => user(),
+                'siteGroupSettings' => siteGroupOrGlobalSetting(),
             ]
         );
     }
