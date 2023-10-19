@@ -10,6 +10,8 @@ export const API = Object.freeze({
     GET_BOOKING_ACTIVITIES: () => `${API_BOOKING_PREFIX}/activities`,
 });
 
+export const LOGOUT_URL = '/logout';
+
 export const SLOT_TYPE = Object.freeze({
     CPU: 'CPU',
     SLOT: 'SLOT',
