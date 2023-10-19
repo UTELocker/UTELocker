@@ -37,11 +37,9 @@ class LockerController extends Controller
         $endDate = $request->end_date;
         $startDate = $request->start_date;
 
-        $locker = $this->lockerService->get($id);
+        $locker = $this->lockerService->getWithLocation($id);
         $listSlotsNotAvailable = $this->lockerSlotService->getSlotsNotAvailable($id, $startDate, $endDate);
         $module = $this->lockerService->getModulesAvailableBooking($locker, $listSlotsNotAvailable);
-
-        ksort($module);
 
         return Reply::successWithData(
             'Get locker successfully',

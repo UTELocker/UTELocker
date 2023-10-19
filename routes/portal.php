@@ -19,4 +19,10 @@ Route::prefix('api-portal')->group(function () {
         Route::get('activities', [BookingController::class, 'getBookingActivities'])
             ->name('portal.booking.activities');
     });
+
+    Route::prefix('bookings')->group(function () {
+        Route::post('/', [BookingController::class, 'store'])->name('portal.booking.store');
+        Route::put('{bookingId}', [BookingController::class, 'update'])->name('portal.booking.update');
+        Route::delete('{bookingId}', [BookingController::class, 'destroy'])->name('portal.booking.destroy');
+    });
 });

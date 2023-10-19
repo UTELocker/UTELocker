@@ -89,7 +89,7 @@ const actions = {
     togglePinCode({ commit }) {
         const isVisiblePinCode = !state.isVisiblePinCode;
         commit('setIsVisiblePinCode', isVisiblePinCode);
-    }
+    },
 }
 
 export default {

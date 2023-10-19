@@ -125,7 +125,11 @@ class LockerService extends BaseService
             } else {
                 $modules[$slot->row][$slot->column]['statusSlot'] = LockerSlotStatus::LOCKED;
             }
+        }
 
+        ksort($modules , SORT_NUMERIC);
+        foreach ($modules as &$module) {
+            ksort($module , SORT_NUMERIC);
         }
 
         return $modules;
@@ -138,7 +142,7 @@ class LockerService extends BaseService
     public function search($inputs) {
         $startDate = $inputs['start_date'];
         $endDate = $inputs['end_date'];
-        $numberSlot = $inputs['number_of_slot'] ?? 1;
+        $numberSlot = $inputs['number_of_slots'] ?? 1;
         $locations = $inputs['location_ids'] ?? null;
 
         return $this->model
@@ -166,5 +170,17 @@ class LockerService extends BaseService
             }])
             ->having('locker_slots_count', '>=', $numberSlot)
             ->get();
+    }
+
+    public function getWithLocation($id) {
+        return $this->model
+            ->select(
+                'lockers.id', 'lockers.code', 'lockers.image', 'lockers.description',
+                'lockers.status', 'locations.description as address',
+                'locations.latitude', 'locations.longitude'
+            )
+            ->join('locations', 'locations.id', '=', 'lockers.location_id')
+            ->where('lockers.id', $id)
+            ->firstOrFail();
     }
 }

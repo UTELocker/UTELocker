@@ -187,15 +187,13 @@ class BookingService extends BaseService
             ->leftJoin('lockers', 'locker_slots.locker_id', '=', 'lockers.id')
             ->leftJoin('locations', 'lockers.location_id', '=', 'locations.id')
             ->select(
-                'bookings.pin_code', 'bookings.status', 'bookings.start_date',
+                'bookings.status', 'bookings.start_date',
                 'bookings.end_date', 'bookings.created_at', 'bookings.id',
                 'locker_slots.row', 'locker_slots.column', 'locker_slots.locker_id',
                 'locker_slots.config', 'lockers.image',
                 'locations.description as address', 'locations.latitude', 'locations.longitude'
             )
-            ->orderBy('locker_slots.locker_id', 'asc')
-            ->orderBy('locker_slots.row', 'asc')
-            ->orderBy('locker_slots.column', 'asc')
+            ->orderBy('bookings.start_date', 'asc')
             ->get();
     }
 }

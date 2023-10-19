@@ -1,5 +1,6 @@
 import {get} from "../../helpers/api";
 import {API} from "../../constants/bookingConstant";
+import Swal from 'sweetalert2'
 
 const namespaced = true;
 
@@ -7,12 +8,14 @@ const state = {
     availableLockers: [],
     locker: {},
     lockerSlots: [],
+    selectedSlots: [],
 }
 
 const getters = {
     availableLockers: state => state.availableLockers,
     lockerSlots: state => state.lockerSlots,
     locker: state => state.locker,
+    selectedSlots: state => state.selectedSlots,
 }
 
 const mutations = {
@@ -24,19 +27,33 @@ const mutations = {
     },
     setLocker(state, locker) {
         state.locker = locker;
+    },
+    setSelectedSlots(state, selectedSlots) {
+        state.selectedSlots = selectedSlots;
     }
 }
 
 const actions = {
     loadAvailableLockers({ commit }, payload) {
-        const { locationIds, startDate, endDate } = payload;
+        const { locationIds, startDate, endDate, numberOfSlots } = payload;
 
         get(API.GET_AVAILABLE_LOCKERS({
             'location_ids' : locationIds,
             'start_date' : startDate,
             'end_date' : endDate,
+            'number_of_slots' : numberOfSlots,
         })).then(response => {
             const data = response.data.data;
+
+            if (data.length === 0) {
+                Swal.fire({
+                    title: 'No available lockers',
+                    text: 'There are no available lockers for the selected date and time.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                })
+            }
+
             const availableLockers = data.map(locker => {
                 return {
                     id: locker.id,
@@ -47,6 +64,13 @@ const actions = {
                 }
             });
             commit('setAvailableLockers', availableLockers);
+        }).catch(error => {
+            Swal.fire({
+                title: 'Error',
+                text: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })
         });
     },
     loadLockerSlots({ commit }, payload) {
@@ -57,14 +81,64 @@ const actions = {
             'end_date' : endDate,
         })).then(response => {
             const data = response.data.data;
+
+            let numberOfSlot = 1;
+
             const locker = {
                 id: data.locker.id,
                 image: data.locker.image ? data.locker.image : 'https://via.placeholder.com/150',
                 description: data.locker.description,
+                location: {
+                    address: data.locker.address,
+                    latitude: data.locker.latitude,
+                    longitude: data.locker.longitude,
+                },
             }
+            const modules = data.module.map(module => {
+                const slots = module.map(slot => {
+                    return {
+                        ...slot,
+                        is_selected: false,
+                        number_of_slot: numberOfSlot++,
+                    }
+                })
+                return slots;
+            });
+
             commit('setLocker', locker);
-            commit('setLockerSlots', data.module);
+            commit('setLockerSlots', modules);
         });
+    },
+    setStatusSelectedSlot({ commit, state }, payload) {
+        const { slotId } = payload;
+        const selectedSlots = [
+            ...state.selectedSlots
+        ];
+
+        const lockerSlots = state.lockerSlots.map(row => {
+            const slots = row.map(slot => {
+                if (slot.id === slotId) {
+
+                    if (!slot.is_selected) {
+                        selectedSlots.push(slot);
+                    } else {
+                        selectedSlots.splice(selectedSlots.indexOf(slot), 1);
+                    }
+
+                    slot.is_selected = !slot.is_selected;
+                }
+                return slot;
+            });
+            return slots;
+        });
+        commit('setLockerSlots', lockerSlots);
+        commit('setSelectedSlots', selectedSlots);
+    },
+    resetBooking({ commit }) {
+        commit('setAvailableLockers', []);
+        commit('setLockerSlots', []);
+        commit('setLocker', {});
+        commit('setSelectedSlots', []);
     }
 }
 

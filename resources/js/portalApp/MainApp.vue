@@ -15,6 +15,7 @@ import {useRoute} from "vue-router";
 import useMediaQuery from "./hooks/useMediaQuery";
 import {GLOBAL_CONFIG} from "./SymbolKey";
 import Layout from "./components/layouts/Layout.vue";
+import {mapActions} from "vuex";
 
 const getAlgorithm = (themes = []) =>
     themes

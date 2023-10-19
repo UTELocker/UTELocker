@@ -71,6 +71,7 @@ const useSiteToken = () => {
         --error-color: ${tokenValue.colorError};
         --white: ${tokenValue.colorWhite};
         --green-6: ${tokenValue['green-6']};
+        --green-3: ${tokenValue['green-3']};
         --gray-8: ${tokenValue['gray-8']};
         --magenta-7: ${tokenValue['magenta-7']};
         --line-height-base: ${tokenValue.lineHeight};

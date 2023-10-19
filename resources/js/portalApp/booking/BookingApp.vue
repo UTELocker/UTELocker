@@ -33,6 +33,7 @@
                                 @change="this.onRangePickerChange"
                                 :size="size"
                                 style="width: 100%"
+                                :disabledDate="date => date < Date.now() - 24 * 60 * 60 * 1000"
                             />
                         </a-col>
                     </a-row>
@@ -46,6 +47,7 @@
                                 :size="size"
                                 style="width: 100%"
                                 placeholder="Number of lockers"
+                                @change="this.setFormModel('numberOfSlots', $event)"
                             />
                         </a-col>
                     </a-row>
@@ -70,25 +72,31 @@
         <section class="markdown" v-if="availableLockers.length > 0">
             <h2>Available lockers</h2>
             <div class="site-card-wrapper">
-                <a-row :gutter="16">
-                    <a-col :xs="24" :sm="24" :md="12" :lg="8" :xl="6" v-for="locker in availableLockers" :key="locker.id">
-                        <a-card
-                            :title="locker.description"
-                            :style="{marginBottom: '20px'}"
-                            @click="this.$router.push({
-                                name: 'booking.locker',
-                                params: {id: locker.id},
-                                query: {
-                                    startDate: this.formModel.startDate,
-                                    endDate: this.formModel.endDate,
-                                }
-                            })"
-                            hoverable>
-                            <p>Address: {{locker.address}}</p>
-                            <p>Available slots: {{locker.locker_slots_count}}</p>
-                        </a-card>
-                    </a-col>
-                </a-row>
+                <a-list
+                    :grid="{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 }"
+                    :dataSource="availableLockers"
+                    :loading="isLoading"
+                >
+                    <template #renderItem="{ item }">
+                        <a-list-item>
+                            <a-card
+                                :title="item.description"
+                                :style="{marginBottom: '20px'}"
+                                @click="this.$router.push({
+                                    name: 'booking.locker',
+                                    params: {id: item.id},
+                                    query: {
+                                        startDate: this.formModel.startDate,
+                                        endDate: this.formModel.endDate,
+                                    }
+                                })"
+                                hoverable>
+                                <p>Address: {{item.address}}</p>
+                                <p>Available slots: {{item.locker_slots_count}}</p>
+                            </a-card>
+                        </a-list-item>
+                    </template>
+                </a-list>
             </div>
         </section>
     </article>
@@ -129,6 +137,7 @@ export default defineComponent({
         ...mapActions({
             loadLocations: "moduleBase/loadLocations",
             loadLockers: "moduleBooking/loadAvailableLockers",
+            resetBooking: "moduleBooking/resetBooking",
         }),
         setFormModel(key, value) {
             this.formModel[key] = value;
@@ -138,7 +147,28 @@ export default defineComponent({
             this.setFormModel('endDate', dateString[1]);
         },
         validateForm() {
+            if (this.formModel.startDate === null) {
+                this.showErrorMessage('Please select a start date');
+                return false;
+            }
+            if (this.formModel.endDate === null) {
+                this.showErrorMessage('Please select an end date');
+                return false;
+            }
+            if (this.formModel.selectedLocation.endDate <= this.formModel.startDate) {
+                this.showErrorMessage('End date must be greater than start date');
+                return false;
+            }
             return true;
+        },
+        showErrorMessage(message, onOk = null) {
+            this.$swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: message,
+                confirmButtonText: 'Ok',
+                onAfterClose: onOk,
+            });
         },
         submit() {
             if (this.validateForm()) {
@@ -147,6 +177,7 @@ export default defineComponent({
                     locationIds: this.formModel.selectedLocation,
                     startDate: this.formModel.startDate,
                     endDate: this.formModel.endDate,
+                    numberOfSlots: this.formModel.numberOfSlots,
                 }).then(() => {
                     this.isSubmitLoading = false;
                 });
@@ -155,6 +186,7 @@ export default defineComponent({
     },
     created() {
         this.isLoading = true;
+        this.resetBooking();
         this.loadLocations().then(() => {
             this.isLoading = false;
         });
