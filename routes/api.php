@@ -44,10 +44,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('bookings')->group(function () {
-        Route::get('/', [BookingController::class, 'getOfUser'])->name('api.bookings.getOfUser');
+        Route::get('/', [BookingController::class, 'getBookingActivities'])->name('api.bookings.getBookingActivities');
         Route::get('/{id}', [BookingController::class, 'show'])->name('api.bookings.show');
         Route::post('/', [BookingController::class, 'store'])->name('api.bookings.store');
         Route::put('/{id}', [BookingController::class, 'update'])->name('api.bookings.update');
+        Route::put('/{id}/extend-time', [BookingController::class, 'extendTime'])->name('api.bookings.extendTime');
         Route::delete('/{id}', [BookingController::class, 'destroy'])->name('api.bookings.destroy');
         Route::post('/change-password', [BookingController::class, 'changePassword'])
             ->name('api.bookings.changePassword');

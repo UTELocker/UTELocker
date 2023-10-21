@@ -8,6 +8,9 @@ export const API = Object.freeze({
     GET_LOCKER_SLOTS: (lockerId, params) => `${API_LOCKER_PREFIX}/${lockerId}/slots?` + jQuery.param(params),
     POST_BOOKING: () => `${API_BOOKING_PREFIX}`,
     GET_BOOKING_ACTIVITIES: () => `${API_BOOKING_PREFIX}/activities`,
+    PUT_EXTEND_TIME: (bookingId) => `${API_BOOKING_PREFIX}/${bookingId}/extend-time`,
+    DEL_END_BOOKING: (bookingId) => `${API_BOOKING_PREFIX}/${bookingId}`,
+    POST_CHANGE_PIN_CODE: () => `${API_BOOKING_PREFIX}/change-password`,
 });
 
 export const SLOT_TYPE = Object.freeze({
@@ -29,4 +32,10 @@ export const DONT_SHOW_POLICY_BOOKING = 'isDontShowPolicyBooking';
 export const SHOW_POLICY_BOOKING_STATUS = Object.freeze({
     SHOW: 0,
     DONT_SHOW: 1,
+});
+
+export const BOOKING_ACTIVITY_STATUS = Object.freeze({
+    NOT_YET: 0,
+    ACTIVE: 1,
+    EXPIRED: 2,
 });

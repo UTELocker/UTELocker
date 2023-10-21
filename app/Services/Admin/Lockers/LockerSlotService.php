@@ -152,4 +152,9 @@ class LockerSlotService extends BaseService
             ->select('locker_slots.id')
             ->get()->pluck('id')->toArray();
     }
+
+    public function get($id)
+    {
+        return $this->model->findOrFail($id);
+    }
 }

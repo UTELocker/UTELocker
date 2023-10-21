@@ -30,9 +30,17 @@
                     :dataSource="bookingActivities"
                 >
                     <template #renderItem="{ item }">
-                        <a-list-item>
+                        <a-list-item
+                            :style="{
+                                cursor: isActive(item) ? 'pointer' : 'not-allowed',
+                            }"
+                        >
                             <a-card>
-                                <a-row>
+                                <a-row
+                                    :style="{
+                                        opacity: isActive(item) ? '1' : '0.5',
+                                    }"
+                                >
                                     <a-col :span="6">
                                         <div
                                             :style="{
@@ -58,8 +66,9 @@
                                         <a-row>
                                             <a-col :span="24">
                                                 <p>Slot Code: {{item.slot_code}}</p>
-                                                <p>Remaining Time: {{calcRemainingTime(item)}}</p>
-                                                <p>Status: {{item.status}}</p>
+                                                <p v-if="isActive(item)">Remaining Time:</p>
+                                                <p v-if="isActive(item)">{{handleTimeRemain(item)}}</p>
+                                                <p>Status: {{handleStatusText(item.status)}}</p>
                                             </a-col>
                                         </a-row>
                                     </a-col>
@@ -77,6 +86,7 @@
                                                 shape="round"
                                                 size="large"
                                                 @click="handleClickShowButton(item)"
+                                                :disabled="!isActive(item)"
                                             >
                                                 Unlock
                                             </a-button>
@@ -93,7 +103,8 @@
                                                 width: '100%',
                                                 marginBottom: '0.5rem',
                                             }"
-                                            @click="() => $router.push({name: 'booking'})"
+                                            @click="handleClickExtendButton(item)"
+                                            :disable="!isActive(item)"
                                         >
                                             Extend
                                         </a-button>
@@ -104,9 +115,9 @@
                                             :style="{
                                                 width: '100%',
                                             }"
-                                            @click="() => $router.push({name: 'booking'})"
+                                            @click="handleClickEndButton(item)"
                                         >
-                                            Cancel
+                                            End Booking
                                         </a-button>
                                     </a-collapse-panel>
                                 </a-collapse>
@@ -125,14 +136,28 @@
                     bottom: '0',
                 }"
             >
-                <h1>{{ chosenBooking.pin_code }}</h1>
+                <actions-booking
+                    :booking="chosenBooking"
+                    @closeDrawer="onCloseDrawer"
+                />
             </a-drawer>
         </a-row>
     </a-space>
+    <extend-date-booking-modal
+        :booking="this.chosenBooking"
+        :visible="this.visible"
+        @closeModal="onCloseModal"
+    />
 </template>
 <script>
-import {defineComponent} from "vue";
+import {defineComponent,createVNode} from "vue";
 import {mapActions, mapState} from "vuex";
+import {BOOKING_ACTIVITY_STATUS} from "../constants/bookingConstant";
+import ActionsBooking from "./ActionsBooking.vue";
+import ExtendDateBookingModal from "./ExtendDateBookingModal.vue";
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { Modal } from 'ant-design-vue';
+
 export default defineComponent({
     name: "OverviewApp",
     data() {
@@ -140,7 +165,12 @@ export default defineComponent({
             isLoading: false,
             isShowDrawer: false,
             chosenBooking: {},
+            visible: false,
         }
+    },
+    components: {
+        ActionsBooking,
+        ExtendDateBookingModal,
     },
     computed: {
         ...mapState({
@@ -150,15 +180,64 @@ export default defineComponent({
     methods: {
         ...mapActions({
             getBookingActivities: 'moduleBase/loadBookingActivities',
+            deleteBooking: 'moduleBase/deleteBooking',
         }),
-        calcRemainingTime(booking) {
-            return "1 hour";
+        isActive(booking) {
+            return booking.status === BOOKING_ACTIVITY_STATUS.ACTIVE;
+        },
+        handleStatusText(status) {
+            switch(status) {
+                case BOOKING_ACTIVITY_STATUS.ACTIVE:
+                    return "Active";
+                case BOOKING_ACTIVITY_STATUS.NOT_YET:
+                    return "Not yet";
+                case BOOKING_ACTIVITY_STATUS.EXPIRED:
+                    return "Expired";
+                default:
+                    return "Unknown";
+            }
         },
         handleClickShowButton(booking) {
             this.isShowDrawer = true;
             this.chosenBooking = booking;
         },
         onCloseDrawer() {
+            this.isShowDrawer = false;
+        },
+        onCloseModal() {
+            this.visible = false;
+        },
+        handleClickExtendButton(booking) {
+            this.visible = true;
+            this.chosenBooking = booking;
+        },
+        handleTimeRemain(booking) {
+            let result = "";
+            if (booking.timeRemaining.days > 0) {
+                result += `${booking.timeRemaining.days} days `;
+            }
+            if (booking.timeRemaining.hours > 0) {
+                result += `${booking.timeRemaining.hours} hours `;
+            }
+            if (booking.timeRemaining.minutes > 0) {
+                result += `${booking.timeRemaining.minutes} minutes `;
+            }
+            return result;
+        },
+        handleClickEndButton(booking) {
+            Modal.confirm({
+                title: () => 'Do you want to end this booking?',
+                icon: () => createVNode(ExclamationCircleOutlined),
+                content: () => 'Booking will be ended and you can not use this slot anymore.',
+                onOk: () => {
+                    this.deleteBooking({
+                        bookingId: booking.id,
+                    });
+                },
+                onCancel() {},
+            });
+        },
+        changePinCode(booking) {
             this.isShowDrawer = false;
         },
     },

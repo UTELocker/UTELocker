@@ -1,5 +1,5 @@
-import {get} from "../../helpers/api";
-import {API} from "../../constants/bookingConstant";
+import {del, get, post} from "../../helpers/api";
+import {API, BOOKING_ACTIVITY_STATUS} from "../../constants/bookingConstant";
 
 const namespaced = true;
 
@@ -53,43 +53,63 @@ const actions = {
     loadBookingActivities({ commit }) {
         get(API.GET_BOOKING_ACTIVITIES()).then(response => {
             const data = response.data.data;
-            // const bookingActivities = data.map(activity => {
-            //     return {
-            //         id: activity.id,
-            //         pin_code: activity.pin_code,
-            //         status: activity.status,
-            //         start_date: activity.start_date,
-            //         end_date: activity.end_date,
-            //     }
-            // });
-            const bookingActivities = [
-                {
-                    id: 1,
-                    slot_code: 'A1',
-                    title: 'Locker 1',
-                    pin_code: '123456',
-                    status: 0,
-                    start_date: '2021-01-01 00:00:00',
-                    end_date: '2021-01-01 00:00:00',
-                },
-                {
-                    id: 2,
-                    slot_code: 'A2',
-                    title: 'Locker 2',
-                    pin_code: '123456',
-                    status: 1,
-                    start_date: '2021-01-01 00:00:00',
-                    end_date: '2021-01-01 00:00:00',
+            const bookingActivitiesActive = [];
+            const bookingActivitiesNotYet = [];
+            data.forEach(activity => {
+                const booking = {
+                    id: activity.id,
+                    slot_code: 'A' + activity.code,
+                    title: activity.lockerCode,
+                    pin_code: activity.pin_code,
+                    status: activity.status,
+                    timeRemaining: activity.timeOut,
+                    start_date: activity.dateBooked.start.date + ' ' + activity.dateBooked.start.time,
+                    end_date: activity.dateBooked.end.date + ' ' + activity.dateBooked.end.time,
+                    slot_config: activity.lockerSlotConfig,
                 }
-            ]
-
-            commit('setBookingActivities', bookingActivities);
+                if (activity.status === BOOKING_ACTIVITY_STATUS.ACTIVE) {
+                    bookingActivitiesActive.push(booking);
+                } else {
+                    bookingActivitiesNotYet.push(booking);
+                }
+            });
+            commit('setBookingActivities', bookingActivitiesActive.concat(bookingActivitiesNotYet));
         });
     },
     togglePinCode({ commit }) {
         const isVisiblePinCode = !state.isVisiblePinCode;
         commit('setIsVisiblePinCode', isVisiblePinCode);
     },
+    deleteBooking({ commit }, payload) {
+        const { bookingId } = payload;
+        del(API.DEL_END_BOOKING(bookingId)).then(response => {
+            if (response.data.status === 'success') {
+                const bookingActivities = state.bookingActivities.filter(booking => booking.id !== bookingId);
+                commit('setBookingActivities', bookingActivities);
+            }
+        }).catch(error => {
+            console.log(error);
+        });
+    },
+    changePinCode({ commit }, payload) {
+        const { bookingId, pinCode } = payload;
+        post(API.POST_CHANGE_PIN_CODE(), {
+            'id': bookingId,
+            'oldPassword': pinCode,
+        }).then(response => {
+            if (response.data.status === 'success') {
+                const bookingActivities = state.bookingActivities.map(booking => {
+                    if (booking.id === bookingId) {
+                        booking.pin_code = response.data.data.pin_code;
+                    }
+                    return booking;
+                });
+                commit('setBookingActivities', bookingActivities);
+            }
+        }).catch(error => {
+            console.log(error);
+        });
+    }
 }
 
 export default {

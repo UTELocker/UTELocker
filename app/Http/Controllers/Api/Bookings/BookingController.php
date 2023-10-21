@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Bookings;
 
 use App\Classes\Reply;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Booking\PutExtendTimeRequest;
 use App\Http\Requests\Api\bookings\ChangePassRequest;
 use App\Http\Requests\Api\Bookings\StoreBookingRequest;
 use App\Services\Admin\Bookings\BookingService;
@@ -88,6 +89,17 @@ class BookingController extends Controller
     {
         $bookings = $this->bookingService->getHistoriesBooking(user());
         return Reply::successWithData('Get histories booking successfully',
+            [
+                'data' => $bookings
+            ]
+        );
+    }
+
+    public function extendTime($id, PutExtendTimeRequest $request)
+    {
+        $data = $request->all();
+        $bookings = $this->bookingService->extendTime($id, $data);
+        return Reply::successWithData('Extend time successfully',
             [
                 'data' => $bookings
             ]

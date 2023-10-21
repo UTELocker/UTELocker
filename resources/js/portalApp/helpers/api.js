@@ -22,6 +22,14 @@ export function put(url, payload, options) {
     })
 }
 
+export function del(url, options) {
+    return axios({
+        method: 'DELETE',
+        url: url,
+        ...options
+    })
+}
+
 export function interceptors() {
     axios.interceptors.response.use((res) => {
         return res;
