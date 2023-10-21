@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Api\Booking;
+namespace App\Http\Requests\Api\Bookings;
 
 use App\Enums\BookingStatus;
+use App\Models\Booking;
 use App\Models\LockerSlot;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Booking;
+
 class PutExtendTimeRequest extends FormRequest
 {
     /**
@@ -46,8 +47,8 @@ class PutExtendTimeRequest extends FormRequest
                     $extendTime= Carbon::parse($value);
                     $endDateTime = Carbon::parse($booking->end_date);
 
-                    if ($endDateTime->greaterThan($extendTime)) {
-                        $fail('Extend time must be less than end time');
+                    if ($endDateTime->lessThanOrEqualTo($extendTime)) {
+                        $fail('Extend time must be greater than end time');
                     }
 
                     $allBookingOfSlot = LockerSlot::where('locker_slots.id', $booking->locker_slot_id)

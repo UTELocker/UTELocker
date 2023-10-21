@@ -77,6 +77,8 @@ import {defineComponent, ref} from "vue";
 import dayjs from "dayjs";
 import {API} from "../constants/bookingConstant";
 import {put} from "../helpers/api";
+import { Modal } from 'ant-design-vue';
+import { h } from 'vue';
 
 const dates = ref();
 const value = ref();
@@ -115,15 +117,19 @@ export default defineComponent({
             put(API.PUT_EXTEND_TIME(this.booking.id), {
                 extend_time: this.value,
             }).then(() => {
-                this.$swal({
+                Modal.success({
                     title: 'Success',
-                    text: 'Extend booking successfully',
-                    icon: 'success',
-                }).then(() => {
-                    this.$emit('closeModal');
-                })
-            }).catch(() => {
-                console.log('error');
+                    content: 'Extend booking successfully',
+                    onOk: () => {
+                        this.$emit('closeModal');
+                    },
+                });
+            }).catch((e) => {
+                const message = e?.response?.data?.message ?? 'Extend booking failed';
+                Modal.error({
+                    title: 'Error',
+                    content: message,
+                });
             });
         },
         onChange(value) {

@@ -12,7 +12,6 @@ mix.scripts([
         'public/vendor/jquery/date-range-picker/datepicker.min.js',
 
         'node_modules/dropify/src/js/dropify.js',
-        'node_modules/sweetalert2/dist/sweetalert2.all.min.js',
         'node_modules/bootstrap-select/js/bootstrap-select.js',
         'node_modules/quill/dist/quill.min.js',
         'node_modules/quill-emoji/dist/quill-emoji.js',

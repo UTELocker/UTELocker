@@ -68,6 +68,7 @@
 import {defineComponent} from "vue";
 import postBooking from "../mixins/apiBooking.js";
 import {mapState} from "vuex";
+import { Modal } from 'ant-design-vue';
 
 export default defineComponent({
     name: "PolicyModal",
@@ -98,7 +99,24 @@ export default defineComponent({
             return this.$router.push({name: 'booking'});
         },
         submit() {
-            this.postBooking();
+            this.postBooking().then(() => {
+                Modal.success({
+                    title: 'Booking success',
+                    content: 'Your booking has been successfully booked',
+                    onOk: () => {
+                        this.$router.push({name: 'portal'});
+                    },
+                });
+            }).catch((e) => {
+                const message = e?.response?.data?.message || 'Something went wrong';
+                Modal.error({
+                    title: 'Booking error',
+                    content: message,
+                    onOk: () => {
+                        this.$router.push({name: 'booking'});
+                    },
+                });
+            });
         },
     },
     created() {

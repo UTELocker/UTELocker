@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Api\Bookings;
 
 use App\Classes\Reply;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Booking\PutExtendTimeRequest;
 use App\Http\Requests\Api\bookings\ChangePassRequest;
+use App\Http\Requests\Api\Bookings\PutExtendTimeRequest;
 use App\Http\Requests\Api\Bookings\StoreBookingRequest;
 use App\Services\Admin\Bookings\BookingService;
-use App\View\Components\Auth;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller

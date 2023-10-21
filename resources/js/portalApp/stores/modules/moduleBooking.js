@@ -1,6 +1,5 @@
 import {get} from "../../helpers/api";
 import {API} from "../../constants/bookingConstant";
-import Swal from 'sweetalert2'
 
 const namespaced = true;
 
@@ -36,42 +35,32 @@ const mutations = {
 const actions = {
     loadAvailableLockers({ commit }, payload) {
         const { locationIds, startDate, endDate, numberOfSlots } = payload;
-
-        get(API.GET_AVAILABLE_LOCKERS({
-            'location_ids' : locationIds,
-            'start_date' : startDate,
-            'end_date' : endDate,
-            'number_of_slots' : numberOfSlots,
-        })).then(response => {
-            const data = response.data.data;
-
-            if (data.length === 0) {
-                Swal.fire({
-                    title: 'No available lockers',
-                    text: 'There are no available lockers for the selected date and time.',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                })
-            }
-
-            const availableLockers = data.map(locker => {
-                return {
-                    id: locker.id,
-                    description: locker.description,
-                    image: locker.image ? locker.image : 'https://via.placeholder.com/150',
-                    address: locker.address,
-                    locker_slots_count: locker.locker_slots_count,
+        return new Promise((resolve, reject) => {
+            get(API.GET_AVAILABLE_LOCKERS({
+                'location_ids' : locationIds,
+                'start_date' : startDate,
+                'end_date' : endDate,
+                'number_of_slots' : numberOfSlots,
+            })).then(response => {
+                const data = response.data.data;
+                if (data.length === 0) {
+                    reject('No available lockers');
                 }
+                const availableLockers = data.map(locker => {
+                    return {
+                        id: locker.id,
+                        description: locker.description,
+                        image: locker.image ? locker.image : 'https://via.placeholder.com/150',
+                        address: locker.address,
+                        locker_slots_count: locker.locker_slots_count,
+                    }
+                });
+                commit('setAvailableLockers', availableLockers);
+                resolve();
+            }).catch(error => {
+                reject(error);
             });
-            commit('setAvailableLockers', availableLockers);
-        }).catch(error => {
-            Swal.fire({
-                title: 'Error',
-                text: error.response.data.message,
-                icon: 'error',
-                confirmButtonText: 'OK'
-            })
-        });
+        })
     },
     loadLockerSlots({ commit }, payload) {
         const { lockerId, startDate, endDate } = payload;

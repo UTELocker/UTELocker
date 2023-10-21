@@ -90,6 +90,8 @@
 import {defineComponent} from "vue";
 import {mapActions, mapState} from "vuex";
 import {LIMIT_BOOKING_SLOTS, SLOT_STATUS, SLOT_TYPE} from "../constants/bookingConstant";
+import { Modal } from 'ant-design-vue';
+
 export default defineComponent({
     name: "SelectLockerApp",
     components: {
@@ -165,19 +167,17 @@ export default defineComponent({
         },
         validate() {
             if (this.startDate === null || this.endDate === null) {
-                this.$swal.fire({
-                    icon: 'error',
+                Modal.error({
                     title: 'Error',
-                    text: 'Please select start date and end date!',
-                })
+                    content: 'Please select start date and end date',
+                });
                 return false;
             }
             if (this.totalPrice === 0) {
-                this.$swal.fire({
-                    icon: 'error',
+                Modal.error({
                     title: 'Error',
-                    text: 'Please select at least one slot!',
-                })
+                    content: 'Please select at least one slot',
+                });
                 return false;
             }
             return true;

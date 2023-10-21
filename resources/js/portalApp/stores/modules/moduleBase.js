@@ -32,26 +32,31 @@ const mutations = {
 
 const actions = {
     loadLocations({ commit }) {
-        get(API.GET_LOCATIONS()).then(response => {
-            const data = response.data.data;
-
-            const locations = data.map(location => {
-                return {
-                    value: location.id,
-                    label: location.code + ' - ' + location.description,
-                    latitude: location.latitude,
-                    longitude: location.longitude,
-                    lockers: location.lockers.map(locker => {
-                        return {
-                            id: locker.id,
-                            image: locker.image,
-                            status: locker.status,
-                            code: locker.code,
-                        }
-                    }),
-                }
+        return new Promise((resolve, reject) => {
+            get(API.GET_LOCATIONS()).then(response => {
+                const data = response.data.data;
+                const locations = data.map(location => {
+                    return {
+                        value: location.id,
+                        code: location.code,
+                        label: location.code + ' - ' + location.description,
+                        latitude: location.latitude,
+                        longitude: location.longitude,
+                        lockers: location.lockers.map(locker => {
+                            return {
+                                id: locker.id,
+                                image: locker.image,
+                                status: locker.status,
+                                code: locker.code,
+                            }
+                        }),
+                    }
+                });
+                commit('setLocations', locations);
+                resolve(locations);
+            }).catch(error => {
+                reject(error);
             });
-            commit('setLocations', locations);
         });
     },
     loadSettings({ commit }) {
@@ -61,29 +66,32 @@ const actions = {
         commit('setUser', window.user);
     },
     loadBookingActivities({ commit }) {
-        get(API.GET_BOOKING_ACTIVITIES()).then(response => {
-            const data = response.data.data;
-            const bookingActivitiesActive = [];
-            const bookingActivitiesNotYet = [];
-            data.forEach(activity => {
-                const booking = {
-                    id: activity.id,
-                    slot_code: 'A' + activity.code,
-                    title: activity.lockerCode,
-                    pin_code: activity.pin_code,
-                    status: activity.status,
-                    timeRemaining: activity.timeOut,
-                    start_date: activity.dateBooked.start.date + ' ' + activity.dateBooked.start.time,
-                    end_date: activity.dateBooked.end.date + ' ' + activity.dateBooked.end.time,
-                    slot_config: activity.lockerSlotConfig,
-                }
-                if (activity.status === BOOKING_ACTIVITY_STATUS.ACTIVE) {
-                    bookingActivitiesActive.push(booking);
-                } else {
-                    bookingActivitiesNotYet.push(booking);
-                }
+        return new Promise((resolve, reject) => {
+            get(API.GET_BOOKING_ACTIVITIES()).then(response => {
+                const data = response.data.data;
+                const bookingActivitiesActive = [];
+                const bookingActivitiesNotYet = [];
+                data.forEach(activity => {
+                    const booking = {
+                        id: activity.id,
+                        slot_code: 'A' + activity.code,
+                        title: activity.lockerCode,
+                        pin_code: activity.pin_code,
+                        status: activity.status,
+                        timeRemaining: activity.timeOut,
+                        start_date: activity.dateBooked.start.date + ' ' + activity.dateBooked.start.time,
+                        end_date: activity.dateBooked.end.date + ' ' + activity.dateBooked.end.time,
+                        slot_config: activity.lockerSlotConfig,
+                    }
+                    if (activity.status === BOOKING_ACTIVITY_STATUS.ACTIVE) {
+                        bookingActivitiesActive.push(booking);
+                    } else {
+                        bookingActivitiesNotYet.push(booking);
+                    }
+                });
+                commit('setBookingActivities', bookingActivitiesActive.concat(bookingActivitiesNotYet));
+                resolve();
             });
-            commit('setBookingActivities', bookingActivitiesActive.concat(bookingActivitiesNotYet));
         });
     },
     togglePinCode({ commit }) {

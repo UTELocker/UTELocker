@@ -105,6 +105,7 @@
 import Layout from "../components/layouts/Layout.vue";
 import {defineComponent} from "vue";
 import {mapActions, mapState} from "vuex";
+import { Modal } from 'ant-design-vue';
 
 export default defineComponent({
     name: "BookingApp",
@@ -162,13 +163,12 @@ export default defineComponent({
             return true;
         },
         showErrorMessage(message, onOk = null) {
-            this.$swal.fire({
-                icon: 'error',
+            Modal.error({
                 title: 'Error',
-                text: message,
-                confirmButtonText: 'Ok',
-                onAfterClose: onOk,
+                content: message,
+                onOk: onOk,
             });
+
         },
         submit() {
             if (this.validateForm()) {
@@ -180,6 +180,13 @@ export default defineComponent({
                     numberOfSlots: this.formModel.numberOfSlots,
                 }).then(() => {
                     this.isSubmitLoading = false;
+                }).catch((e) => {
+                    const message = e?.response?.data?.message || e || 'Error searching lockers';
+                    this.isSubmitLoading = false;
+                    Modal.error({
+                        title: 'Error searching lockers',
+                        content: message,
+                    });
                 });
             }
         },
@@ -189,12 +196,22 @@ export default defineComponent({
         this.resetBooking();
         this.loadLocations().then(() => {
             this.isLoading = false;
+            if (this.$route.query.location) {
+                const location = this.locations.find((location) => {
+                    return location.code === this.$route.query.location;
+                });
+                this.formModel['selectedLocation'] = [
+                    parseInt(location.value),
+                ];
+            }
+        }).catch((e) => {
+            const message = e.response.data.message;
+            this.isLoading = false;
+            Modal.error({
+                title: 'Error loading locations',
+                content: message,
+            });
         });
-        if (this.$route.query.location) {
-            this.formModel['selectedLocation'] = [
-                parseInt(this.$route.query.location),
-            ];
-        }
     },
 });
 </script>

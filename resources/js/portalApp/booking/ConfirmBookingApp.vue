@@ -42,7 +42,9 @@ import {mapState} from "vuex";
 import PolicyModal from "./PolicyModal.vue";
 import postBooking from "../mixins/apiBooking.js";
 import {DONT_SHOW_POLICY_BOOKING, SHOW_POLICY_BOOKING_STATUS} from "../constants/bookingConstant";
-
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { createVNode } from 'vue';
+import { Modal } from 'ant-design-vue';
 export default defineComponent({
     name: "ConfirmBookingApp",
     components: {
@@ -72,25 +74,42 @@ export default defineComponent({
             });
         },
         submit() {
-            this.$swal({
+            Modal.confirm({
                 title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-            }).then((result) => {
-                if (result.isConfirmed) {
+                icon: createVNode(ExclamationCircleOutlined),
+                content: 'You won\'t be able to revert this!',
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk: () => {
                     const isDontShowPolicy = localStorage.getItem(DONT_SHOW_POLICY_BOOKING);
                     if (isDontShowPolicy == SHOW_POLICY_BOOKING_STATUS.DONT_SHOW) {
-                        this.postBooking();
+                        this.postBooking().then(() => {
+                            Modal.success({
+                                title: 'Booking success',
+                                content: 'Your booking has been successfully booked',
+                                onOk: () => {
+                                    this.$router.push({name: 'portal'});
+                                },
+                            });
+                        }).catch((e) => {
+                            const message = e?.response?.data?.message || 'Something went wrong';
+                            Modal.error({
+                                title: 'Booking error',
+                                content: message,
+                                onOk: () => {
+                                    this.$router.push({name: 'booking'});
+                                },
+                            });
+                        });
                     } else {
                         this.isShowPolicyModal = true;
                     }
-                }
-            })
+                },
+                onCancel() {
+                    console.log('Cancel');
+                },
+            });
         },
         validateRoute() {
             if (

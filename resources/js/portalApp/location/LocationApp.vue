@@ -69,7 +69,6 @@
                                 </a-list-item>
                             </template>
                         </a-list>
-
                     </l-popup>
                 </l-marker>
             </template>
@@ -129,7 +128,7 @@ export default defineComponent({
             this.$router.push({
                 name: "booking",
                 query: {
-                    location: location.value,
+                    location: location.code,
                 },
             });
         },

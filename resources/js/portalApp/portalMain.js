@@ -6,8 +6,6 @@ import './portalMain.scss';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import store from "./stores/store";
-import VueSweetalert2 from 'vue-sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css';
 
 const app = createApp(MainApp);
 
@@ -28,5 +26,4 @@ router.afterEach((to, from) => {
 app.use(Antd);
 app.use(store);
 app.use(router);
-app.use(VueSweetalert2);
 app.mount("#portalApp");
