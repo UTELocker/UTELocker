@@ -190,6 +190,11 @@ export default defineComponent({
         this.loadLocations().then(() => {
             this.isLoading = false;
         });
-    }
+        if (this.$route.query.location) {
+            this.formModel['selectedLocation'] = [
+                parseInt(this.$route.query.location),
+            ];
+        }
+    },
 });
 </script>

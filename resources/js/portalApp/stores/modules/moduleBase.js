@@ -34,13 +34,23 @@ const actions = {
     loadLocations({ commit }) {
         get(API.GET_LOCATIONS()).then(response => {
             const data = response.data.data;
+
             const locations = data.map(location => {
                 return {
                     value: location.id,
                     label: location.code + ' - ' + location.description,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    lockers: location.lockers.map(locker => {
+                        return {
+                            id: locker.id,
+                            image: locker.image,
+                            status: locker.status,
+                            code: locker.code,
+                        }
+                    }),
                 }
             });
-
             commit('setLocations', locations);
         });
     },

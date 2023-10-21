@@ -4,6 +4,7 @@ import WalletApp from "./wallet/WalletApp.vue";
 import SelectLockerApp from "./booking/SelectLockerApp.vue";
 import OverviewApp from "./overview/OverviewApp.vue";
 import ConfirmBookingApp from "./booking/ConfirmBookingApp.vue";
+import LocationApp from "./location/LocationApp.vue";
 
 const routes = [
     {
@@ -47,6 +48,11 @@ const routes = [
         path: '/portal/booking/confirm',
         name: 'booking.confirm',
         component: ConfirmBookingApp,
+    },
+    {
+        path: '/portal/locations',
+        name: 'locations',
+        component: LocationApp,
     }
 ];
 
