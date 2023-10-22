@@ -27,4 +27,8 @@ Route::prefix('api-portal')->group(function () {
         Route::post('/change-password', [BookingController::class, 'changePassword'])
             ->name('portal.bookings.changePassword');
     });
+
+    Route::prefix('histories')->group(function () {
+        Route::get('/booking', [BookingController::class, 'getHistoriesBooking'])->name('portal.histories.get');
+    });
 });

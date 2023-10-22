@@ -5,6 +5,7 @@ import SelectLockerApp from "./booking/SelectLockerApp.vue";
 import OverviewApp from "./overview/OverviewApp.vue";
 import ConfirmBookingApp from "./booking/ConfirmBookingApp.vue";
 import LocationApp from "./location/LocationApp.vue";
+import HistoryApp from "./history/HistoryApp.vue";
 
 const routes = [
     {
@@ -53,6 +54,11 @@ const routes = [
         path: '/portal/locations',
         name: 'locations',
         component: LocationApp,
+    },
+    {
+        path: '/portal/histories',
+        name: 'histories',
+        component: HistoryApp,
     }
 ];
 
