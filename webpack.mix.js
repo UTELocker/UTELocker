@@ -2,6 +2,8 @@ const mix = require('laravel-mix');
 const vueVersion = 3;
 const webpack = require('webpack');
 
+require('dotenv').config();
+
 mix.scripts([
         'public/vendor/moment/moment-with-locales.min.js',
         'public/vendor/moment/moment-timezone-with-data-10-year-range.js',

@@ -13,8 +13,8 @@ trait HandleNotification {
     public function sendNotifcaion(
         $type,
         $content,
-        $owner_id,
-        $client_id,
+        $ownerId,
+        $clientId,
         $parentTable = null,
         $parentId = null,
         $options = [],
@@ -22,8 +22,8 @@ trait HandleNotification {
         DB::transaction(function () use (
             $type,
             $content,
-            $owner_id,
-            $client_id,
+            $ownerId,
+            $clientId,
             $parentTable,
             $parentId,
             $options
@@ -31,8 +31,8 @@ trait HandleNotification {
             $notification = new Notification();
             $notification->type = $type;
             $notification->content = $content;
-            $notification->owner_id = $owner_id;
-            $notification->client_id = $client_id;
+            $notification->owner_id = $ownerId;
+            $notification->client_id = $clientId;
             $notification->parent_table = $parentTable;
             $notification->parent_id = $parentId;
             $notification->save();

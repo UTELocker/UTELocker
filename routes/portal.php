@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Lockers\LockerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Locations\LocationsController;
+use App\Http\Controllers\Api\Notifications\NotificationController;
 
 Route::prefix('api-portal')->group(function () {
     Route::prefix('locations')->group(function () {
@@ -30,5 +31,12 @@ Route::prefix('api-portal')->group(function () {
 
     Route::prefix('histories')->group(function () {
         Route::get('/booking', [BookingController::class, 'getHistoriesBooking'])->name('portal.histories.get');
+    });
+
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'get'])->name('portal.notifications.get');
+        Route::put('/{id}/status', [NotificationController::class, 'updateStatus'])
+            ->name('portal.notifications.update.status');
+        Route::post('/', [NotificationController::class, 'store'])->name('portal.notifications.store');
     });
 });

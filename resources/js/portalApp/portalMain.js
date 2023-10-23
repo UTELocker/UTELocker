@@ -6,6 +6,7 @@ import './portalMain.scss';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import store from "./stores/store";
+import './setUpPusher.js'
 
 const app = createApp(MainApp);
 

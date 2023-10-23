@@ -127,7 +127,7 @@ const actions = {
         }).catch(error => {
             console.log(error);
         });
-    }
+    },
 }
 
 export default {
