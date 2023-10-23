@@ -62,7 +62,7 @@
         v-if="isShowAlert"
     />
     <a-modal
-        :visible="isShowModal"
+        v-model:open="isShowModal"
         :footer="null"
         :width="800"
         :style="{ top: '20px' }"

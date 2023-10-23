@@ -1,6 +1,6 @@
 <template>
     <a-modal
-        v-model:visible="visible"
+        v-model:open="visible"
         :confirmLoading="isSubmitLoading"
         :width="800"
         :closable="false"

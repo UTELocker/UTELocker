@@ -1,7 +1,7 @@
 <template>
     <a-modal
         title="Extend booking"
-        v-model:visible="visibleState"
+        v-model:open="visibleState"
         :onOk="onOk"
         :okText="'Extend'"
         :cancelText="'Cancel'"
