@@ -112,18 +112,39 @@ class UsersDataTable extends BaseDataTable
      */
     public function query(User $model): QueryBuilder
     {
-        if (User::hasPermission(UserRole::SUPER_USER)) {
-            return $model->newQuery()
-                ->leftJoin('clients', 'clients.id', '=', 'users.client_id')
-                ->select([
-                    'users.*',
-                    'clients.name as client_name',
-                    'clients.app_name as client_app_name',
-                    'clients.id as client_id',
-                    'clients.logo as client_logo',
-                ]);
-        }
-        return $model->newQuery()->where('client_id', user()->client_id);
+        $search =  is_array($this->request->get('search')) ? '' : $this->request->get('search');
+        $status = $this->request->get('status') ?? '';
+        $type = $this->request->get('type') ?? '';
+        $gender= $this->request()->get('gender') ?? '';
+        $isSuperUser = User::hasPermission(UserRole::SUPER_USER);
+
+        return $model->newQuery()
+            ->when(!$isSuperUser, function ($query) {
+                $query->where('client_id', user()->client_id);
+            })
+            ->leftJoin('clients', 'clients.id', '=', 'users.client_id')
+            ->select([
+                'users.*',
+                'clients.name as client_name',
+                'clients.app_name as client_app_name',
+                'clients.id as client_id',
+                'clients.logo as client_logo',
+            ])
+            ->when($search != '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('users.name', 'like', '%' . $search . '%')
+                        ->orWhere('users.email', 'like', '%' . $search . '%');
+                });
+            })
+            ->when($status != '', function ($query) use ($status) {
+                $query->where('users.active', $status);
+            })
+            ->when($type != '', function ($query) use ($type) {
+                $query->where('users.type', $type);
+            })
+            ->when($gender != '', function ($query) use ($gender) {
+                $query->where('users.gender', $gender);
+            });
     }
 
     /**
@@ -166,11 +187,11 @@ class UsersDataTable extends BaseDataTable
                 'title' => '#'
             ],
             __('app.name') => ['data' => 'name', 'name' => 'name', 'exportable' => true, 'title' => __('app.name')],
-            __('app.client') => ['data' => 'client', 'name' => 'client', 'title' => __('app.client')],
+            __('app.client') => ['data' => 'client', 'name' => 'users.client_id', 'title' => __('app.client')],
             __('app.type') => ['data' => 'type', 'name' => 'type', 'exportable' => true, 'title' => __('app.type')],
             __('app.email') => ['data' => 'email', 'name' => 'email', 'exportable' => true, 'title' => __('app.email')],
             __('app.gender') => ['data' => 'gender', 'name' => 'gender', 'exportable' => true, 'title' => __('app.gender')],
-            __('app.status') => ['data' => 'status', 'name' => 'status', 'title' => __('app.status')],
+            __('app.status') => ['data' => 'status', 'name' => 'active', 'title' => __('app.status')],
         ];
 
         $action = [

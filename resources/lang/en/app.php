@@ -93,5 +93,6 @@ return array(
     'expireAt' => 'Expire At',
     'paymentMethod' => 'Payment Method',
     'invite' => 'Invite member to UTELocker',
-    'gender' => 'Gender'
+    'gender' => 'Gender',
+    'normalUser' => 'Normal User',
 );

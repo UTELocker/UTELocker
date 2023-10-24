@@ -50,10 +50,38 @@
                 <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.status')</label>
                 <div class="select-filter mb-4">
                     <div class="select-others">
-                        <select class="form-control select-picker" data-container="body" name="status" id="status">
-                            <option value="all">@lang('app.all')</option>
-                            <option value="active">@lang('app.active')</option>
-                            <option value="deactive">@lang('app.inactive')</option>
+                        <select class="form-control select-picker" data-container="body" name="status" id="status-filter">
+                            <option value="">@lang('app.all')</option>
+                            <option value="Y">@lang('app.active')</option>
+                            <option value="N">@lang('app.inactive')</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="more-filter-items">
+                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.gender')</label>
+                <div class="select-filter mb-4">
+                    <div class="select-others">
+                        <select class="form-control select-picker" data-container="body" name="status" id="gender-filter">
+                            <option value="">@lang('app.all')</option>
+                            <option value="0">@lang('app.male')</option>
+                            <option value="1">@lang('app.female')</option>
+                            <option value="2">@lang('app.others')</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="more-filter-items">
+                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.type')</label>
+                <div class="select-filter mb-4">
+                    <div class="select-others">
+                        <select class="form-control select-picker" data-container="body" name="status" id="type-filter">
+                            <option value="">@lang('app.all')</option>
+                            @if (\App\Models\User::isSuperUser())
+                                <option value="0">@lang('app.superAdmin')</option>
+                            @endif
+                            <option value="1">@lang('app.admin')</option>
+                            <option value="2">@lang('app.normalUser')</option>
                         </select>
                     </div>
                 </div>
@@ -83,8 +111,8 @@
                 </div>
                 <div class="select-status mr-3 d-none quick-action-field" id="change-status-action">
                     <select name="status" class="form-control select-picker">
-                        <option value="deactive">@lang('app.inactive')</option>
-                        <option value="active">@lang('app.active')</option>
+                        <option value="N">@lang('app.inactive')</option>
+                        <option value="Y">@lang('app.active')</option>
                     </select>
                 </div>
             </x-datatable.actions>
@@ -92,11 +120,49 @@
         <div class="d-flex flex-column w-tables rounded mt-3 bg-white table-responsive">
 
             {!! $dataTable->table(['class' => 'table table-hover border-0 w-100']) !!}
-
         </div>
     </div>
 @endsection
 
 @push('scripts')
     @include('sections.datatables_js')
+    <script>
+        $(document).ready(function () {
+            const table = $('#users-table');
+            $('#search-text-field').on('keyup', function () {
+                const value = $(this).val();
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.search = value;
+                }).DataTable().ajax.reload();
+            });
+            $('#status-filter').on('change', function () {
+                const value = $(this).val();
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.status = value;
+                }).DataTable().ajax.reload();
+            });
+            $('#type-filter').on('change', function () {
+                const value = $(this).val();
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.type = value;
+                }).DataTable().ajax.reload();
+            });
+            $('#gender-filter').on('change', function () {
+                const value = $(this).val();
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.gender = value;
+                }).DataTable().ajax.reload();
+            });
+            $('#reset-filters-2').on('click', function () {
+                $('#status-filter').val('');
+                $('#type-filter').val('');
+                $('#gender-filter').val('');
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.gender = '';
+                    data.type = '';
+                    data.status = '';
+                }).DataTable().ajax.reload();
+            });
+        });
+    </script>
 @endpush
