@@ -19,14 +19,15 @@ mix.scripts([
         'node_modules/quill-emoji/dist/quill-emoji.js',
         'node_modules/quill-mention/dist/quill.mention.min.js',
         'node_modules/quill-magic-url/dist/index.js',
+        'node_modules/sweetalert2/dist/sweetalert2.all.min.js',
 
         'resources/js/app.js',
-        'resources/js/main.js',
-        'resources/js/common.js',
-    ], 'public/js/main.js')
-    .sass('resources/scss/main.scss', 'public/css')
-    .options({processCssUrls: false})
-    .sourceMaps(true, 'source-map')
+            'resources/js/main.js',
+            'resources/js/common.js',
+        ], 'public/js/main.js')
+        .sass('resources/scss/main.scss', 'public/css')
+        .options({processCssUrls: false})
+        .sourceMaps(true, 'source-map')
 
 mix.scripts([
     'resources/js/bulkCreate.js',

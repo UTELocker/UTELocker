@@ -5,6 +5,7 @@ $dropify-font-path: "../fonts" !default;
 @import "../../node_modules/quill/dist/quill.snow.css";
 @import "../../node_modules/quill-emoji/dist/quill-emoji.css";
 @import "../../node_modules/quill-mention/dist/quill.mention.css";
+@import "../../node_modules/sweetalert2/src/sweetalert2";
 
 @font-face {
     font-family: "Helvetica Neue";
