@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Location;
 use App\Models\Locker;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -87,6 +88,8 @@ class LockersDataTable extends BaseDataTable
      */
     public function query(Locker $model): QueryBuilder
     {
+        $search = is_array($this->request()->get('search')) ? '' : $this->request()->get('search');
+        $location = $this->request()->get('location') ?? '';
         $query = $model
             ->newQuery()
             ->leftJoin('licenses', 'licenses.locker_id', '=', 'lockers.id')
@@ -106,6 +109,18 @@ class LockersDataTable extends BaseDataTable
 
         if (!auth()->user()->isSuperUser()) {
             $query->where('licenses.client_id', auth()->user()->client_id);
+        }
+
+        if ($search != '') {
+            $query->where(function ($query) use ($search) {
+                $query->whereRaw('UPPER(lockers.code) like ?', ['%' . strtoupper($search) . '%'])
+                    ->orWhereRaw('UPPER(locations.description) like ?', ['%' . strtoupper($search) . '%'])
+                    ->orWhereRaw('UPPER(locations.code) like ?', ['%' . strtoupper($search) . '%']);
+            });
+        }
+
+        if ($location != '') {
+            $query->where('lockers.location_id', $location);
         }
 
         return $query;
@@ -150,15 +165,24 @@ class LockersDataTable extends BaseDataTable
                 'searchable' => false,
                 'title' => '#'
             ],
-            __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
-            __('app.client') => ['data' => 'client', 'name' => 'client', 'title' => __('app.client')],
+            __('app.code') => ['data' => 'code', 'name' => 'lockers.code', 'title' => __('app.code')],
+            __('app.client') => ['data' => 'client', 'name' => 'client_id', 'title' => __('app.client')],
             __('app.lockerSlots') => [
                 'data' => 'locker_slot_type_count',
                 'name' => 'locker_slot_type_count',
                 'title' => __('app.lockerSlots')
             ],
-            __('app.location') => ['data' => 'location', 'name' => 'location', 'title' => __('app.location')],
-            __('app.createdAt') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('app.createdAt')]
+            __('app.location') => [
+                'data' => 'location',
+                'name' => 'location',
+                'orderable' => false,
+                'title' => __('app.location')
+            ],
+            __('app.createdAt') => [
+                'data' => 'created_at',
+                'name' => 'lockers.created_at',
+                'title' => __('app.createdAt')
+            ]
         ];
 
         $action = [

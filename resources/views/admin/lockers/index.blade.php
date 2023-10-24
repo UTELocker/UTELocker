@@ -47,13 +47,16 @@
         <!-- MORE FILTERS START -->
         <x-filters.more-filter-box>
             <div class="more-filter-items">
-                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.status')</label>
+                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.location')</label>
                 <div class="select-filter mb-4">
                     <div class="select-others">
-                        <select class="form-control select-picker" data-container="body" name="status" id="status">
+                        <select class="form-control select-picker" data-container="body" name="status" id="location-filter">
                             <option value="all">@lang('app.all')</option>
-                            <option value="active">@lang('app.active')</option>
-                            <option value="deactive">@lang('app.inactive')</option>
+                            @foreach($locations as $location)
+                                <option value="{{$location->id}}">
+                                    {{ $location->description }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -89,26 +92,26 @@
     @include('sections.datatables_js')
 
     <script>
-        $('#lockers-table').on('preXhr.dt', function(e, settings, data) {
-            const dateRangePicker = $('#datatableRange').data('daterangepicker');
-            let startDate = $('#datatableRange').val();
-            let endDate;
+        // $('#lockers-table').on('preXhr.dt', function(e, settings, data) {
+        //     const dateRangePicker = $('#datatableRange').data('daterangepicker');
+        //     let startDate = $('#datatableRange').val();
+        //     let endDate;
+        //
+        //     if (startDate === '') {
+        //         startDate = null;
+        //         endDate = null;
+        //     } else {
+        //         startDate = dateRangePicker.startDate.format('YYYY-MM-DD');
+        //         endDate = dateRangePicker.endDate.format('YYYY-MM-DD');
+        //     }
+        //
+        //     data['startDate'] = startDate;
+        //     data['endDate'] = endDate;
+        // });
 
-            if (startDate === '') {
-                startDate = null;
-                endDate = null;
-            } else {
-                startDate = dateRangePicker.startDate.format('YYYY-MM-DD');
-                endDate = dateRangePicker.endDate.format('YYYY-MM-DD');
-            }
-
-            data['startDate'] = startDate;
-            data['endDate'] = endDate;
-        });
-
-        const showTable = () => {
-            window.LaravelDataTables["lockers-table"].draw(false);
-        }
+        // const showTable = () => {
+        //     window.LaravelDataTables["lockers-table"].draw(false);
+        // }
 
         $(document).ready(function () {
             @if (!is_null(request('start')) && !is_null(request('end')))
@@ -118,6 +121,31 @@
             $('#datatableRange').data('daterangepicker').setEndDate("{{ request('end') }}");
             showTable();
             @endif
+        })
+
+        $(document).ready(function () {
+            const table = $('#lockers-table');
+
+            $('#search-text-field').on('keyup', function () {
+                const value = $(this).val();
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.search = value;
+                }).DataTable().ajax.reload();
+            });
+
+            $('#location-filter').on('change', function () {
+                const value = $(this).val();
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.location = value;
+                }).DataTable().ajax.reload();
+            });
+
+            $('#reset-filters-2').on('click', function () {
+                $('#location-filter').val('');
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.location = '';
+                }).DataTable().ajax.reload();
+            });
         })
     </script>
 @endpush

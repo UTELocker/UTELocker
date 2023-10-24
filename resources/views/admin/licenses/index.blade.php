@@ -45,20 +45,20 @@
         <!-- RESET END -->
 
         <!-- MORE FILTERS START -->
-        <x-filters.more-filter-box>
-            <div class="more-filter-items">
-                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.status')</label>
-                <div class="select-filter mb-4">
-                    <div class="select-others">
-                        <select class="form-control select-picker" data-container="body" name="status" id="status">
-                            <option value="all">@lang('app.all')</option>
-                            <option value="active">@lang('app.active')</option>
-                            <option value="deactive">@lang('app.inactive')</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </x-filters.more-filter-box>
+{{--        <x-filters.more-filter-box>--}}
+{{--            <div class="more-filter-items">--}}
+{{--                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.status')</label>--}}
+{{--                <div class="select-filter mb-4">--}}
+{{--                    <div class="select-others">--}}
+{{--                        <select class="form-control select-picker" data-container="body" name="status" id="status">--}}
+{{--                            <option value="all">@lang('app.all')</option>--}}
+{{--                            <option value="active">@lang('app.active')</option>--}}
+{{--                            <option value="deactive">@lang('app.inactive')</option>--}}
+{{--                        </select>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </x-filters.more-filter-box>--}}
     </x-filters.filter-box>
 @endsection
 
@@ -86,14 +86,21 @@
     @include('sections.datatables_js')
 
     <script>
-        const showTable = () => {
-            window.LaravelDataTables["licenses-table"].draw(false);
-        }
-
         $('#link-license').click(function () {
             const url = "{{ route('admin.licenses.link.create') }}";
             $(MODAL_LG + ' ' + MODAL_HEADING).html('...');
             $.ajaxModal(MODAL_LG, url);
         });
+
+        $(document).ready(function () {
+            const table = $('#licenses-table');
+
+            $('#search-text-field').on('keyup', function () {
+                const value = $(this).val();
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.search = value;
+                }).DataTable().ajax.reload();
+            });
+        })
     </script>
 @endpush

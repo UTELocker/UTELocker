@@ -64,9 +64,13 @@ class LicensesDataTable extends BaseDataTable
      */
     public function query(License $model): QueryBuilder
     {
+        $search = is_array($this->request()->get('search')) ? '' : $this->request()->get('search');
         return $model->newQuery()
             ->userSiteGroup()
-            ->with(['locker']);
+            ->with(['locker'])
+            ->when($search != '', function ($query) use($search) {
+                $query->WhereRaw('UPPER(licenses.code) like ?', ['%' . strtoupper($search) . '%']);
+            });
     }
 
     /**
@@ -99,10 +103,10 @@ class LicensesDataTable extends BaseDataTable
             ],
             __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
             __('app.locker') => ['data' => 'locker', 'name' => 'locker', 'title' => __('app.locker')],
-            __('app.client') => ['data' => 'client', 'name' => 'client', 'title' => __('app.client')],
-            __('app.activeAt') => ['data' => 'active_at', 'name' => 'active_at', 'title' => __('app.activeAt')],
-            __('app.expireAt') => ['data' => 'expire_at', 'name' => 'expire_at', 'title' => __('app.expireAt')],
-            __('app.createdAt') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('app.createdAt')]
+            __('app.client') => ['data' => 'client', 'name' => 'client_id', 'title' => __('app.client')],
+            __('app.activeAt') => ['data' => 'active_at', 'name' => 'licenses.active_at', 'title' => __('app.activeAt')],
+            __('app.expireAt') => ['data' => 'expire_at', 'name' => 'licenses.expire_at', 'title' => __('app.expireAt')],
+            __('app.createdAt') => ['data' => 'created_at', 'name' => 'licenses.created_at', 'title' => __('app.createdAt')]
         ];
 
         $action = [

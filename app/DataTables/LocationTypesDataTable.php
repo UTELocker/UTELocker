@@ -107,9 +107,13 @@ class LocationTypesDataTable extends BaseDataTable
                 'searchable' => false,
                 'title' => '#'
             ],
-            __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
+            __('app.code') => ['data' => 'code', 'name' => 'location_types.code', 'title' => __('app.code')],
             __('app.client') => ['data' => 'client_name', 'name' => 'client_name', 'title' => __('app.client')],
-            __('app.createdAt') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('app.createdAt')]
+            __('app.createdAt') => [
+                'data' => 'created_at',
+                'name' => 'location_types.created_at',
+                'title' => __('app.createdAt'
+            )]
         ];
 
         $action = [

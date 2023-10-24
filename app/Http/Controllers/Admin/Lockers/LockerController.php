@@ -38,6 +38,7 @@ class LockerController extends Controller
      */
     public function index(LockersDataTable $dataTable)
     {
+        $this->locations = $this->locationService->getLocationsOfClient();
         return $dataTable->render('admin.lockers.index', $this->data);
     }
 
@@ -132,7 +133,7 @@ class LockerController extends Controller
             abort(403);
         }
         $this->locker = $this->lockerService->get($id);
-        $this->locations = $this->locationService->getLocationsOfClient($this->locker);
+        $this->locations = $this->locationService->getLocationsOfLocker($this->locker);
         $this->pageTitle = __('app.update') . ' ' . __('app.locker');
 
         if (request()->ajax()) {

@@ -62,6 +62,7 @@ class LocationsDataTable extends BaseDataTable
      */
     public function query(Location $model): QueryBuilder
     {
+        $search = is_array($this->request()->get('search')) ? '' : $this->request()->get('search');
         return $model
             ->newQuery()
             ->leftJoin('clients', 'clients.id', '=', 'locations.client_id')
@@ -76,7 +77,11 @@ class LocationsDataTable extends BaseDataTable
                 'clients.name as client_name',
                 'location_types.code as location_type_code',
                 'location_types.description as location_type_desc'
-            ]);
+            ])
+            ->when($search != '', function ($query) use($search) {
+                $query->WhereRaw('UPPER(locations.description) like ?', ['%' . strtoupper($search) . '%'])
+                    ->orWhereRaw('UPPER(locations.code) like ?', ['%' . strtoupper($search) . '%']);
+            });
     }
 
     /**
@@ -113,10 +118,10 @@ class LocationsDataTable extends BaseDataTable
                 'searchable' => false,
                 'title' => '#'
             ],
-            __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
+            __('app.code') => ['data' => 'code', 'name' => 'locations.code', 'title' => __('app.code')],
             __('app.client') => ['data' => 'client_name', 'name' => 'client_name', 'title' => __('app.client')],
             __('app.locationType')
-                => ['data' => 'location_type', 'name' => 'location_type', 'title' => __('app.locationType')],
+                => ['data' => 'location_type', 'name' => 'locations.location_type_id', 'title' => __('app.locationType')],
             __('app.createdAt') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('app.createdAt')]
         ];
 

@@ -84,6 +84,16 @@
             showTable();
             @endif
         })
+
+        $(document).ready(function () {
+            const table = $('#locations-table');
+            $('#search-text-field').on('keyup', function () {
+                const value = $(this).val();
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.search = value;
+                }).DataTable().ajax.reload();
+            });
+        })
     </script>
 @endpush
 

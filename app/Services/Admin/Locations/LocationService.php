@@ -68,7 +68,7 @@ class LocationService extends BaseService
             ->get();
     }
 
-    public function getLocationsOfClient($locker)
+    public function getLocationsOfLocker($locker)
     {
         $client = Locker::getClient($locker->id);
         if (!isset($client->id)) {
@@ -85,4 +85,7 @@ class LocationService extends BaseService
         return $locationArr;
     }
 
+    public function getLocationsOfClient() {
+        return $this->model->where('client_id', user()->client_id)->get();
+    }
 }
