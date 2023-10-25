@@ -19,3 +19,9 @@ export const NOTIFICATION_TYPE = Object.freeze({
     REPORT: 'report',
 });
 
+export const NOTIFICATION_TYPE_LABEL_CHOOSE = Object.freeze({
+    ALL: 'all',
+    PAYMENT: 'payment',
+    BOOKING: 'booking',
+});
+

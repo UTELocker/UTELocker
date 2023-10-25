@@ -16,6 +16,11 @@ class NotificationServices extends BaseService
 
     public function updateStatus($id)
     {
+        if ($id == 'all') {
+            $this->model->where('owner_id', user()->id)
+                ->update(['status' => CommonConstant::DATABASE_YES]);
+            return;
+        }
         $this->model = $this->get($id);
         $this->model->status = CommonConstant::DATABASE_YES;
         $this->model->save();

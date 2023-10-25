@@ -1,7 +1,7 @@
 <template>
     <Navigation />
-    <notification :isMobile="isMobile" />
     <template v-if="!isMobile">
+        <notification :isMobile="isMobile" />
         <Github />
     </template>
 </template>

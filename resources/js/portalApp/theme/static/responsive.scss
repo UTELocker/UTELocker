@@ -10,6 +10,18 @@
     color: var(--text-color);
 }
 
+.nav-phone-badge {
+    position: absolute;
+    top: 50%;
+    right: 45px;
+    transform: translateY(-50%);
+    z-index: 1;
+    display: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
 @media only screen and (max-width: 992px) {
     .toc-affix {
         display: none;
@@ -55,6 +67,10 @@
     }
 
     .nav-phone-icon {
+        display: block;
+    }
+
+    .nav-phone-badge {
         display: block;
     }
 

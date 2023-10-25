@@ -12,6 +12,7 @@
                 />
                 <Menu v-if="!isMobile" />
             </a-col>
+            <notification :isMobile="isMobile" v-if="isMobile" />
             <a-popover
                 v-model:open="menuOpen"
                 overlay-class-name="popover-menu"
@@ -35,7 +36,7 @@ import {GLOBAL_CONFIG} from "../../../SymbolKey";
 import Menu from "./Menu.vue";
 import { UnorderedListOutlined } from '@ant-design/icons-vue';
 import SearchBox from "./SearchBox.vue";
-
+import Notification from "./Notification.vue";
 export default defineComponent({
     name: "Header",
     components: {
@@ -43,6 +44,7 @@ export default defineComponent({
         Menu,
         Logo,
         UnorderedListOutlined,
+        Notification
     },
     setup() {
         const route = useRoute();

@@ -1,10 +1,12 @@
 import {get, put} from "../../helpers/api";
-import {API, NOTIFICATION_STATUS} from "../../constants/notificationConstant";
+import {API, NOTIFICATION_STATUS, NOTIFICATION_TYPE} from "../../constants/notificationConstant";
 
 const namespaced = true;
 
 const state = {
     notifications: [],
+    notificationsPayment: [],
+    notificationsBooking: [],
     newNotification: null,
     notificationUnreadCount: 0,
 }
@@ -13,6 +15,8 @@ const getters = {
     notifications: state => state.notifications,
     newNotification: state => state.newNotification,
     notificationUnreadCount: state => state.notificationUnreadCount,
+    notificationsPayment: state => state.notificationsPayment,
+    notificationsBooking: state => state.notificationsBooking,
 }
 
 const mutations = {
@@ -24,30 +28,45 @@ const mutations = {
     },
     setNotificationUnreadCount(state, count) {
         state.notificationUnreadCount = count;
-    }
+    },
+    setNotificationsPayment(state, notifications) {
+        state.notificationsPayment = notifications;
+    },
+    setNotificationsBooking(state, notifications) {
+        state.notificationsBooking = notifications;
+    },
 }
 
 const actions = {
     loadNotifications({ commit }) {
         return new Promise((resolve, reject) => {
             let notificationUnreadCount = 0;
+            const notificationsBooking = [];
+            const notificationsPayment = [];
             get(API.GET_NOTIFICATIONS()).then(response => {
                 const data = response.data.data;
                 const notifications = data.map(notification => {
                     if (notification.status === NOTIFICATION_STATUS.UNREAD) {
                         notificationUnreadCount++;
                     }
-                    return {
+                    const notificationData = {
                         id: notification.id,
                         content: notification.content,
                         status: notification.status,
                         type: notification.type,
                         created_at: notification.created_at,
                     }
+                    if (notificationData.type === NOTIFICATION_TYPE.BOOKING) {
+                        notificationsBooking.push(notificationData);
+                    } else if (notificationData.type === NOTIFICATION_TYPE.PAYMENT) {
+                        notificationsPayment.push(notificationData);
+                    }
+                    return notificationData;
                 });
-                console.log(notificationUnreadCount);
                 commit('setNotificationUnreadCount', notificationUnreadCount);
                 commit('setNotifications', notifications);
+                commit('setNotificationsBooking', notificationsBooking);
+                commit('setNotificationsPayment', notificationsPayment);
                 resolve();
             }).catch(error => {
                 reject(error);
@@ -84,6 +103,25 @@ const actions = {
                 });
 
                 commit('setNotificationUnreadCount', state.notificationUnreadCount - 1);
+                commit('setNotifications', notifications);
+                resolve();
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+    markAllNotificationAsRead({ commit }) {
+        console.log(API.PUT_NOTIFICATION_STATUS('all'));
+        return new Promise((resolve, reject) => {
+            put(API.PUT_NOTIFICATION_STATUS('all'), { status: NOTIFICATION_STATUS.READ }).then(response => {
+                const notifications = state.notifications.map(notification => {
+                    if (notification.status === NOTIFICATION_STATUS.UNREAD) {
+                        notification.status = NOTIFICATION_STATUS.READ;
+                    }
+                    return notification;
+                });
+
+                commit('setNotificationUnreadCount', 0);
                 commit('setNotifications', notifications);
                 resolve();
             }).catch(error => {
