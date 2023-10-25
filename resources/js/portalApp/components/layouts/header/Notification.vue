@@ -82,7 +82,7 @@
         :closable="false"
     >
         <template #title>
-            <icon-notification :type="notificationChoose.type" />
+            <component :is="handleIconNotification(notificationChoose.type)" style="margin-right: 8px" />
             <p>
                 {{handleTypeNotification(notificationChoose)}}
             </p>

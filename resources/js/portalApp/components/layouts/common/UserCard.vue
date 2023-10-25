@@ -26,6 +26,12 @@
                         }"
                     >
                         <div>
+                            <div>
+                                <span style="font-weight: bold; font-size: 16px;">{{user.name}}</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 12px;">{{user.email}}</span>
+                            </div>
                         </div>
                     </a-col>
                 </a-col>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\bookings;
+namespace App\Http\Requests\Api\Bookings;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;

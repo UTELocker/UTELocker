@@ -23,8 +23,8 @@
                 v-if="!isMobile"
                 class="wallet-action"
             >
-                <a-button type="primary" @click="showTopUpModal">Top Up</a-button>
-                <a-button type="primary" @click="showUTEPayModal">Withdraw</a-button>
+                <a-button type="primary" @click="this.$router.push({name: 'wallet.topup'})">Top Up</a-button>
+                <a-button type="primary">Withdraw</a-button>
             </div>
         </div>
     </a-card>

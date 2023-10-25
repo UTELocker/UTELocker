@@ -6,29 +6,13 @@ import OverviewApp from "./overview/OverviewApp.vue";
 import ConfirmBookingApp from "./booking/ConfirmBookingApp.vue";
 import LocationApp from "./location/LocationApp.vue";
 import HistoryApp from "./history/HistoryApp.vue";
+import TopUp from "./wallet/TopUp/TopUp.vue";
 
 const routes = [
     {
         path: '/portal',
         name: 'portal',
         component: OverviewApp,
-        children: [
-            {
-                path: 'booking',
-                name: 'booking',
-                component: BookingApp,
-            },
-            {
-                path: 'booking/:id',
-                name: 'booking.locker',
-                component: SelectLockerApp,
-            },
-            {
-                path: 'booking/confirm',
-                name: 'booking.confirm',
-                component: ConfirmBookingApp,
-            }
-        ]
     },
     {
         path: '/portal/booking',
@@ -39,11 +23,6 @@ const routes = [
         path: '/portal/booking/:id',
         name: 'booking.locker',
         component: SelectLockerApp,
-    },
-    {
-        path: '/wallet',
-        name: 'wallet',
-        component: WalletApp,
     },
     {
         path: '/portal/booking/confirm',
@@ -59,6 +38,16 @@ const routes = [
         path: '/portal/histories',
         name: 'histories',
         component: HistoryApp,
+    },
+    {
+        path: '/wallet',
+        name: 'wallet',
+        component: WalletApp,
+    },
+    {
+        path: '/wallet/topup',
+        name: 'wallet.topup',
+        component: TopUp,
     }
 ];
 
