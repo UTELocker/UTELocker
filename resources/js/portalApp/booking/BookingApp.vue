@@ -8,7 +8,7 @@
         </section>
         <a-card :style="{backgroundColor: 'var(--purple-3)'}">
             <a-row :gutter="16">
-                <a-col :span="10">
+                <a-col :xs="24" :sm="24" :md="8" :lg="10" :xl="10" style="margin: 5px 0 !important">
                     <a-row>
                         <a-col :span="24">
                             <a-select
@@ -24,7 +24,7 @@
                         </a-col>
                     </a-row>
                 </a-col>
-                <a-col :span="8">
+                <a-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8" style="margin: 5px 0 !important">
                     <a-row>
                         <a-col :span="24">
                             <a-range-picker
@@ -38,7 +38,7 @@
                         </a-col>
                     </a-row>
                 </a-col>
-                <a-col :span="4">
+                <a-col :xs="24" :sm="24" :md="4" :lg="4" :xl="4" style="margin: 5px 0 !important">
                     <a-row>
                         <a-col :span="24">
                             <a-input-number
@@ -52,7 +52,7 @@
                         </a-col>
                     </a-row>
                 </a-col>
-                <a-col :span="2">
+                <a-col :xs="24" :sm="24" :md="2" :lg="2" :xl="2" style="margin: 5px 0 !important">
                     <a-row>
                         <a-col :span="24">
                             <a-button

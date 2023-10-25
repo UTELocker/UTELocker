@@ -5,7 +5,7 @@
                 width: '400px',
             }"
         >
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; marginBottom: 10px">
                 <h3 style="margin: 0;">Notifications</h3>
                 <a-button
                     type="link"
