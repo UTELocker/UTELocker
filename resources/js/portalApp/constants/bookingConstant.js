@@ -13,6 +13,8 @@ export const API = Object.freeze({
     POST_CHANGE_PIN_CODE: () => `${API_BOOKING_PREFIX}/change-password`,
 });
 
+export const LOGOUT_URL = '/logout';
+
 export const SLOT_TYPE = Object.freeze({
     CPU: 'CPU',
     SLOT: 'SLOT',

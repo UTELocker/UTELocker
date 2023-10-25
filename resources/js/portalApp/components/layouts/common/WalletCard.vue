@@ -7,13 +7,13 @@
                     textAlign: 'center',
                 }">
                     <p><strong>Wallet</strong></p>
-                    <p>250,000đ</p>
+                    <p>{{ this.getWalletBalance() }}</p>
                 </a-col>
                 <a-col :span="12" :style="{
                     textAlign: 'center',
                 }">
                     <p><strong>Points</strong></p>
-                    <p>250,000đ</p>
+                    <p>{{ this.getWalletPoints() }}</p>
                 </a-col>
             </a-row>
             <a-row>
@@ -48,10 +48,18 @@
 </template>
 <script>
 import {defineComponent} from "vue";
+import {mapState} from "vuex";
+import walletMix from "../../../mixins/walletMix";
 
 export default defineComponent({
     name: "WalletCard",
-    setup(props) {},
+    mixins: [walletMix],
+    computed: {
+        ...mapState({
+            wallet: state => state.moduleBase.wallet,
+            isVisibleBalance: state => state.moduleBase.isVisibleBalance,
+        }),
+    },
 });
 </script>
 <style scoped>
@@ -64,7 +72,7 @@ export default defineComponent({
     height: 100px;
 }
 .placeholder {
-    height: 125px;
+    height: 150px;
 }
 .ant-card-bordered {
     border-radius: 0;
