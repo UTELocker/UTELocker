@@ -1,5 +1,5 @@
 import {get} from "../../helpers/api";
-import {API} from "../../constants/bookingConstant";
+import {API, SLOT_TYPE} from "../../constants/bookingConstant";
 
 const namespaced = true;
 
@@ -88,7 +88,7 @@ const actions = {
                     return {
                         ...slot,
                         is_selected: false,
-                        number_of_slot: numberOfSlot++,
+                        number_of_slot: slot.type === SLOT_TYPE.SLOT ? numberOfSlot++ : null,
                     }
                 })
                 return slots;
@@ -128,7 +128,7 @@ const actions = {
         commit('setLockerSlots', []);
         commit('setLocker', {});
         commit('setSelectedSlots', []);
-    }
+    },
 }
 
 export default {

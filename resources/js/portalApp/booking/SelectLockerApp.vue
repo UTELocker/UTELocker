@@ -40,7 +40,13 @@
                                         <p>Slot Type: {{slot.type}}</p>
                                         <p>Slot Status: {{slot.statusSlot}}</p>
                                     </template>
-                                    <p>A{{slot.number_of_slot}}</p>
+                                    <p>
+                                        {{
+                                        slot.number_of_slot === null
+                                            ? slot.type
+                                            : 'A' + slot.number_of_slot
+                                        }}
+                                    </p>
                                 </a-popover>
                             </a-card-grid>
                         </template>

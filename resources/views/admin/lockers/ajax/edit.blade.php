@@ -40,16 +40,6 @@
                                 </x-forms.date-picker>
                             </div>
                             <div class="col-md-4">
-                                <x-forms.text
-                                    fieldId="warranty_duration"
-                                    :fieldLabel="__('modules.lockers.warrantyDuration')"
-                                    fieldName="warranty_duration"
-                                    fieldRequired="true"
-                                    :fieldPlaceholder="__('modules.lockers.placeholders.warrantyDuration')"
-                                    :fieldValue="$locker->warranty_duration ?? ''">
-                                </x-forms.text>
-                            </div>
-                            <div class="col-md-4">
                                 <x-forms.select fieldId="status" :fieldLabel="__('modules.lockers.status')"
                                                 fieldName="status"
                                                 fieldRequired="true"

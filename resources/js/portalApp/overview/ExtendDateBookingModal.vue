@@ -11,6 +11,7 @@
             height: 'auto',
             overflowY: 'auto',
         }"
+        :loading="this.isLoaded"
     >
         <a-space :size="10" direction="vertical" style="width:100%">
             <a-row>
@@ -37,21 +38,21 @@
                 <a-space>
                     <a-button
                         type="primary"
-                        :disabled="validateSubmit()"
+                        :disabled="this.isLoaded"
                         @click="addExtendTime(0, 30)"
                     >
                         +30 minutes
                     </a-button>
                     <a-button
                         type="primary"
-                        :disabled="validateSubmit()"
+                        :disabled="this.isLoaded"
                         @click="addExtendTime(1, 0)"
                     >
                         +1 hour
                     </a-button>
                     <a-button
                         type="primary"
-                        :disabled="validateSubmit()"
+                        :disabled="this.isLoaded"
                         @click="addExtendTime(2, 0)"
                     >
                         +2 hours
@@ -75,14 +76,10 @@
 <script>
 import {defineComponent, ref} from "vue";
 import dayjs from "dayjs";
-import {API} from "../constants/bookingConstant";
-import {put} from "../helpers/api";
+import {mapActions} from "vuex";
 import { Modal } from 'ant-design-vue';
-import { h } from 'vue';
 
-const dates = ref();
 const value = ref();
-const hackValue = ref();
 
 export default defineComponent({
     name: "ExtendDateBookingModal",
@@ -100,31 +97,55 @@ export default defineComponent({
         return {
             value: null,
             priceOfHour: 0,
+            isLoaded: false,
         };
     },
     methods: {
+        ...mapActions({
+            extendTimeBooking: 'moduleBase/extendTimeBooking',
+        }),
         disabledDate(current) {
             const startDate = dayjs(this.booking.end_date, 'YYYY-MM-DD HH:mm');
             return startDate.diff(current, 'days') > 0;
         },
         validateSubmit() {
+            if (!this.value) {
+                Modal.warning({
+                    title: 'Warning',
+                    content: 'Please choose date time',
+                });
+                return true;
+            }
+            const extendDate = dayjs(this.value, 'YYYY-MM-DD HH:mm');
+            const endDate = dayjs(this.booking.end_date, 'YYYY-MM-DD HH:mm');
+
+            if (extendDate.diff(endDate, 'minutes') < 30) {
+                Modal.warning({
+                    title: 'Warning',
+                    content: 'Please choose date time greater than 30 minutes',
+                });
+                return true;
+            }
+
             return false;
         },
         onOk() {
+            this.isLoaded = true;
             if (this.validateSubmit()) {
                 return;
             }
-            put(API.PUT_EXTEND_TIME(this.booking.id), {
-                extend_time: this.value,
+            this.extendTimeBooking({
+                bookingId: this.booking.id,
+                extendTime: this.calculateTimeExtend()[0] * 60 + this.calculateTimeExtend()[1],
             }).then(() => {
                 Modal.success({
                     title: 'Success',
                     content: 'Extend booking successfully',
-                    onOk: () => {
-                        this.$emit('closeModal');
-                    },
+                    onOk: () => {},
                 });
+                this.handleClose();
             }).catch((e) => {
+                this.handleClose();
                 const message = e?.response?.data?.message ?? 'Extend booking failed';
                 Modal.error({
                     title: 'Error',
@@ -166,13 +187,18 @@ export default defineComponent({
             const endDate = startDate.add(hours, 'hours').add(minutes, 'minutes');
             this.value = endDate;
         },
+        handleClose() {
+            this.isLoaded = false;
+            this.value = null;
+            this.$emit('closeModal');
+        }
     },
     computed: {
         visibleState: {
             get () { return this.visible },
             set (value) {
                 if (!value) {
-                    this.$emit('closeModal');
+                    this.handleClose();
                 }
             },
         },

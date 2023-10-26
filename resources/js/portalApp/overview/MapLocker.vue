@@ -1,5 +1,10 @@
 <template>
-    <div :style="this.style">
+    <div
+        :style="{
+            width: '100%',
+            height: isMobile ? '30vh' : '30vh',
+        }"
+    >
         <h3 style="margin-bottom: 10px;">Map Locker of booking </h3>
         <l-map ref="map" v-model:zoom="zoom" :center="[
                     this.marker.lat,
@@ -47,14 +52,9 @@ export default defineComponent({
             type: String,
             default: "",
         },
-        style: {
-            type: Object,
-            default: () => {
-                return {
-                    height: "300px",
-                    width: "800px",
-                };
-            },
+        isMobile: {
+            type: Boolean,
+            default: false,
         },
     },
     components: {

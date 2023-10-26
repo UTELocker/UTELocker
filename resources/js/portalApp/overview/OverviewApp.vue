@@ -34,6 +34,7 @@
                             :style="{
                                 cursor: isActive(item) ? 'pointer' : 'not-allowed',
                             }"
+                            :key="item.id"
                         >
                             <a-card>
                                 <a-row
@@ -67,7 +68,15 @@
                                             <a-col :span="24">
                                                 <p>Slot Code: {{item.slot_code}}</p>
                                                 <p v-if="isActive(item)">Remaining Time:</p>
-                                                <p v-if="isActive(item)">{{handleTimeRemain(item)}}</p>
+                                                <p v-if="isActive(item)">
+                                                    <a-statistic-countdown
+                                                        :value="handleTimeRemain(item)"
+                                                        format="D day HH:mm"
+                                                        :valueStyle= "{
+                                                            fontSize: '1rem',
+                                                        }"
+                                                    />
+                                                </p>
                                                 <p>Status: {{handleStatusText(item.status)}}</p>
                                             </a-col>
                                         </a-row>
@@ -128,16 +137,14 @@
             </a-col>
             <a-drawer
                 title="Unlock Pin Code"
-                placement="bottom"
+                placement="right"
                 :open="isShowDrawer"
                 @close="onCloseDrawer"
-                :style="{
-                    position: 'absolute',
-                    bottom: '0',
-                }"
+                :width="isMobile ? '100%' : '40%'"
             >
                 <actions-booking
-                    :booking="chosenBooking"
+                    :isMobile="this.isMobile"
+                    :booking="this.chosenBooking"
                     @closeDrawer="onCloseDrawer"
                 />
             </a-drawer>
@@ -150,13 +157,14 @@
     />
 </template>
 <script>
-import {defineComponent,createVNode} from "vue";
+import {defineComponent,createVNode,inject} from "vue";
 import {mapActions, mapState} from "vuex";
 import {BOOKING_ACTIVITY_STATUS} from "../constants/bookingConstant";
 import ActionsBooking from "./ActionsBooking.vue";
 import ExtendDateBookingModal from "./ExtendDateBookingModal.vue";
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal } from 'ant-design-vue';
+import {GLOBAL_CONFIG} from "../SymbolKey.js";
 
 export default defineComponent({
     name: "OverviewApp",
@@ -166,6 +174,12 @@ export default defineComponent({
             isShowDrawer: false,
             chosenBooking: {},
             visible: false,
+        }
+    },
+    setup() {
+        const globalConfig = inject(GLOBAL_CONFIG);
+        return {
+            isMobile: globalConfig.isMobile,
         }
     },
     components: {
@@ -212,17 +226,8 @@ export default defineComponent({
             this.chosenBooking = booking;
         },
         handleTimeRemain(booking) {
-            let result = "";
-            if (booking.timeRemaining.days > 0) {
-                result += `${booking.timeRemaining.days} days `;
-            }
-            if (booking.timeRemaining.hours > 0) {
-                result += `${booking.timeRemaining.hours} hours `;
-            }
-            if (booking.timeRemaining.minutes > 0) {
-                result += `${booking.timeRemaining.minutes} minutes `;
-            }
-            return result;
+            const EndDate = new Date(booking.end_date);
+            return EndDate.getTime();
         },
         handleClickEndButton(booking) {
             Modal.confirm({

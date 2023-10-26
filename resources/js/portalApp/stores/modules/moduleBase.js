@@ -1,5 +1,6 @@
-import {del, get, post} from "../../helpers/api";
+import {del, get, post, put} from "../../helpers/api";
 import {API, BOOKING_ACTIVITY_STATUS} from "../../constants/bookingConstant";
+import dayjs from "dayjs";
 
 const namespaced = true;
 
@@ -78,10 +79,11 @@ const actions = {
                         title: activity.lockerCode,
                         pin_code: activity.pin_code,
                         status: activity.status,
-                        timeRemaining: activity.timeOut,
                         start_date: activity.dateBooked.start.date + ' ' + activity.dateBooked.start.time,
                         end_date: activity.dateBooked.end.date + ' ' + activity.dateBooked.end.time,
                         slot_config: activity.lockerSlotConfig,
+                        address: activity.address,
+                        location: activity.location,
                     }
                     if (activity.status === BOOKING_ACTIVITY_STATUS.ACTIVE) {
                         bookingActivitiesActive.push(booking);
@@ -128,6 +130,25 @@ const actions = {
             console.log(error);
         });
     },
+    extendTimeBooking({ commit }, payload) {
+        const {extendTime, bookingId} = payload;
+        return new Promise((resolve, reject) => {
+            put(API.PUT_EXTEND_TIME(bookingId), {
+                extend_time: extendTime,
+            }).then(() => {
+                const bookings = state.bookingActivities.map(booking => {
+                    if (booking.id === bookingId) {
+                        booking.end_date = dayjs(booking.end_date).add(extendTime, 'minute').format('YYYY-MM-DD HH:mm');
+                    }
+                    return booking;
+                });
+                commit('setBookingActivities', bookings);
+                resolve();
+            }).catch((e) => {
+                reject(e);
+            });
+        });
+    }
 }
 
 export default {

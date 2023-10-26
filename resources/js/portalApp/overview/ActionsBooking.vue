@@ -1,21 +1,6 @@
 <template>
     <a-row>
-        <a-col :xs="0" :sm="0" :md="12" :lg="12" :xl="12">
-            <map-locker
-                :style="{
-                    height: '300px',
-                    width: '800px',
-                }"
-                :marker="{
-                    lat: 10.857038362936851,
-                    lng: 106.76472910149498,
-                }"
-                :address="'12 Nguyen Van Bao, Ward 4, Go Vap District, Ho Chi Minh City, Vietnam'"
-            />
-        </a-col>
-        <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12"
-               style="padding-right: 40px; padding-left: 40px;"
-        >
+        <a-col :span="24" >
             <a-space
                 style="
                     width: 100%;
@@ -156,17 +141,14 @@
                 </a-row>
             </a-space>
         </a-col>
-        <a-col :xs="24" :sm="24" :md="0" :lg="0" :xl="0">
+        <a-col :span="24">
             <map-locker
-                :style="{
-                    height: '150px',
-                    width: '400px',
-                }"
                 :marker="{
-                    lat: 10.857038362936851,
-                    lng: 106.76472910149498,
+                    lat: booking.location.latitude,
+                    lng: booking.location.longitude,
                 }"
-                :address="'12 Nguyen Van Bao, Ward 4, Go Vap District, Ho Chi Minh City, Vietnam'"
+                :address="booking.address"
+                :isMobile="isMobile"
             />
         </a-col>
     </a-row>
@@ -198,6 +180,10 @@ export default defineComponent({
         booking: {
             type: Object,
             required: true,
+        },
+        isMobile: {
+            type: Boolean,
+            required: false,
         },
     },
     data() {
@@ -268,6 +254,12 @@ export default defineComponent({
                     const newPinCode = bookingActivity.pin_code;
                     this.pinCode = Array.from(newPinCode.toString());
                 }
+            },
+            deep: true,
+        },
+        booking: {
+            handler: function (booking) {
+                this.pinCode = this.splitPinCode(booking);
             },
             deep: true,
         },

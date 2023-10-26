@@ -215,7 +215,8 @@ class BookingService extends BaseService
     public function extendTime($id, array $data)
     {
         $booking = $this->get($id);
-        $booking->end_date = $data['extend_time'];
+        $extendDate = Carbon::parse($booking->end_date)->addMinutes($data['extend_time']);
+        $booking->end_date = $extendDate;
         $booking->save();
         return $booking;
     }

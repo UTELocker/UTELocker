@@ -33,7 +33,8 @@
         </template>
     </a-page-header>
     <policy-modal
-        v-model:visible="this.isShowPolicyModal"
+        :visible="this.isShowPolicyModal"
+        @close="closePolicyModal"
     />
 </template>
 <script>
@@ -94,6 +95,7 @@ export default defineComponent({
                             });
                         }).catch((e) => {
                             const message = e?.response?.data?.message || 'Something went wrong';
+                            this.isShowPolicyModal = false;
                             Modal.error({
                                 title: 'Booking error',
                                 content: message,
@@ -184,7 +186,11 @@ export default defineComponent({
                     },
                 }
             ]
-        }
+        },
+        closePolicyModal() {
+            console.log('closePolicyModal');
+            this.isShowPolicyModal = false;
+        },
     },
     computed: {
         ...mapState({

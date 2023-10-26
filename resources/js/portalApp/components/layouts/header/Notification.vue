@@ -52,7 +52,7 @@
                             style="align-items: center !important;"
                         >
                         <template #title>
-                            <a href="/">{{ shortContent(item) }}</a>
+                            <h3>{{ shortContent(item) }}</h3>
                         </template>
                         <template #avatar>
                             <component :is="handleIconNotification(item)" style="margin-right: 8px" />
@@ -82,7 +82,7 @@
         :closable="false"
     >
         <template #title>
-            <icon-notification :type="notificationChoose.type" />
+            <component :is="handleIconNotification(item)" style="margin-right: 8px" />
             <p>
                 {{handleTypeNotification(notificationChoose)}}
             </p>
@@ -222,18 +222,23 @@ export default defineComponent({
                 case NOTIFICATION_TYPE.REPORT:
                 default:
                     this.notificationChoose = notification;
-                    this.markNotificationAsRead({
-                        notificationChoose: notification,
-                    }).then(() => {
+                    if (notification.status === NOTIFICATION_STATUS.UNREAD) {
+                        this.markNotificationAsRead({
+                            notificationChoose: notification,
+                            }).then(() => {
+                                this.isShowModal = true;
+                                this.visible = false;
+                            }).
+                            catch((error) => {
+                                Modal.error({
+                                    title: 'Error',
+                                    content: error.response.data.message,
+                                });
+                        });
+                    } else {
                         this.isShowModal = true;
                         this.visible = false;
-                    }).
-                    catch((error) => {
-                        Modal.error({
-                            title: 'Error',
-                            content: error.response.data.message,
-                        });
-                    });
+                    }
             }
         },
         handleDate(notification) {

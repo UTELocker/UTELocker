@@ -28,7 +28,7 @@ class PutExtendTimeRequest extends FormRequest
         return [
             'extend_time' => [
                 'required',
-                'string',
+                'numeric',
                 function ($attribute, $value, $fail) {
                     $idBooking = $this->route('id');
 
@@ -44,12 +44,11 @@ class PutExtendTimeRequest extends FormRequest
                         $fail('Booking is not active');
                     }
 
-                    $extendTime= Carbon::parse($value);
-                    $endDateTime = Carbon::parse($booking->end_date);
-
-                    if ($endDateTime->lessThanOrEqualTo($extendTime)) {
-                        $fail('Extend time must be greater than end time');
+                    if ($value < 30) {
+                        $fail('Extend time must be greater than 30 minutes');
                     }
+
+                    $extendTime = Carbon::parse($booking->end_date)->addMinutes($value);
 
                     $allBookingOfSlot = LockerSlot::where('locker_slots.id', $booking->locker_slot_id)
                         ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
