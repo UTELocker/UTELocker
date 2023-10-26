@@ -1,6 +1,9 @@
 <template>
-    <a-card style="width: 100%">
-        <template v-for="paymentMethod in paymentMethods">
+    <a-card style="width: 100%; min-height: 100px">
+        <template v-if="isLoading">
+            <a-skeleton active />
+        </template>
+        <template v-else v-for="paymentMethod in paymentMethods">
             <a-card-grid :style="{
                 width: calculateSlotWidth(paymentMethods) + '%',
                 textAlign: 'center',
@@ -10,7 +13,7 @@
                 :hoverable="true"
                 @click="selectPaymentMethod(paymentMethod)"
             >
-                <img :src="paymentMethod.image" :alt="paymentMethod.name" :style="{
+                <img :src="getPaymentMethodImage(paymentMethod.type)" :alt="paymentMethod.name" :style="{
                     width: '20%',
                     height: '100%',
                     objectFit: 'contain',
@@ -21,23 +24,15 @@
 </template>
 <script>
 import {defineComponent} from "vue";
+import {get} from "../../helpers/api";
+import {PAYMENT_METHOD_IMAGES, WALLET_API} from "../../constants/walletConstant";
 
 export default defineComponent({
     name: "SelectPaymentMethod",
     data() {
         return {
-            paymentMethods: [
-                {
-                    id: 1,
-                    name: 'Paypal',
-                    image: 'https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg',
-                },
-                {
-                    id: 2,
-                    name: 'Stripe',
-                    image: 'https://stripe.com/img/v3/home/twitter.png',
-                },
-            ],
+            isLoading: false,
+            paymentMethods: [],
         }
     },
     methods: {
@@ -47,6 +42,19 @@ export default defineComponent({
         calculateSlotWidth(row) {
             return 100 / row.length;
         },
+        getPaymentMethodImage(type) {
+            return PAYMENT_METHOD_IMAGES[type];
+        },
+    },
+    created() {
+        this.isLoading = true;
+        get(WALLET_API.GET_PAYMENT_METHODS())
+            .then(response => {
+                this.paymentMethods = response.data.data;
+            })
+            .finally(() => {
+                this.isLoading = false;
+            });
     }
 });
 </script>

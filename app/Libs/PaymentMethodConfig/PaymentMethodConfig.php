@@ -17,15 +17,29 @@ abstract class PaymentMethodConfig implements IPaymentMethodConfig
         return $this;
     }
 
-    public function getConfigs(): array
+    public function getConfigs(bool $isRestrict = true): array
     {
-        return $this->config;
+        if ($isRestrict) {
+            return array_merge($this->getPublicConfigs(), $this->getRestrictedConfigs());
+        }
+
+        return $this->getPublicConfigs();
     }
 
     public function addConfig(string $fieldName, string|array $value): static
     {
         $this->config[$fieldName] = $value;
         return $this;
+    }
+
+    public function getPublicConfigs(): array
+    {
+        return $this->config;
+    }
+
+    public function getRestrictedConfigs(): array
+    {
+        return [];
     }
 
     public function getConfig(string $fieldName): mixed

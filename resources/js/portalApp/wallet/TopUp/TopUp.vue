@@ -12,10 +12,15 @@
         <a-card>
             <a-steps :current="current" :items="items"></a-steps>
             <div class="steps-content">
-                <component :is="TOPUP_STEPS[current].component" @selectPaymentMethod="selectPaymentMethod" />
+                <component
+                    :is="TOP_UP_STEPS[current].component"
+                    @selectPaymentMethod="selectPaymentMethod"
+                    :paymentMethodType="paymentMethodType"
+                    :paymentMethodId="paymentMethodId"
+                />
             </div>
             <div class="steps-action">
-                <a-button v-if="current === TOPUP_STEPS.length - 1" type="primary">Done</a-button>
+                <a-button v-if="current === TOP_UP_STEPS.length - 1" type="primary">Done</a-button>
                 <a-button v-if="current > 0" style="margin-left: 8px;" @click="prev">Previous</a-button>
             </div>
         </a-card>
@@ -23,7 +28,7 @@
 </template>
 <script>
 import {defineComponent, ref} from "vue";
-import {TOPUP_STEPS} from "../../constants/walletConstant";
+import {TOP_UP_STEPS} from "../../constants/walletConstant";
 
 export default defineComponent({
     name: "TopUp",
@@ -32,15 +37,16 @@ export default defineComponent({
         return {
             amount: 0,
             loading: false,
-            error: null,
+            paymentMethodType: null,
+            paymentMethodId: null,
             current: ref(0),
         }
     },
     setup() {
-        const items = TOPUP_STEPS.map(item => ({ key: item.title, title: item.title }));
+        const items = TOP_UP_STEPS.map(item => ({ key: item.title, title: item.title }));
         return {
             items,
-            TOPUP_STEPS,
+            TOP_UP_STEPS,
         }
     },
     methods: {
@@ -51,7 +57,8 @@ export default defineComponent({
             this.current--;
         },
         selectPaymentMethod(paymentMethod) {
-            console.log(paymentMethod);
+            this.paymentMethodType = paymentMethod.type;
+            this.paymentMethodId = paymentMethod.id;
             this.next();
         },
     },
@@ -63,7 +70,6 @@ export default defineComponent({
     border: 1px dashed #e9e9e9;
     border-radius: 6px;
     background-color: #fafafa;
-    text-align: center;
 }
 
 .steps-action {

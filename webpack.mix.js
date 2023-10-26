@@ -1,6 +1,7 @@
 const mix = require('laravel-mix');
 const vueVersion = 3;
 const webpack = require('webpack');
+const {resolve} = require("path");
 
 require('dotenv').config();
 
@@ -37,3 +38,12 @@ mix.scripts([
 mix.js('resources/js/portalApp/portalMain.js', 'public/js/portalMain.js')
     .vue({version: vueVersion})
     .sass('resources/scss/portalApp.scss', 'public/css/portalApp.css')
+
+mix.webpackConfig({
+    resolve: {
+        extensions: ['.js', '.vue', '.json'],
+        alias: {
+            '@': resolve(__dirname, 'resources/js'),
+        }
+    }
+});

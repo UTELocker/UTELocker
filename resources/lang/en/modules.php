@@ -116,6 +116,8 @@ return array(
         ],
         'configFieldset' => [
             'information' => 'Information',
+            'terminal_id' => 'Terminal ID',
+            'secret_key' => 'Secret Key',
         ]
     ]
 );

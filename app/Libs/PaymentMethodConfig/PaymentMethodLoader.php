@@ -9,7 +9,8 @@ class PaymentMethodLoader
 {
     public const PAYMENT_LOADERS = [
         PaymentMethodType::CASH => CashPaymentMethodConfig::class,
-        PaymentMethodType::BANK_TRANSFER => BankTransferPaymentMethodConfig::class
+        PaymentMethodType::BANK_TRANSFER => BankTransferPaymentMethodConfig::class,
+        PaymentMethodType::VNPAY => VNPayPaymentMethodConfig::class,
     ];
 
     public static function load(string $paymentMethodType, array|string $config = []): IPaymentMethodConfig

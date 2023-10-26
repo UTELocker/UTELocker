@@ -6,7 +6,7 @@ class CashPaymentMethodConfig extends PaymentMethodConfig
 {
     public const CASH_PMC_DETAILS = 'CASH_PMC_DETAILS';
 
-    public function getConfigs(): array
+    public function getPublicConfigs(): array
     {
         return [
             self::CASH_PMC_DETAILS => $this->getConfig(self::CASH_PMC_DETAILS) ?? '',

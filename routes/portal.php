@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Lockers\LockerController;
 use App\Http\Controllers\Api\Payments\PaymentController;
+use App\Http\Controllers\Api\Payments\PaymentMethodController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Locations\LocationsController;
 use App\Http\Controllers\Api\Notifications\NotificationController;
@@ -44,6 +45,10 @@ Route::prefix('api-portal')->group(function () {
     Route::prefix('payments')->group(function () {
         Route::prefix('wallets')->group(function () {
             Route::get('/getWallet', [PaymentController::class, 'getWallet'])->name('portal.wallet.get');
+        });
+        Route::prefix('methods')->group(function () {
+            Route::get('/', [PaymentMethodController::class, 'index'])->name('portal.payment.method.index');
+            Route::get('/{id}', [PaymentMethodController::class, 'show'])->name('portal.payment.method.show');
         });
     });
 });

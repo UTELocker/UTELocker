@@ -72,4 +72,17 @@ class PaymentMethodService extends BaseService
 
         return $this->model;
     }
+
+    public function getAll()
+    {
+        return PaymentMethod::userSiteGroup()
+            ->where('active', CommonConstant::DATABASE_YES)
+            ->select([
+                'id',
+                'code',
+                'name',
+                'type'
+            ])
+            ->get();
+    }
 }
