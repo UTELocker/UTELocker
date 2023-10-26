@@ -120,4 +120,16 @@ class UserService extends BaseService
         }
         return $listClient;
     }
+
+    public function lookups(User $user)
+    {
+        return User::userSiteGroup()
+            ->where('id', $user->id)
+            ->addSelect([
+                'users.id',
+                'users.name',
+                'users.email',
+            ])
+            ->first();
+    }
 }

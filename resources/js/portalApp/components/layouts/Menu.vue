@@ -42,7 +42,7 @@ export default defineComponent({
         },
         activeMenuItem: {
             type: String,
-            default: 'portal',
+            default: '/portal',
         },
     },
     setup(props) {

@@ -1,6 +1,7 @@
 import {del, get, post, put} from "../../helpers/api";
 import {API, BOOKING_ACTIVITY_STATUS} from "../../constants/bookingConstant";
 import dayjs from "dayjs";
+import {WALLET_API} from "../../constants/walletConstant";
 
 const namespaced = true;
 
@@ -8,7 +9,9 @@ const state = {
     locations: [],
     settings: {},
     user: {},
+    wallet: {},
     bookingActivities: [],
+    isVisibleBalance: false,
 }
 
 const getters = {
@@ -26,9 +29,15 @@ const mutations = {
     setUser(state, user) {
         state.user = user;
     },
+    setWallet(state, wallet) {
+        state.wallet = wallet;
+    },
     setBookingActivities(state, bookingActivities) {
         state.bookingActivities = bookingActivities;
     },
+    setIsVisibleBalance(state, isVisibleBalance) {
+        state.isVisibleBalance = isVisibleBalance;
+    }
 }
 
 const actions = {
@@ -66,6 +75,17 @@ const actions = {
     loadUser({ commit }) {
         commit('setUser', window.user);
     },
+    loadWallet({ commit }) {
+        get(WALLET_API.GET_WALLET()).then(response => {
+            const data = response.data.data;
+            const wallet = {
+                balance: data.balance,
+                promotion_balance: data.promotion_balance,
+            }
+
+            commit('setWallet', wallet);
+        });
+    },
     loadBookingActivities({ commit }) {
         return new Promise((resolve, reject) => {
             get(API.GET_BOOKING_ACTIVITIES()).then(response => {
@@ -96,9 +116,8 @@ const actions = {
             });
         });
     },
-    togglePinCode({ commit }) {
-        const isVisiblePinCode = !state.isVisiblePinCode;
-        commit('setIsVisiblePinCode', isVisiblePinCode);
+    toggleIsVisibleBalance({ commit, state }) {
+        commit('setIsVisibleBalance', !state.isVisibleBalance);
     },
     deleteBooking({ commit }, payload) {
         const { bookingId } = payload;

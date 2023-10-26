@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Lockers\LockerController;
+use App\Http\Controllers\Api\Payments\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Locations\LocationsController;
 use App\Http\Controllers\Api\Notifications\NotificationController;
@@ -38,5 +39,11 @@ Route::prefix('api-portal')->group(function () {
         Route::put('/{id}/status', [NotificationController::class, 'updateStatus'])
             ->name('portal.notifications.update.status');
         Route::post('/', [NotificationController::class, 'store'])->name('portal.notifications.store');
+    });
+
+    Route::prefix('payments')->group(function () {
+        Route::prefix('wallets')->group(function () {
+            Route::get('/getWallet', [PaymentController::class, 'getWallet'])->name('portal.wallet.get');
+        });
     });
 });

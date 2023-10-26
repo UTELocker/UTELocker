@@ -2,7 +2,9 @@
     <a-style-provider :hash-priority="hashPriority">
         <a-config-provider :theme="themeConfig">
             <SiteToken>
-                <Layout />
+                <a-spin :spinning="isLoading" size="large">
+                    <Layout v-if="!isLoading" />
+                </a-spin>
             </SiteToken>
         </a-config-provider>
     </a-style-provider>
@@ -32,6 +34,11 @@ export default defineComponent({
     components: {
         Layout,
         SiteToken,
+    },
+    data() {
+        return {
+            isLoading: false,
+        }
     },
     setup() {
         const route = useRoute();
@@ -93,11 +100,18 @@ export default defineComponent({
         ...mapActions({
             loadSettings: 'moduleBase/loadSettings',
             loadUser: 'moduleBase/loadUser',
+            loadWallet: 'moduleBase/loadWallet',
         }),
     },
     created() {
-        this.loadUser();
-        this.loadSettings();
+        this.isLoading = true;
+        this.loadSettings().then(() => {
+            this.loadUser().then(() => {
+                this.loadWallet().then(() => {
+                    this.isLoading = false;
+                });
+            });
+        });
     }
 });
 </script>
