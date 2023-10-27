@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\Payments\PaymentMethodController;
 use App\Http\Controllers\Admin\Settings\AppSettingController;
 use App\Http\Controllers\Admin\Settings\ProfileSettingController;
 use App\Http\Controllers\Admin\Settings\SiteGroupSettingController;
+use App\Http\Controllers\Admin\Settings\PusherSettingController;
 use App\Http\Controllers\Admin\Users\UserController;
 use App\Http\Controllers\PortalController;
 use Illuminate\Support\Facades\Route;

@@ -37,8 +37,11 @@ class AppSettingController extends BaseSettingController
             abort(403);
         }
         $tab = request('tab');
+        $this->activeTab = $tab ?? 'general';
         $this->view = 'admin.settings.app.ajax.general';
-        $this->activeTab = $tab ?: 'general';
+        $this->timezones = DateTimeZone::listIdentifiers();
+        $this->dateFormat = array_keys(GlobalSetting::DATE_FORMATS);
+        $this->dateObject = now();
         $this->timezones = DateTimeZone::listIdentifiers();
         $this->dateFormat = array_keys(GlobalSetting::DATE_FORMATS);
         $this->dateObject = now();
@@ -51,7 +54,10 @@ class AppSettingController extends BaseSettingController
                 'title' => $this->pageTitle
             ]);
         }
-
+        $this->view = match ($this->activeTab) {
+            'general' => 'admin.settings.app.ajax.general',
+            'pusher' => 'admin.settings.app.ajax.pusher'
+        };
         return view('admin.settings.app.index', $this->data);
     }
 
@@ -73,7 +79,7 @@ class AppSettingController extends BaseSettingController
             abort(403);
         }
         $this->globalSetting = $this->settingService->get($id);
-        $form = $request->only(['date_format', 'locale', 'time_format', 'timezone']);
+        $form = $request->except(['redirect_url', '_token', '_method']);
         $this->settingService->update($this->globalSetting, $form, ['isPrefix' => false]);
 
         $redirectUrl = urldecode($request->redirect_url);
@@ -81,7 +87,7 @@ class AppSettingController extends BaseSettingController
         if ($redirectUrl == '') {
             $redirectUrl = route('admin.dashboard');
         }
-
+        clearSessionSettings('globalSettings');
         return Reply::successWithData(__('messages.recordUpdated'), ['redirectUrl' => $redirectUrl]);
     }
 }

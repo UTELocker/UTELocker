@@ -62,7 +62,7 @@ class SiteGroupSettingController extends BaseSettingController
             abort(403);
         }
         $this->client = $this->clientService->get($id);
-        $form =  $request->only(['date_format', 'time_format', 'timezone', 'locale']);
+        $form = $request->only(['date_format', 'locale', 'time_format', 'timezone']);
         $this->clientService->update($this->client, $form, ['isPrefix' => false]);
 
         $redirectUrl = urldecode($request->redirect_url);
@@ -70,7 +70,7 @@ class SiteGroupSettingController extends BaseSettingController
         if ($redirectUrl == '') {
             $redirectUrl = route('admin.dashboard');
         }
-        clearSessionSettings();
+        clearSessionSettings('siteGroup');
         return Reply::successWithData(__('messages.recordUpdated'), ['redirectUrl' => $redirectUrl]);
     }
 }

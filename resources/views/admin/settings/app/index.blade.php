@@ -8,8 +8,12 @@
                 <nav class="tabs px-4 border-bottom-grey">
                     <div class="nav" id="nav-tab" role="tablist">
                         <a class="nav-item nav-link f-15 active general"
-                           href="#" role="tab" aria-controls="nav-ticketAgents"
+                           href="{{ route('admin.settings.index') }}?tab=general" role="tab" aria-controls="nav-ticketAgents"
                            aria-selected="true">{{ __('modules.settings.menu.app.general') }}
+                        </a>
+                        <a class="nav-item nav-link f-15 pusher"
+                           href="{{ route('admin.settings.index') }}?tab=pusher" role="tab" aria-controls="nav-ticketTypes"
+                           aria-selected="true">{{ __('modules.settings.menu.pusher.menu') }}
                         </a>
                     </div>
                 </nav>
@@ -21,6 +25,9 @@
 @endsection
 @push('scripts')
     <script>
+        $('.nav-item').removeClass('active');
+        const activeTab = "{{ $activeTab }}";
+        $('.' + activeTab).addClass('active');
         $('#save-app-settings-form').click(function () {
             const url = "{{ route('admin.settings.update', siteGroupOrGlobalSetting()->id) }}";
             $.easyAjax({
