@@ -2,7 +2,6 @@
 
 namespace App\Libs\PaymentMethodConfig;
 
-
 abstract class PaymentMethodConfig implements IPaymentMethodConfig
 {
     protected array $config = [];
