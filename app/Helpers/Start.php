@@ -17,6 +17,13 @@ if (!function_exists('globalSettings')) {
     }
 }
 
+function clearSessionSettings($name)
+{
+    session()->forget($name);
+    cache()->forget($name);
+    session()->forget('user');
+}
+
 if (!function_exists('user')) {
     function user()
     {
@@ -50,12 +57,6 @@ if (!function_exists('siteGroup')) {
         }
 
         return false;
-    }
-
-    function clearSessionSettings()
-    {
-        session()->forget('siteGroup');
-        session()->forget('user');
     }
 }
 

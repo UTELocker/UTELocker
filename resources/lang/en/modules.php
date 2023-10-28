@@ -54,12 +54,20 @@ return array(
             'site-group' => [
                 'menu' => 'Site Group',
                 'site-group' => 'Site Group'
+            ],
+            'pusher' => [
+                'menu' => 'Pusher Settings',
+                'pusher' => 'Pusher'
             ]
         ],
         'dateFormat' => 'Date Format',
         'timeFormat' => 'Time Format',
         'defaultTimezone' => 'Default Timezone',
         'language' => 'Language',
+        'pusher_app_id' => 'Pusher App ID',
+        'pusher_app_key' => 'Pusher App Key',
+        'pusher_app_secret' => 'Pusher App Secret',
+        'pusher_app_cluster' => 'Pusher App Cluster'
     ],
     'lockers' => [
         'title' => 'Lockers',

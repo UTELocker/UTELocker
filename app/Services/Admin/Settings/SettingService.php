@@ -27,6 +27,10 @@ class SettingService extends BaseService
         $inputs['locale'] = $inputs['locale'] ?? $this->model->locale;
         $inputs['time_format'] = $inputs['time_format'] ?? $this->model->time_format;
         $inputs['timezone'] = $inputs['timezone'] ?? $this->model->timezone;
+        $inputs['pusher_app_id'] = $inputs['pusher_app_id'] ?? $this->model->pusher_app_id;
+        $inputs['pusher_app_key'] = $inputs['pusher_app_key'] ?? $this->model->pusher_app_key;
+        $inputs['pusher_app_secret'] = $inputs['pusher_app_secret'] ?? $this->model->pusher_app_secret;
+        $inputs['pusher_app_cluster'] = $inputs['pusher_app_cluster'] ?? $this->model->pusher_app_cluster;
     }
 
     protected function setModelFields($inputs): void
@@ -34,7 +38,10 @@ class SettingService extends BaseService
         Common::assignField($this->model, 'locale', $inputs);
         Common::assignField($this->model, 'date_format', $inputs);
         Common::assignField($this->model, 'time_format', $inputs);
-        Common::assignField($this->model, 'timezone', $inputs);
+        Common::assignField($this->model, 'timezone', $inputs);  Common::assignField($this->model, 'pusher_app_id', $inputs);
+        Common::assignField($this->model, 'pusher_app_key', $inputs);
+        Common::assignField($this->model, 'pusher_app_secret', $inputs);
+        Common::assignField($this->model, 'pusher_app_cluster', $inputs);
     }
 
     public function get($id)
