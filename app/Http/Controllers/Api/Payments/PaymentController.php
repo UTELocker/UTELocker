@@ -37,15 +37,14 @@ class PaymentController extends Controller
         $user = $request->user();
         $gateway = PaymentGateway::make(VNPayPaymentGateway::class)
             ->initialize([
-                'vnp_TmnCode' => '2QXUI4J4',
-                'vnp_HashSecret' => 'JZJZQZQZQZQZQZQZQZQZQZQZQZQZQZQZ',
+                'vnp_TmnCode' => 'NT6784UT',
+                'vnp_HashSecret' => 'DGXLFOFVTXNNBVOYXPJGZOVXABQITIBG',
             ]);
 
         $response = $gateway->purchase([
             'vnp_Amount' => 100000,
-            'vnp_BankCode' => 'NCB',
             'vnp_OrderInfo' => 'Nap tien vao tai khoan',
-            'vnp_OrderType' => 'topup',
+            'vnp_OrderType' => 'other',
             'vnp_ReturnUrl' => 'http://localhost:8000/api/payments/deposit/callback',
             'vnp_TxnRef' => 'DEMO-' . time(),
         ])->send();

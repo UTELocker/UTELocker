@@ -14,11 +14,11 @@ abstract class AbstractPaymentGateway implements IPaymentGateway
         getParameter as traitGetParameter;
     }
 
-    protected PaymentClient $httpClient;
+    protected IPaymentClient $httpClient;
     protected Request $httpRequest;
 
     public function __construct(
-        PaymentClient $httpClient = null,
+        IPaymentClient $httpClient = null,
         Request $httpRequest = null
     ) {
         $this->httpClient = $httpClient ?: $this->getDefaultHttpClient();

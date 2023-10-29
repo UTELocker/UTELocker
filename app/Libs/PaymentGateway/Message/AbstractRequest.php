@@ -3,18 +3,18 @@
 namespace App\Libs\PaymentGateway\Message;
 
 use App\Classes\PaymentHelper;
+use App\Libs\PaymentGateway\IPaymentClient;
 use App\Traits\PaymentGateway\ParametersTrait;
-use Psr\Http\Client\ClientInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
-class AbstractRequest implements IRequest
+abstract class AbstractRequest implements IRequest
 {
     use ParametersTrait {
         setParameter as traitSetParameter;
     }
 
-    protected ClientInterface $httpClient;
+    protected IPaymentClient $httpClient;
     protected Request $httpRequest;
     protected IResponse $response;
 
@@ -22,7 +22,7 @@ class AbstractRequest implements IRequest
      * @throws \Exception
      */
     public function __construct(
-        ClientInterface $httpClient = null,
+        IPaymentClient $httpClient = null,
         Request $httpRequest = null
     ) {
         $this->httpClient = $httpClient;
@@ -32,10 +32,6 @@ class AbstractRequest implements IRequest
 
     public function initialize(array $parameters = []): static
     {
-        if ($this->response !== null) {
-            throw new \Exception('Request cannot be modified after it has been sent!');
-        }
-
         $this->parameters = new ParameterBag();
 
         PaymentHelper::initialize($this, $parameters);
@@ -45,11 +41,17 @@ class AbstractRequest implements IRequest
 
     public function setParameter(string $key, $value): static
     {
-        if ($this->response !== null) {
-            throw new \Exception('Request cannot be modified after it has been sent!');
-        }
-
         return $this->traitSetParameter($key, $value);
+    }
+
+    public function setTestMode(bool $testMode): static
+    {
+        return $this->setParameter('testMode', $testMode);
+    }
+
+    public function getTestMode(): bool
+    {
+        return $this->getParameter('testMode');
     }
 
     /**
@@ -57,10 +59,6 @@ class AbstractRequest implements IRequest
      */
     public function getResponse(): IResponse
     {
-        if ($this->response === null) {
-            throw new \Exception('Request has not been sent yet!');
-        }
-
         return $this->response;
     }
 
