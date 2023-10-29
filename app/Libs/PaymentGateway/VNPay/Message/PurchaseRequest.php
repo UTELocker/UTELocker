@@ -32,7 +32,7 @@ class PurchaseRequest extends AbstractSignatureRequest
         $query = http_build_query($data);
         $redirectUrl = $this->getEndpoint().'?'.$query;
 
-        dd($redirectUrl);
+        return $this->response = new PurchaseResponse($this, $data, $redirectUrl);
     }
 
     protected function getSignatureParameters(): array

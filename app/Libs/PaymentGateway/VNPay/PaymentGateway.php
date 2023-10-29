@@ -3,6 +3,7 @@
 namespace App\Libs\PaymentGateway\VNPay;
 
 use App\Libs\PaymentGateway\AbstractPaymentGateway;
+use App\Libs\PaymentGateway\VNPay\Message\IncomingRequest;
 use App\Libs\PaymentGateway\VNPay\Message\PurchaseRequest;
 use App\Traits\PaymentGateway\VNPay\ParametersTrait;
 
@@ -37,5 +38,10 @@ class PaymentGateway extends AbstractPaymentGateway
     public function purchase(array $options = [])
     {
         return $this->createRequest(PurchaseRequest::class, $options);
+    }
+
+    public function completePurchase(array $options = [])
+    {
+        return $this->createRequest(IncomingRequest::class, $options);
     }
 }

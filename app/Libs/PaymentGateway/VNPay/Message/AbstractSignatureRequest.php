@@ -33,15 +33,14 @@ abstract class AbstractSignatureRequest extends AbstractRequest
         return $this;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getData(): array
     {
-        call_user_func_array(
-            [$this, 'validate'],
-            $this->getSignatureParameters()
-        );
+        $this->validate(...$this->getSignatureParameters());
 
         $parameters = $this->getParameters();
-        ksort($parameters);
 
         $parameters['vnp_SecureHash'] = $this->generateSignature();
 

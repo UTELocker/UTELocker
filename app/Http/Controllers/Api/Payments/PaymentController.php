@@ -34,7 +34,6 @@ class PaymentController extends Controller
 
     public function deposit(Request $request)
     {
-        $user = $request->user();
         $gateway = PaymentGateway::make(VNPayPaymentGateway::class)
             ->initialize([
                 'vnp_TmnCode' => 'NT6784UT',
@@ -42,19 +41,31 @@ class PaymentController extends Controller
             ]);
 
         $response = $gateway->purchase([
-            'vnp_Amount' => 100000,
+            'vnp_Amount' => 10000000,
             'vnp_OrderInfo' => 'Nap tien vao tai khoan',
             'vnp_OrderType' => 'other',
-            'vnp_ReturnUrl' => 'http://localhost:8000/api/payments/deposit/callback',
+            'vnp_ReturnUrl' => 'http://utelocker.local/api-portal/payments/wallets/deposit/callback',
             'vnp_TxnRef' => 'DEMO-' . time(),
         ])->send();
-        dd($response);
 
-        return Reply::successWithData(
-            'Deposit successfully',
-            [
-                'data' => $wallet,
-            ]
-        );
+        if ($response->isRedirect()) {
+            $redirectUrl = $response->getRedirectUrl();
+            return redirect($redirectUrl);
+        }
+    }
+
+    public function depositCallback(Request $request)
+    {
+        $gateway = PaymentGateway::make(VNPayPaymentGateway::class);
+
+        $response = $gateway->completePurchase()->send();
+
+        dd($response->getData());
+
+        if ($response->isSuccessful()) {
+            dd($response->getData());
+        } else {
+            dd($response->getMessage());
+        }
     }
 }
