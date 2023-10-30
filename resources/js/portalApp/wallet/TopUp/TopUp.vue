@@ -20,7 +20,6 @@
                 />
             </div>
             <div class="steps-action">
-                <a-button v-if="current === TOP_UP_STEPS.length - 1" type="primary">Done</a-button>
                 <a-button v-if="current > 0" style="margin-left: 8px;" @click="prev">Previous</a-button>
             </div>
         </a-card>

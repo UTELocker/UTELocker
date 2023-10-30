@@ -45,7 +45,7 @@ Route::prefix('api-portal')->group(function () {
     Route::prefix('payments')->group(function () {
         Route::prefix('wallets')->group(function () {
             Route::get('/getWallet', [PaymentController::class, 'getWallet'])->name('portal.wallet.get');
-            Route::get('/deposit', [PaymentController::class, 'deposit'])->name('portal.wallet.deposit');
+            Route::post('/deposit', [PaymentController::class, 'deposit'])->name('portal.wallet.deposit');
             Route::get('/deposit/callback', [PaymentController::class, 'depositCallback'])
                 ->name('portal.wallet.deposit.callback');
         });

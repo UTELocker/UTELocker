@@ -44,13 +44,17 @@ class PaymentController extends Controller
             'vnp_Amount' => 10000000,
             'vnp_OrderInfo' => 'Nap tien vao tai khoan',
             'vnp_OrderType' => 'other',
-            'vnp_ReturnUrl' => 'http://utelocker.local/api-portal/payments/wallets/deposit/callback',
+            'vnp_ReturnUrl' => route('portal.wallet.deposit.callback'),
             'vnp_TxnRef' => 'DEMO-' . time(),
         ])->send();
 
         if ($response->isRedirect()) {
-            $redirectUrl = $response->getRedirectUrl();
-            return redirect($redirectUrl);
+            return Reply::successWithData(
+                'Get wallet successfully',
+                [
+                    'redirectUrl' => $response->getRedirectUrl(),
+                ]
+            );
         }
     }
 
@@ -59,9 +63,6 @@ class PaymentController extends Controller
         $gateway = PaymentGateway::make(VNPayPaymentGateway::class);
 
         $response = $gateway->completePurchase()->send();
-
-        dd($response->getData());
-
         if ($response->isSuccessful()) {
             dd($response->getData());
         } else {
