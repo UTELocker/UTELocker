@@ -1,5 +1,5 @@
 import {get} from "../../helpers/api";
-import {API} from "../../constants/hisgoryConstant";
+import {API} from "../../constants/historyConstant";
 
 const namespaced = true;
 

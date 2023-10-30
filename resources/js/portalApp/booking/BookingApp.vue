@@ -29,6 +29,7 @@
                         <a-col :span="24">
                             <a-range-picker
                                 showTime
+                                :presets="presets"
                                 format="YYYY-MM-DD HH:mm"
                                 @change="this.onRangePickerChange"
                                 :size="size"
@@ -106,6 +107,7 @@ import Layout from "../components/layouts/Layout.vue";
 import {defineComponent} from "vue";
 import {mapActions, mapState} from "vuex";
 import { Modal } from 'ant-design-vue';
+import dayjs, { Dayjs } from 'dayjs';
 
 export default defineComponent({
     name: "BookingApp",
@@ -127,6 +129,11 @@ export default defineComponent({
             },
             isLoading: false,
             isSubmitLoading: false,
+            presets: [
+                { label: '1 hours', value: [dayjs(), dayjs().add(1, 'h')] },
+                { label: '1 Day', value: [dayjs(), dayjs().add(1, 'd')] },
+                { label: '2 Days', value: [dayjs(), dayjs().add(2, 'd')] },
+            ]
         };
     },
     setup() {
@@ -143,7 +150,7 @@ export default defineComponent({
         setFormModel(key, value) {
             this.formModel[key] = value;
         },
-        onRangePickerChange(value, dateString) {
+        onRangePickerChange(date, dateString) {
             this.setFormModel('startDate', dateString[0]);
             this.setFormModel('endDate', dateString[1]);
         },

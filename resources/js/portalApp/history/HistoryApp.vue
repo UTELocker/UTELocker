@@ -112,7 +112,7 @@ const columns = [
 ];
 
 import { defineComponent} from "vue";
-import {HISTORY_STATUS} from "../constants/hisgoryConstant";
+import {HISTORY_STATUS} from "../constants/historyConstant";
 
 export default defineComponent({
     name: "HistoryApp",

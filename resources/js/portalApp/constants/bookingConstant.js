@@ -39,5 +39,5 @@ export const SHOW_POLICY_BOOKING_STATUS = Object.freeze({
 export const BOOKING_ACTIVITY_STATUS = Object.freeze({
     NOT_YET: 0,
     ACTIVE: 1,
-    EXPIRED: 2,
+    EXPIRED: 4,
 });

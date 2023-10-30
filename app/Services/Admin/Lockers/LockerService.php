@@ -140,8 +140,8 @@ class LockerService extends BaseService
     }
 
     public function search($inputs) {
-        $startDate = $inputs['start_date'];
-        $endDate = $inputs['end_date'];
+        $startDate = Carbon::createFromFormat('Y-m-d H:i', $inputs['start_date'])->subMinutes(30);
+        $endDate = Carbon::createFromFormat('Y-m-d H:i', $inputs['end_date'])->addMinutes(30);
         $numberSlot = $inputs['number_of_slots'] ?? 1;
         $locations = $inputs['location_ids'] ?? null;
 

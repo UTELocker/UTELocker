@@ -1,79 +1,121 @@
 <template>
-    <div
-        style="height: 80vh; width: 70vw;"
+    <a-space
+        :size="5"
+        direction="vertical"
+        :style="{width: '100%'}"
     >
-        <l-map
-            ref="map"
-            v-model:zoom="zoom"
-            :center="[
-                this.locationCurrent[0],
-                this.locationCurrent[1],
-            ]"
+        <a-page-header
+            title="Overview"
+            sub-title="List of all locations"
+            style="border: 1px solid rgb(235, 237, 240); border-radius: 0.5rem;"
+            :back-icon="false"
         >
-            <l-tile-layer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                layer-type="base"
-                name="OpenStreetMap"
-            ></l-tile-layer>
-            <template
-                v-for="location in locations"
-                :key="location.id"
+        </a-page-header>
+        <a-card :style="{backgroundColor: 'var(--purple-3)'}">
+            <a-row :gutter="16">
+                <a-col :span="22">
+                    <a-row>
+                        <a-col :span="24">
+                            <a-select
+                                v-model:value="value"
+                                show-search
+                                placeholder="Select a location"
+                                :options="locations"
+                                :filter-option="filterOption"
+                                style="width: 100%"
+                            />
+                        </a-col>
+                    </a-row>
+                </a-col>
+                <a-col :span="2">
+                    <a-row>
+                        <a-col :span="24">
+                            <a-button
+                                type="primary"
+                                style="width: 100%"
+                                @click="this.selectedLocation()"
+                            >
+                                Go to
+                            </a-button>
+                        </a-col>
+                    </a-row>
+                </a-col>
+            </a-row>
+        </a-card>
+        <div style="height: 80vh; width: 100%;">
+            <l-map
+                ref="map"
+                v-model:zoom="zoom"
+                :center="[
+                    this.locationCurrent[0],
+                    this.locationCurrent[1],
+                ]"
             >
-                <l-marker
-                    :lat-lng="[
-                        location.latitude,
-                        location.longitude,
-                    ]"
+                <l-tile-layer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    layer-type="base"
+                    name="OpenStreetMap"
+                ></l-tile-layer>
+                <template
+                    v-for="location in locations"
+                    :key="location.id"
                 >
-                    <l-popup
-                        style="width: 300px;"
+                    <l-marker
+                        :lat-lng="[
+                            location.latitude,
+                            location.longitude,
+                        ]"
                     >
-                        <a-space
-                            direction="vertical"
-                            :size='5'
+                        <l-popup
+                            style="width: 300px;"
                         >
-                            <a-row>
-                                <p>Address:</p>
-                            </a-row>
-                            <a-row>
-                                <p>{{location.label}}</p>
-                            </a-row>
-                            <a-row>
-                                <a-button
-                                    type="primary"
-                                    @click="negativeBooking(location)"
-                                >
-                                    Booking Locker Here
-                                </a-button>
-                            </a-row>
-                            <a-row>
-                                <p>List Locker:</p>
-                            </a-row>
-                        </a-space>
-                        <a-list item-layout="horizontal" :data-source="location.lockers">
-                            <template #renderItem="{ item }">
-                                <a-list-item>
-                                    <a-list-item-meta
-                                        :description="showStatus(item)"
+                            <a-space
+                                direction="vertical"
+                                :size='5'
+                            >
+                                <a-row>
+                                    <p>Address:</p>
+                                </a-row>
+                                <a-row>
+                                    <p>{{location.label}}</p>
+                                </a-row>
+                                <a-row>
+                                    <a-button
+                                        type="primary"
+                                        @click="negativeBooking(location)"
                                     >
-                                        <template #title>
-                                            <a href=""
-                                            >
-                                                {{ item.code }}
-                                            </a>
-                                        </template>
-                                        <template #avatar>
-                                            <a-avatar src="https://joeschmoe.io/api/v1/random" />
-                                        </template>
-                                    </a-list-item-meta>
-                                </a-list-item>
-                            </template>
-                        </a-list>
-                    </l-popup>
-                </l-marker>
-            </template>
-        </l-map>
-    </div>
+                                        Booking Locker Here
+                                    </a-button>
+                                </a-row>
+                                <a-row>
+                                    <p>List Locker:</p>
+                                </a-row>
+                            </a-space>
+                            <a-list item-layout="horizontal" :data-source="location.lockers">
+                                <template #renderItem="{ item }">
+                                    <a-list-item>
+                                        <a-list-item-meta
+                                            :description="showStatus(item)"
+                                        >
+                                            <template #title>
+                                                <a href=""
+                                                >
+                                                    {{ item.code }}
+                                                </a>
+                                            </template>
+                                            <template #avatar>
+                                                <a-avatar src="https://joeschmoe.io/api/v1/random" />
+                                            </template>
+                                        </a-list-item-meta>
+                                    </a-list-item>
+                                </template>
+                            </a-list>
+                        </l-popup>
+                    </l-marker>
+                </template>
+            </l-map>
+        </div>
+    </a-space>
 </template>
 <script>
 import { defineComponent } from 'vue';
@@ -98,7 +140,8 @@ export default defineComponent({
         return {
             zoom: 20,
             isLoading: true,
-            locationCurrent: [0, 0]
+            locationCurrent: [0, 0],
+            value: null,
         };
     },
     computed: {
@@ -131,6 +174,18 @@ export default defineComponent({
                     location: location.code,
                 },
             });
+        },
+        filterOption(input, option) {
+            return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+        },
+        selectedLocation() {
+            const location = this.locations.find(
+                (location) => location.value === this.value
+            );
+            this.locationCurrent = [
+                location.latitude,
+                location.longitude,
+            ];
         },
     },
     created() {

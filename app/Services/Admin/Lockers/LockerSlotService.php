@@ -9,6 +9,7 @@ use App\Models\LockerSlot;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class LockerSlotService extends BaseService
 {
@@ -138,6 +139,9 @@ class LockerSlotService extends BaseService
 
     public function getSlotsNotAvailable($lockerId, mixed $startDate, mixed $endDate)
     {
+        $startDate = Carbon::parse($startDate)->subMinutes(30)->toDateTimeString();
+        $endDate = Carbon::parse($endDate)->addMinutes(30)->toDateTimeString();
+
         return $this->model->where('locker_id', $lockerId)
             ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
             ->where('locker_slots.type', '=', LockerSlotType::SLOT)

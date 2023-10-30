@@ -58,7 +58,7 @@ class BookingService extends BaseService
         $inputs['pin_code'] = $inputs['pin_code'] ?? $this->randomPinCode();
         $inputs['client_id'] = $inputs['client_id'] ?? auth()->user()->client_id;
         $inputs['owner_id'] = $inputs['owner_id'] ?? auth()->user()->id;
-        $inputs['status'] = $inputs['status'] ?? BookingStatus::APPROVED;
+        $inputs['status'] = $inputs['status'] ?? BookingStatus::PENDING;
     }
 
     private function randomPinCode()
