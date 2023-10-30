@@ -2,6 +2,10 @@
 
 namespace App\Console;
 
+use App\Classes\Scheduler\ApprovedBookingTask;
+use App\Classes\Scheduler\OverdueWarningBookingTask;
+use App\Classes\Scheduler\OverdueBookingTask;
+use App\Classes\Scheduler\WarningExpireTask;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -12,7 +16,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->call(new OverdueWarningBookingTask())->everyMinute();
+        $schedule->call(new ApprovedBookingTask())->everyMinute();
+        $schedule->call(new OverdueBookingTask())->everyMinute();
+        $schedule->call(new WarningExpireTask())->everyMinute();
     }
 
     /**
