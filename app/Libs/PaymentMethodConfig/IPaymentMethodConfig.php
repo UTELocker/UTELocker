@@ -10,5 +10,7 @@ interface IPaymentMethodConfig
     public static function getDefaultConfigs(): array;
     public function getPublicConfigs(): array;
     public function getRestrictedConfigs(): array;
+    public static function getGateway(): string;
+    public static function getAmountFieldName(): string;
     public function build(): string;
 }

@@ -2,10 +2,12 @@
 
 namespace App\Libs\PaymentMethodConfig;
 
+use App\Libs\PaymentGateway\VNPay\PaymentGateway;
+
 class VNPayPaymentMethodConfig extends PaymentMethodConfig
 {
-    public const TERMINAL_ID = 'TERMINAL_ID';
-    public const SECRET_KEY = 'SECRET_KEY';
+    public const TERMINAL_ID = 'vnp_TmnCode';
+    public const SECRET_KEY = 'vnp_HashSecret';
 
     public function getPublicConfigs(): array
     {
@@ -31,5 +33,15 @@ class VNPayPaymentMethodConfig extends PaymentMethodConfig
     public static function getViewPath(): string
     {
         return 'admin.payments.payment-methods.configs.vnpay';
+    }
+
+    public static function getGateway(): string
+    {
+        return PaymentGateway::class;
+    }
+
+    public static function getAmountFieldName(): string
+    {
+        return "vnp_Amount";
     }
 }

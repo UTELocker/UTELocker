@@ -24,12 +24,14 @@ class PaymentGateway extends AbstractPaymentGateway
     public function getDefaultParameters(): array
     {
         return [
-            'vnp_Version' => '2.0.0',
+            'vnp_Version' => '2.1.0',
         ];
     }
 
     public function initialize(array $parameters = []): static
     {
+        $parameters = array_merge($this->getDefaultParameters(), $parameters);
+
         return parent::initialize(
             $this->normalizeParameters($parameters)
         );

@@ -24,4 +24,14 @@ class CashPaymentMethodConfig extends PaymentMethodConfig
     {
         return 'admin.payments.payment-methods.configs.cash';
     }
+
+    public static function getGateway(): string
+    {
+        return "";
+    }
+
+    public static function getAmountFieldName(): string
+    {
+        return "amount";
+    }
 }

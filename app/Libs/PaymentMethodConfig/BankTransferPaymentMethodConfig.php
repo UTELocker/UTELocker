@@ -27,4 +27,14 @@ class BankTransferPaymentMethodConfig extends PaymentMethodConfig
     {
         return 'admin.payments.payment-methods.configs.bank-transfer';
     }
+
+    public static function getGateway(): string
+    {
+        return "";
+    }
+
+    public static function getAmountFieldName(): string
+    {
+        return "amount";
+    }
 }

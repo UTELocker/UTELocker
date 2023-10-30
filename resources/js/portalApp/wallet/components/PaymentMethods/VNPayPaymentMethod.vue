@@ -26,7 +26,7 @@
                 size="large"
                 :style="{width: '100%'}"
             >
-                <a-select-option value="vnd">VND</a-select-option>
+                <a-select-option value="VND">VND</a-select-option>
             </a-select>
         </a-form-item>
         <a-form-item>
@@ -48,11 +48,17 @@ import depositMix from "../../../mixins/depositMix";
 export default defineComponent({
     name: "VNPayPaymentMethod",
     mixins: [depositMix],
+    props: {
+        paymentMethodId: {
+            type: Number,
+            required: true,
+        }
+    },
     data() {
         return {
             formState: reactive({
                 amount: 0,
-                currency: 'vnd',
+                currency: 'VND',
             })
         }
     },
@@ -61,8 +67,7 @@ export default defineComponent({
             this.deposit({
                 amount: this.formState.amount,
                 currency: this.formState.currency,
-                paymentMethodType: this.paymentMethodType,
-                paymentMethodId: this.paymentMethodId,
+                payment_method_id: this.paymentMethodId,
             })
         }
     }

@@ -4,19 +4,25 @@ namespace App\Http\Controllers\Api\Payments;
 
 use App\Classes\Reply;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Payments\DepositRequest;
 use App\Libs\PaymentGateway\PaymentGateway;
+use App\Libs\PaymentMethodConfig\PaymentMethodLoader;
+use App\Services\Admin\Payments\PaymentMethodService;
 use App\Services\Wallets\WalletService;
 use Illuminate\Http\Request;
 use App\Libs\PaymentGateway\VNPay\PaymentGateway as VNPayPaymentGateway;
+use Illuminate\Support\Arr;
 
 class PaymentController extends Controller
 {
     private WalletService $walletService;
+    private PaymentMethodService $paymentMethodService;
 
-    public function __construct(WalletService $walletService)
+    public function __construct(WalletService $walletService, PaymentMethodService $paymentMethodService)
     {
         parent::__construct();
         $this->walletService = $walletService;
+        $this->paymentMethodService = $paymentMethodService;
     }
 
     public function getWallet(Request $request)
@@ -32,30 +38,24 @@ class PaymentController extends Controller
         );
     }
 
-    public function deposit(Request $request)
+    public function deposit(DepositRequest $request)
     {
-        $gateway = PaymentGateway::make(VNPayPaymentGateway::class)
-            ->initialize([
-                'vnp_TmnCode' => 'NT6784UT',
-                'vnp_HashSecret' => 'DGXLFOFVTXNNBVOYXPJGZOVXABQITIBG',
-            ]);
+        $paymentMethod = $this->paymentMethodService->get(Arr::get($request->all(), 'payment_method_id'));
+        $paymentMethodConfig = PaymentMethodLoader::load($paymentMethod->type, $paymentMethod->config);
+
+        $gateway = PaymentGateway::make($paymentMethodConfig->getGateway())
+            ->initialize($paymentMethodConfig->getRestrictedConfigs());
 
         $response = $gateway->purchase([
-            'vnp_Amount' => 10000000,
-            'vnp_OrderInfo' => 'Nap tien vao tai khoan',
-            'vnp_OrderType' => 'other',
-            'vnp_ReturnUrl' => route('portal.wallet.deposit.callback'),
-            'vnp_TxnRef' => 'DEMO-' . time(),
+            $paymentMethodConfig->getAmountFieldName() => Arr::get($request->all(), 'amount'),
         ])->send();
 
-        if ($response->isRedirect()) {
-            return Reply::successWithData(
-                'Get wallet successfully',
-                [
-                    'redirectUrl' => $response->getRedirectUrl(),
-                ]
-            );
-        }
+        return Reply::successWithData(
+            'Get URL successfully',
+            [
+                'redirectUrl' => $response->getRedirectUrl(),
+            ]
+        );
     }
 
     public function depositCallback(Request $request)
