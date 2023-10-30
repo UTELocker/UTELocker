@@ -4,11 +4,19 @@ namespace App\Services\Admin\Notifications;
 
 use App\Classes\Common;
 use App\Classes\CommonConstant;
+use App\Enums\NotificationType;
 use App\Models\Notification;
 use App\Services\BaseService;
+use App\Traits\HandleNotification;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use App\Models\LockerSlot;
+use App\Enums\NotificationParentTable;
 
 class NotificationServices extends BaseService
 {
+    use HandleNotification;
+
     public function __construct()
     {
         parent::__construct(new Notification());
@@ -54,5 +62,24 @@ class NotificationServices extends BaseService
     public function get($id)
     {
         return $this->model->findOrfail($id);
+    }
+
+    public function add($data)
+    {
+        $this->sendNotification(
+            NotificationType::REPORT,
+            $data['content'],
+            $data['owner_id'],
+            $data['client_id'],
+        );
+    }
+
+    public function getNotificationDetail(Notification $notification)
+    {
+        $notification->content_detail = NotificationParentTable::queryTable(
+            $notification->parent_table,
+            $notification->parent_id
+        );
+        return $notification;
     }
 }

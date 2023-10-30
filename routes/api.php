@@ -66,5 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [NotificationController::class, 'get'])->name('api.notifications.get');
         Route::put('/{id}/status', [NotificationController::class, 'updateStatus'])
             ->name('api.notifications.update.status');
+        Route::post('/', [NotificationController::class, 'store'])->name('api.notifications.store');
+        Route::get('/{id}', [NotificationController::class, 'show'])->name('api.notifications.show');
     });
 });

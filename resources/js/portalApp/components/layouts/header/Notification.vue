@@ -102,8 +102,6 @@
 import {defineComponent} from "vue";
 import {mapActions, mapState} from "vuex";
 import {NOTIFICATION_TYPE, NOTIFICATION_STATUS, NOTIFICATION_TYPE_LABEL_CHOOSE} from "../../../constants/notificationConstant";
-import {BellOutlined} from "@ant-design/icons-vue";
-import {Modal} from "ant-design-vue";
 import {
     CarryOutTwoTone,
     DollarTwoTone,
@@ -111,8 +109,9 @@ import {
     SettingTwoTone,
     SlidersTwoTone,
     WarningTwoTone,
+    BellOutlined
 } from "@ant-design/icons-vue";
-import { notification } from 'ant-design-vue';
+import { notification, Modal } from 'ant-design-vue';
 
 export default defineComponent({
     name: "Notification",
@@ -214,6 +213,13 @@ export default defineComponent({
                 case NOTIFICATION_TYPE.PAYMENT:
                     return false;
                 case NOTIFICATION_TYPE.BOOKING:
+                    this.visible = false;
+                    this.$router.push({
+                        name: 'portal.booking',
+                        params: {
+                            id: notification.parent_id,
+                        },
+                    });
                     return false;
                 case NOTIFICATION_TYPE.LOCKER_SYSTEM:
                     return false;

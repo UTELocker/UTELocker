@@ -20,6 +20,15 @@ class WarningExpireTask
                 Carbon::now()->format('Y-m-d H:i'),
                 Carbon::now()->addMinutes(30)->format('Y-m-d H:i')
             ])
+            ->leftJoin('locker_slots', 'locker_slots.id', '=', 'bookings.locker_slot_id')
+            ->leftJoin('lockers', 'lockers.id', '=', 'locker_slots.locker_id')
+            ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
+            ->select(
+                'bookings.id',
+                'bookings.owner_id',
+                'bookings.client_id',
+                'locations.description as address',
+                'lockers.code as locker_code')
             ->get();
         Log::info([
             'listBookings' => $listBookings,
@@ -32,7 +41,7 @@ class WarningExpireTask
                 case 14:
                     $this->sendNotification(
                         NotificationType::BOOKING,
-                        'Your booking ended 15 minutes ago',
+                        `Your booking will end in 15 minutes at locker ${$booking->locker_code} - ${$booking->address}`,
                         $booking->owner_id,
                         $booking->client_id,
                         'bookings',
@@ -42,7 +51,18 @@ class WarningExpireTask
                 case 4:
                     $this->sendNotification(
                         NotificationType::BOOKING,
-                        'Your booking ended 5 minutes ago',
+                        `Your booking will end in 5 minutes at locker ${$booking->locker_code} - ${$booking->address}`,
+                        $booking->owner_id,
+                        $booking->client_id,
+                        'bookings',
+                        $booking->id,
+                    );
+                    break;
+                case 0:
+                    $this->sendNotification(
+                        NotificationType::BOOKING,
+                        `Your booking is expending 30 minutes
+                        at locker ${$booking->locker_code} - ${$booking->address}`,
                         $booking->owner_id,
                         $booking->client_id,
                         'bookings',

@@ -20,6 +20,15 @@ class OverdueWarningBookingTask
                 Carbon::now()->subMinutes(30)->format('Y-m-d H:i'),
                 Carbon::now()->format('Y-m-d H:i')
             ])
+            ->leftJoin('locker_slots', 'locker_slots.id', '=', 'bookings.locker_slot_id')
+            ->leftJoin('lockers', 'lockers.id', '=', 'locker_slots.locker_id')
+            ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
+            ->select(
+                'bookings.id',
+                'bookings.owner_id',
+                'bookings.client_id',
+                'locations.description as address',
+                'lockers.code as locker_code')
             ->get();
 
         foreach ($listBookings as $booking) {
@@ -29,7 +38,7 @@ class OverdueWarningBookingTask
                 case 20:
                     $this->sendNotification(
                         NotificationType::BOOKING,
-                        'Your booking ended 20 minutes ago',
+                        `Time expend will end in 20 minutes at locker ${$booking->locker_code} - ${$booking->address}`,
                         $booking->owner_id,
                         $booking->client_id,
                         'bookings',
@@ -39,7 +48,7 @@ class OverdueWarningBookingTask
                 case 15:
                     $this->sendNotification(
                         NotificationType::BOOKING,
-                        'Your booking ended 15 minutes ago',
+                        `Time expend will end in 15 minutes at locker ${$booking->locker_code} - ${$booking->address}`,
                         $booking->owner_id,
                         $booking->client_id,
                         'bookings',

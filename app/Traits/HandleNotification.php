@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 trait HandleNotification {
 
-    public function sendNotifcaion(
+    public function sendNotification(
         $type,
         $content,
         $ownerId,

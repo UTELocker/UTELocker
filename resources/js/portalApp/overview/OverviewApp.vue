@@ -191,6 +191,15 @@ export default defineComponent({
             bookingActivities: (state) => state.moduleBase.bookingActivities,
         }),
     },
+    mounted(){
+        this.$watch( ()=> this.$route.path,(to, from)=> {
+            const id = this.$route.params.id;
+            if (id) {
+                this.isShowDrawer = true;
+                this.chosenBooking = this.bookingActivities.find(booking => booking.id === parseInt(id));
+            }
+        })
+    },
     methods: {
         ...mapActions({
             getBookingActivities: 'moduleBase/loadBookingActivities',

@@ -55,6 +55,8 @@ const actions = {
                         status: notification.status,
                         type: notification.type,
                         created_at: notification.created_at,
+                        parent_id: notification.parent_id,
+                        parent_table: notification.parent_table,
                     }
                     if (notificationData.type === NOTIFICATION_TYPE.BOOKING) {
                         notificationsBooking.push(notificationData);
@@ -81,6 +83,8 @@ const actions = {
             status: notification.status,
             type: notification.type,
             created_at: notification.created_at,
+            parent_id: notification.parent_id,
+            parent_table: notification.parent_table,
         }
         commit('setNotifications', [notificationData, ...state.notifications]);
         commit('setNewNotification', notificationData);

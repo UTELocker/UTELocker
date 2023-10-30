@@ -15,6 +15,11 @@ const routes = [
         component: OverviewApp,
     },
     {
+        path: '/portal/:id',
+        name: 'portal.booking',
+        component: OverviewApp,
+    },
+    {
         path: '/portal/booking',
         name: 'booking',
         component: BookingApp,
