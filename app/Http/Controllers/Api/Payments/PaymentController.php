@@ -47,8 +47,10 @@ class PaymentController extends Controller
             ->initialize($paymentMethodConfig->getRestrictedConfigs());
 
         $response = $gateway->purchase([
-            $paymentMethodConfig->getAmountFieldName() => Arr::get($request->all(), 'amount'),
-        ])->send();
+            $paymentMethodConfig->getAmountFieldName() => Arr::get($request->all(), 'amount')
+        ])
+            ->setReturnUrl(route('portal.wallet.deposit.callback', ['methodId' => $paymentMethod->id]))
+            ->send();
 
         return Reply::successWithData(
             'Get URL successfully',
@@ -58,13 +60,27 @@ class PaymentController extends Controller
         );
     }
 
-    public function depositCallback(Request $request)
+    public function depositCallback(Request $request, $methodId)
     {
-        $gateway = PaymentGateway::make(VNPayPaymentGateway::class);
+        $paymentMethod = $this->paymentMethodService->get($methodId);
+        $paymentMethodConfig = PaymentMethodLoader::load($paymentMethod->type, $paymentMethod->config);
+        $gateway = PaymentGateway::make($paymentMethodConfig->getGateway());
 
         $response = $gateway->completePurchase()->send();
+
         if ($response->isSuccessful()) {
-            dd($response->getData());
+            $transaction = $this->walletService->deposit(
+                $request->user(),
+                $response->getTransactionId(),
+                $response->getTransactionReference(),
+                $response->getAmount(),
+                $paymentMethod->id
+            );
+
+            return redirect()->route('wallet.transactions', [
+                'transactionId' => $transaction->id,
+                'type' => 'deposit',
+            ]);
         } else {
             dd($response->getMessage());
         }

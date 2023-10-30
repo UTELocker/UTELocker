@@ -13,4 +13,5 @@ return array(
     'recordUpdated' => 'Record updated successfully.',
     'recordDeleted' => 'Record deleted successfully.',
     'recordLinked' => 'Record linked successfully.',
+    'depositSuccess' => 'Top up :amount successfully',
 );

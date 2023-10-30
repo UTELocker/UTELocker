@@ -2,7 +2,6 @@
 
 namespace App\Libs\PaymentGateway;
 
-use App\Classes\PaymentHelper;
 use Psr\Http\Client\ClientInterface;
 use Symfony\Component\HttpClient\HttpClient;
 

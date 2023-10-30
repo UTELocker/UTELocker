@@ -54,6 +54,16 @@ abstract class AbstractRequest implements IRequest
         return $this->getParameter('testMode');
     }
 
+    public function setPaymentMethodId(int $paymentMethodId): static
+    {
+        return $this->setParameter('paymentMethodId', $paymentMethodId);
+    }
+
+    public function getPaymentMethodId(): int
+    {
+        return $this->getParameter('paymentMethodId') ?? 0;
+    }
+
     /**
      * @throws \Exception
      */

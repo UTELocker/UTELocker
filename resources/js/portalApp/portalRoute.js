@@ -7,6 +7,7 @@ import ConfirmBookingApp from "./booking/ConfirmBookingApp.vue";
 import LocationApp from "./location/LocationApp.vue";
 import HistoryApp from "./history/HistoryApp.vue";
 import TopUp from "./wallet/TopUp/TopUp.vue";
+import Transaction from "./wallet/Transaction/Transaction.vue";
 
 const routes = [
     {
@@ -53,6 +54,11 @@ const routes = [
         path: '/wallet/topup',
         name: 'wallet.topup',
         component: TopUp,
+    },
+    {
+        path: '/wallet/transactions',
+        name: 'wallet.transactions',
+        component: Transaction,
     }
 ];
 

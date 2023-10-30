@@ -39,6 +39,11 @@ class BaseResponse extends AbstractResponse
         return $this->data['vnp_Message'] ?? null;
     }
 
+    public function getAmount(): ?int
+    {
+        return $this->data['vnp_Amount'] ? (int) $this->data['vnp_Amount'] / 100 : null;
+    }
+
     protected function propertyNormalize(string $name): string
     {
         if ((str_starts_with($name, 'vnp')) && !str_contains($name, '_')) {

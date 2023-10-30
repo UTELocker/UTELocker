@@ -3,7 +3,6 @@
 namespace App\Libs\PaymentGateway\VNPay\Message;
 
 use App\Libs\PaymentGateway\Message\AbstractRequest;
-use App\Libs\PaymentGateway\Message\IResponse;
 use App\Traits\PaymentGateway\RequestEndpoint;
 use App\Traits\PaymentGateway\RequestSignature;
 use App\Traits\PaymentGateway\VNPay\ParametersTrait;
@@ -44,7 +43,7 @@ abstract class AbstractSignatureRequest extends AbstractRequest
 
         $parameters['vnp_SecureHash'] = $this->generateSignature();
 
-        unset($parameters['vnp_HashSecret'], $parameters['testMode']);
+        unset($parameters['vnp_HashSecret'], $parameters['testMode'], $parameters['paymentMethodId']);
 
         return $parameters;
     }

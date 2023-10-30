@@ -32,7 +32,6 @@
         <a-form-item>
             <a-button
                 type="primary"
-                size="large"
                 :loading="isLoading"
                 @click="submit"
             >
@@ -57,7 +56,7 @@ export default defineComponent({
     data() {
         return {
             formState: reactive({
-                amount: 0,
+                amount: 10000,
                 currency: 'VND',
             })
         }
