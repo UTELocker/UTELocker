@@ -17,6 +17,7 @@ final class NotificationParentTable extends Enum
 {
     const TABLE_BOOKINGS = 'bookings';
     const TABLE_LOCKERS = 'lockers';
+    const TABLE_TRANSACTIONS = 'transactions';
 
     public static function queryTable($table, $parentId)
     {
@@ -39,7 +40,7 @@ final class NotificationParentTable extends Enum
                 $record->locker_slot_code = $codeSlotLocker;
                 return $record;
             case self::TABLE_LOCKERS:
-                return null;
+            case self::TABLE_TRANSACTIONS:
             default:
                 if (Schema::hasTable($table)) {
                     return  DB::table($table)

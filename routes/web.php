@@ -42,11 +42,12 @@ Route::group(['middleware' => ['auth', 'auth.verify']], function () {
         Route::get('portal', [PortalController::class, 'index'])->name('portal');
         Route::get('portal/{any}', [PortalController::class, 'index'])->where('any', '.*');
         Route::get('wallet', [PortalController::class, 'index'])->name('wallet');
+        Route::get('wallet/transactions', [PortalController::class, 'index'])->name('wallet.transactions');
         Route::get('wallet/{any}', [PortalController::class, 'index'])->where('any', '.*');
     });
 });
 
-Route::group(['middleware' => ['auth', 'auth.verify', 'permissionAdmin']], function () {
+Route::group(['middleware' => ['auth']], function () {
     Route::resource('clients', ClientController::class)
         ->names([
             'index' => 'admin.clients.index',

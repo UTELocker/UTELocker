@@ -19,13 +19,11 @@ class PurchaseRequest extends AbstractSignatureRequest
     public function initialize(array $parameters = []): static
     {
         parent::initialize($parameters);
-
         $this->setParameter('vnp_Command', 'pay');
         $this->setVnpLocale($this->getVnpLocale() ?? 'vn');
         $this->setVnpCurrCode($this->getVnpCurrCode() ?? 'VND');
         $this->setVnpOrderInfo($this->getVnpOrderInfo() ?? 'Deposit to account');
         $this->setVnpOrderType($this->getVnpOrderType() ?? 'deposit');
-        $this->setReturnUrl(route('portal.wallet.deposit.callback'));
         $this->setVnpTxnRef($this->getVnpTxnRef() ?? "VNPay-{$this->getVnpCreateDate()}");
 
         return $this;
