@@ -66,7 +66,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth.verify' => \App\Http\Middleware\AuthenticateFirebase::class,
-        'blockSuperAdmin' => \App\Http\Middleware\BlockSuperAdmin::class,
         'permissionAdmin' => \App\Http\Middleware\PermissionAdmin::class,
     ];
 }
