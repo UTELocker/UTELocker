@@ -1,10 +1,8 @@
 <template>
     <article>
         <section class="markdown">
-            <h1>Find a locker</h1>
-            <section class="markdown">
-                <p>Select a locker to book</p>
-            </section>
+            <h1>Đặt Locker</h1>
+            <p>Dùng bộ lọc bên dưới để tìm kiếm locker phù hợp với nhu cầu của bạn.</p>
         </section>
         <a-card :style="{backgroundColor: 'var(--purple-3)'}">
             <a-row :gutter="16">
@@ -17,7 +15,7 @@
                                 :options="locations"
                                 mode="multiple"
                                 @change="this.setFormModel('selectedLocation', $event)"
-                                placeholder="Select a location"
+                                placeholder="Chọn địa điểm"
                                 style="width: 100%"
                                 :size="size"
                             />
@@ -35,6 +33,7 @@
                                 :size="size"
                                 style="width: 100%"
                                 :disabledDate="date => date < Date.now() - 24 * 60 * 60 * 1000"
+                                placeholder
                             />
                         </a-col>
                     </a-row>

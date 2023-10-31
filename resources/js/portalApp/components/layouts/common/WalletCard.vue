@@ -6,13 +6,13 @@
                     borderRight: '1px solid #e8e8e8',
                     textAlign: 'center',
                 }">
-                    <p><strong>Wallet</strong></p>
+                    <p><strong>Số dư</strong></p>
                     <p>{{ this.getWalletBalance() }}</p>
                 </a-col>
                 <a-col :span="12" :style="{
                     textAlign: 'center',
                 }">
-                    <p><strong>Points</strong></p>
+                    <p><strong>Điểm thưởng</strong></p>
                     <p>{{ this.getWalletPoints() }}</p>
                 </a-col>
             </a-row>
@@ -26,8 +26,9 @@
                             padding: '0',
                         }"
                              :hoverable="true"
+                             @click="this.$router.push({name: 'wallet.topup'})"
                         >
-                            <p>Top Up</p>
+                            <p>Nạp Tiền</p>
                         </a-card-grid>
                         <a-card-grid :style="{
                             width: '50%',
@@ -36,8 +37,9 @@
                             padding: '0',
                         }"
                              :hoverable="true"
+                             @click="this.$router.push({name: 'wallet'})"
                         >
-                            <p>UTEPay</p>
+                            <p>Ví UTEPay</p>
                         </a-card-grid>
                     </a-card>
                 </a-col>

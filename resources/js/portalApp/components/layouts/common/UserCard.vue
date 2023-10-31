@@ -46,7 +46,7 @@
                             float: 'right',
                         }"
                     >
-                        <a-tooltip placement="top" title="Logout">
+                        <a-tooltip placement="top" title="Đăng xuất">
                             <a-button
                                 @click="confirmLogout"
                             >
@@ -79,8 +79,8 @@ export default defineComponent({
     methods: {
         confirmLogout() {
             this.$confirm({
-                title: 'Do you want to logout?',
-                content: 'When clicked the OK button, this dialog will be closed after 1 second',
+                title: 'Bạn có chắc chắn muốn đăng xuất?',
+                content: 'Sau khi đăng xuất, bạn sẽ không thể sử dụng các chức năng của hệ thống.',
                 okText: 'OK',
                 cancelText: 'Cancel',
                 onOk: () => {
