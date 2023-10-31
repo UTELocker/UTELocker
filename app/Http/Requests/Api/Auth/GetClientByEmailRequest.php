@@ -28,12 +28,6 @@ class GetClientByEmailRequest extends FormRequest
                 'required',
                 'email',
                 'exists:users,email',
-                function ($attribute, $value, $fail) {
-                    $user = User::where('email', $value)->first();
-                    if ($user && $user->type === UserRole::SUPER_USER) {
-                        $fail('This email is not a client email.');
-                    }
-                }
             ]
         ];
     }

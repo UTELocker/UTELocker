@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Classes\CommonConstant;
+use App\Classes\Reply;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,6 +33,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if (user()->is2FA == CommonConstant::DATABASE_YES)
+        {
+            $urlIntended = redirect()->intended()->getTargetUrl();
+            return redirect()->route('verify-phone', ['url' => $urlIntended]);
+        }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
@@ -42,6 +51,8 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        $request->session()->forget('isVerificationPhone');
 
         return redirect('/');
     }

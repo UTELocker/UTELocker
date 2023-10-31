@@ -34,15 +34,19 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::group(['middleware' => ['auth']], function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('portal', [PortalController::class, 'index'])->name('portal');
-    Route::get('portal/{any}', [PortalController::class, 'index'])->where('any', '.*');
-    Route::get('wallet', [PortalController::class, 'index'])->name('wallet');
-    Route::get('wallet/{any}', [PortalController::class, 'index'])->where('any', '.*');
+Route::group(['middleware' => ['auth', 'auth.verify']], function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware('permissionAdmin')
+        ->name('admin.dashboard');
+    Route::group(['middleware' => ['blockSuperAdmin']], function () {
+        Route::get('portal', [PortalController::class, 'index'])->name('portal');
+        Route::get('portal/{any}', [PortalController::class, 'index'])->where('any', '.*');
+        Route::get('wallet', [PortalController::class, 'index'])->name('wallet');
+        Route::get('wallet/{any}', [PortalController::class, 'index'])->where('any', '.*');
+    });
 });
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', 'auth.verify', 'permissionAdmin']], function () {
     Route::resource('clients', ClientController::class)
         ->names([
             'index' => 'admin.clients.index',

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Users;
 
 use App\Classes\Reply;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\GetClientByEmailRequest;
 use App\Http\Requests\Api\Users\UpdateUserRequest;
@@ -30,11 +31,15 @@ class UserController extends Controller
 
     public function getListClient(GetClientByEmailRequest $request){
         $email = $request->get('email');
-        $listClient = $this->userService->getListClientByEmail($email);
+        $role = $this->userService->getByEmail($email)->type;
+        $listClient = $role === UserRole::SUPER_USER ?
+            [] :
+            $this->userService->getListClientByEmail($email);
         return Reply::successWithData(
             'List client',
             [
                 'data' => $listClient,
+                'role' => $role,
             ]
         );
     }

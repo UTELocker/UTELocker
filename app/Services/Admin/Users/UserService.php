@@ -132,4 +132,9 @@ class UserService extends BaseService
             ])
             ->first();
     }
+
+    public function getByEmail($email)
+    {
+        return $this->model->where('email', $email)->first();
+    }
 }

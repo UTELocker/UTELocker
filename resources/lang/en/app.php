@@ -95,4 +95,7 @@ return array(
     'invite' => 'Invite member to UTELocker',
     'gender' => 'Gender',
     'normalUser' => 'Normal User',
+    'verifyPhone' => 'Verify by Phone',
+    'listSiteGroups' => 'List Site Groups',
+    'getSiteGroup' => 'Get Site Group',
 );

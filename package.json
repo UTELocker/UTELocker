@@ -34,6 +34,7 @@
         "bootstrap-select": "^1.13.18",
         "dayjs": "^1.11.10",
         "dropify": "^0.2.2",
+        "firebase": "^10.5.2",
         "flag-icon-css": "^4.1.7",
         "moment-timezone": "^0.5.43",
         "nprogress": "^0.2.0",

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\UserRole;
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +31,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'client_id' => ['nullable','exists:clients,id']
         ];
     }
 
@@ -41,7 +44,18 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $user = User::where('email', $this->email)
+            ->when($this->client_id, function ($query) {
+                $query->where('client_id', $this->client_id);
+            })->first();
+
+        if ($user->type == UserRole::SUPER_USER) {
+            $auth = Auth::attempt($this->only('email', 'password'), $this->boolean('remember'));
+        } else {
+            $auth = Auth::attempt($this->only('email', 'client_id', 'password'), $this->boolean('remember'));
+        }
+
+        if (! $auth) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
