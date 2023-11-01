@@ -134,7 +134,7 @@ export default defineComponent({
                     return 'yellow';
                 case HISTORY_STATUS.APPROVED:
                     return 'green';
-                case HISTORY_STATUS.CANCELED:
+                case HISTORY_STATUS.CANCELLED:
                     return 'red';
                 case HISTORY_STATUS.EXPIRED:
                     return 'red';
@@ -150,7 +150,7 @@ export default defineComponent({
                     return 'Pending';
                 case HISTORY_STATUS.APPROVED:
                     return 'Approved';
-                case HISTORY_STATUS.CANCELED:
+                case HISTORY_STATUS.CANCELLED:
                     return 'Canceled';
                 case HISTORY_STATUS.EXPIRED:
                     return 'Expired';
@@ -190,7 +190,7 @@ export default defineComponent({
                         color: 'green',
                     });
                     break;
-                case HISTORY_STATUS.CANCELED:
+                case HISTORY_STATUS.CANCELLED:
                     if (new Date(history.updated_at) < new Date(history.start_date)) {
                         timeline.push({
                             id: 2,
@@ -209,6 +209,30 @@ export default defineComponent({
                             color: 'red',
                         });
                     }
+                    const cancelDate = new Date(history.updated_at);
+                    timeline.push({
+                        id: 2,
+                        content: 'Cancel' + ' ' + cancelDate.toLocaleDateString("vi-VN") + ' ' + cancelDate.toLocaleTimeString("vi-VN"),
+                        color: 'red',
+                    });
+                    break;
+                case HISTORY_STATUS.EXPIRED:
+                    timeline.push({
+                        id: 2,
+                        content: 'Start booking' + ' ' + history.start_date,
+                        color: 'red',
+                    });
+                    timeline.push({
+                        id: 2,
+                        content: 'End booking' + ' ' + history.end_date,
+                        color: 'red',
+                    });
+                    const expiredDate = new Date(history.updated_at);
+                    timeline.push({
+                        id: 2,
+                        content: 'Expired' + ' ' + expiredDate.toLocaleDateString("vi-VN") + ' ' + expiredDate.toLocaleTimeString("vi-VN"),
+                        color: 'red',
+                    });
                     break;
                 default:
                     break;

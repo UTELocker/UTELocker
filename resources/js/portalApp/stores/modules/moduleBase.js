@@ -104,6 +104,7 @@ const actions = {
                         slot_config: activity.lockerSlotConfig,
                         address: activity.address,
                         location: activity.location,
+                        lockerImage: activity.lockerImage,
                     }
                     if (activity.status === BOOKING_ACTIVITY_STATUS.ACTIVE) {
                         bookingActivitiesActive.push(booking);

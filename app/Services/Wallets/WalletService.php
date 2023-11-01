@@ -14,6 +14,7 @@ use App\Services\BaseService;
 use App\Traits\HandleNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class WalletService extends BaseService
 {
@@ -106,5 +107,16 @@ class WalletService extends BaseService
         });
 
         return $transaction;
+    }
+
+    public function auth($auth)
+    {
+        $password = $auth['password'];
+
+        if (!Auth::guard('wallets')->attempt(['id' => user()->id, 'password' => $password])) {
+            return false;
+        }
+
+        return true;
     }
 }

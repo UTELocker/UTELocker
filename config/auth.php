@@ -44,6 +44,10 @@ return [
             'driver' => 'sanctum',
             'provider' => 'users',
         ],
+        'wallets' => [
+            'driver' => 'session',
+            'provider' => 'wallets',
+        ]
     ],
 
     /*
@@ -73,6 +77,11 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+
+        'wallets' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Wallet::class,
+        ],
     ],
 
     /*

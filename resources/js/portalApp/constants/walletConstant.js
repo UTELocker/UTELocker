@@ -11,6 +11,7 @@ export const WALLET_API = Object.freeze({
     GET_PAYMENT_METHODS: () => `${API_PAYMENT_PREFIX}/methods`,
     GET_PAYMENT_METHOD: (methodId) => `${API_PAYMENT_PREFIX}/methods/${methodId}`,
     POST_DEPOSIT: () => `${API_PREFIX}/payments/wallets/deposit`,
+    POST_AUTHENTICATE: () => `${API_WALLET_PREFIX}/auth`,
 });
 
 export const TOP_UP_STEPS = [

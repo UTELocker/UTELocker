@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Services\BaseService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Classes\Files;
 
 class BookingService extends BaseService
 {
@@ -105,7 +106,7 @@ class BookingService extends BaseService
             ->orderBy('locker_slots.column', 'asc')
             ->get();
     }
-    public function fomartOutputApi($bookings) {
+    public function formatOutputApi($bookings) {
         $locker = null;
         $listNameSlotInLocker = [];
 
@@ -168,6 +169,11 @@ class BookingService extends BaseService
                     'latitude' => $booking->latitude,
                     'longitude' => $booking->longitude,
                 ],
+                'lockerImage' => $booking->image ? Files::getImageUrl(
+                    $booking->image, 'client-locker',
+                    Files::CLIENT_UPLOAD_FOLDER
+                ) :
+                asset('images/default/lockerDefault.png'),
             ];
         }
 

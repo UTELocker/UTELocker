@@ -48,6 +48,7 @@ Route::prefix('api-portal')->group(function () {
             Route::post('/deposit', [PaymentController::class, 'deposit'])->name('portal.wallet.deposit');
             Route::get('{methodId}/deposit/callback', [PaymentController::class, 'depositCallback'])
                 ->name('portal.wallet.deposit.callback');
+            Route::post('/auth', [PaymentController::class, 'auth'])->name('portal.wallet.auth');
         });
         Route::prefix('methods')->group(function () {
             Route::get('/', [PaymentMethodController::class, 'index'])->name('portal.payment.method.index');

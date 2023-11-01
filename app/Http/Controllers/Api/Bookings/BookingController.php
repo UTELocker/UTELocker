@@ -25,7 +25,7 @@ class BookingController extends Controller
         $bookings = $this->bookingService->getBookingActivities(user());
         return Reply::successWithData('Get bookings successfully',
             [
-                'data' => $this->bookingService->fomartOutputApi($bookings)
+                'data' => $this->bookingService->formatOutputApi($bookings)
             ]
         );
     }

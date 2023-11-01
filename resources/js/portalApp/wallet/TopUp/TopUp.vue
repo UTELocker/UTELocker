@@ -9,7 +9,7 @@
             style="border: 1px solid rgb(235, 237, 240); border-radius: 0.5rem;"
             @back="() => $router.push({name: 'wallet'})"
         />
-        <a-card>
+        <a-card v-if="isAccept">
             <a-steps :current="current" :items="items"></a-steps>
             <div class="steps-content">
                 <component
@@ -23,15 +23,23 @@
                 <a-button v-if="current > 0" style="margin-left: 8px;" @click="prev">Previous</a-button>
             </div>
         </a-card>
+        <password-drawer
+            :show="!isAccept"
+            @close="isShowDrawer = false"
+        />
     </a-space>
 </template>
 <script>
 import {defineComponent, ref} from "vue";
 import {TOP_UP_STEPS} from "../../constants/walletConstant";
+import passwordDrawer from "../../auth/passwordDrawer.vue";
+import {mapState} from "vuex";
 
 export default defineComponent({
     name: "TopUp",
-    components: {},
+    components: {
+        passwordDrawer,
+    },
     data() {
         return {
             amount: 0,
@@ -60,6 +68,14 @@ export default defineComponent({
             this.paymentMethodId = paymentMethod.id;
             this.next();
         },
+    },
+    created() {
+        this.isShowDrawer = !this.isAccept;
+    },
+    computed: {
+        ...mapState({
+            isAccept: state => state.moduleWallet.isAccept,
+        }),
     },
 })
 </script>

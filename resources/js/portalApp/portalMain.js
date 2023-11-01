@@ -8,7 +8,7 @@ import 'nprogress/nprogress.css';
 import store from "./stores/store";
 import './setUpPusher.js'
 
-import { initializeApp } from "firebase/app";
+import firebase from 'firebase/compat/app';
 
 const firebaseConfig = {
   apiKey:  process.env.MIX_FIREBASE_API_KEY,
@@ -20,8 +20,7 @@ const firebaseConfig = {
   measurementId: process.env.MIX_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
 const app = createApp(MainApp);
 

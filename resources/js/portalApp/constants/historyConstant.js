@@ -8,6 +8,8 @@ export const HISTORY_STATUS = Object.freeze({
     PENDING: 0,
     APPROVED: 1,
     REJECTED: 2,
-    CANCELED: 3,
+    CANCELLED: 3,
+    EXPIRED: 4,
     COMPLETED: 5,
+    LOCKED: 6,
 });

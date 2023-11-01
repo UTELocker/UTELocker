@@ -3,6 +3,7 @@ import moduleBase from './modules/moduleBase';
 import moduleBooking from "./modules/moduleBooking.js";
 import moduleHistory from "./modules/moduleHistory.js";
 import moduleNotification from "./modules/moduleNotification.js";
+import moduleWallet from "./modules/moduleWallet.js";
 
 const store = createStore({
     modules: {
@@ -10,6 +11,7 @@ const store = createStore({
         moduleBooking,
         moduleHistory,
         moduleNotification,
+        moduleWallet
     }
 });
 

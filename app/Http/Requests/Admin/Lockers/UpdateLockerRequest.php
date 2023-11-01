@@ -29,7 +29,6 @@ class UpdateLockerRequest extends FormRequest
                     LockerStatus::getDescriptions([LockerStatus::IN_USE]))),
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'warranty_duration' => 'required|integer|min:1',
             'location_id' => 'required|exists:locations,id',
             'code' => 'required|string|max:255|unique:lockers,code,' . $this->route('locker') . ',id',
         ];

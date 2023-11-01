@@ -85,4 +85,16 @@ class PaymentController extends Controller
             dd($response->getMessage());
         }
     }
+
+    public function auth(Request $request)
+    {
+        $data = $request->all();
+        $result = $this->walletService->auth($data);
+
+        if ($result) {
+            return Reply::success('Auth successfully');
+        } else {
+            return Reply::error('Auth failed');
+        }
+    }
 }

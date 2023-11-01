@@ -54,7 +54,7 @@
                                             <h3>{{item.slot_code}}</h3>
                                             <a-avatar
                                                 :size="64"
-                                                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                                                :src="item.lockerImage"
                                             />
                                         </div>
                                     </a-col>
