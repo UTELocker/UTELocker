@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Api\Payments;
 
 use App\Classes\Reply;
+use App\DataTables\TransactionsDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Payments\DepositRequest;
+use App\Http\Resources\TransactionCollection;
+use App\Http\Resources\TransactionResource;
 use App\Libs\PaymentGateway\PaymentGateway;
 use App\Libs\PaymentMethodConfig\PaymentMethodLoader;
 use App\Services\Admin\Payments\PaymentMethodService;
 use App\Services\Wallets\WalletService;
 use Illuminate\Http\Request;
-use App\Libs\PaymentGateway\VNPay\PaymentGateway as VNPayPaymentGateway;
 use Illuminate\Support\Arr;
 
 class PaymentController extends Controller
@@ -84,5 +86,12 @@ class PaymentController extends Controller
         } else {
             dd($response->getMessage());
         }
+    }
+
+    public function getTransactions(TransactionsDataTable $dataTable, Request $request)
+    {
+        $user = $request->user();
+        $transactions = $this->walletService->getTransactionsByUserId($user, $request->all());
+        return new TransactionCollection($transactions);
     }
 }

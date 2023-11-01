@@ -13,6 +13,7 @@ use App\Models\Wallet;
 use App\Services\BaseService;
 use App\Traits\HandleNotification;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class WalletService extends BaseService
@@ -81,6 +82,10 @@ class WalletService extends BaseService
             $wallet->balance += $amount;
             $wallet->save();
 
+            $content = __('messages.depositSuccess', [
+                'amount' => $amount
+            ]);
+
             $transaction = $this->transactionService->add([
                 'user_id' => $user->id,
                 'payment_method_id' => $paymentMethodId,
@@ -88,11 +93,11 @@ class WalletService extends BaseService
                 'reference' => $reference,
                 'reference_transaction_id' => $getTransactionId,
                 'status' => TransactionStatus::SUCCESS,
-                'type' => TransactionType::DEPOSIT
-            ]);
-
-            $content = __('messages.depositSuccess', [
-                'amount' => $amount
+                'type' => TransactionType::DEPOSIT,
+                'content' => $content,
+                'balance' => $wallet->balance,
+                'promotion_balance' => $wallet->promotion_balance,
+                'time' => now()
             ]);
 
             $this->sendNotification(
@@ -100,11 +105,18 @@ class WalletService extends BaseService
                 $content,
                 $user->id,
                 $user->client_id,
-                NotificationParentTable::TABLE_BOOKINGS,
+                NotificationParentTable::TABLE_TRANSACTIONS,
                 $transaction->id
             );
         });
 
         return $transaction;
+    }
+
+    public function getTransactionsByUserId(User $user, array $request)
+    {
+        return Transaction::where('user_id', $user->id)
+            ->orderBy(Arr::get($request, 'orderBy', 'created_at'), Arr::get($request, 'order', 'desc'))
+            ->paginate($request['perPage'] ?? 10);
     }
 }

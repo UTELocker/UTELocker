@@ -53,5 +53,8 @@ Route::prefix('api-portal')->group(function () {
             Route::get('/', [PaymentMethodController::class, 'index'])->name('portal.payment.method.index');
             Route::get('/{id}', [PaymentMethodController::class, 'show'])->name('portal.payment.method.show');
         });
+        Route::prefix('transactions')->group(function () {
+            Route::get('/', [PaymentController::class, 'getTransactions'])->name('portal.payment.transaction.get');
+        });
     });
 });
