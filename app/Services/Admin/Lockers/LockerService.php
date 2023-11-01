@@ -183,4 +183,21 @@ class LockerService extends BaseService
             ->where('lockers.id', $id)
             ->firstOrFail();
     }
+
+    public function getSlotsUserBooked(Locker $locker, $lockerId)
+    {
+        return $locker
+            ->select('lockers.id')
+            ->where('lockers.id', $lockerId)
+            ->withCount(['lockerSlots' => function ($query) {
+                $query->where('type', LockerSlotType::SLOT)
+                    ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+                    ->where('bookings.owner_id', user()->id)
+                    ->where(function ($q) {
+                        $q->where('bookings.status', BookingStatus::PENDING)
+                            ->orWhere('bookings.status', BookingStatus::APPROVED);
+                    });
+            }])
+            ->get();
+    }
 }

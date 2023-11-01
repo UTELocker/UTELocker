@@ -36,10 +36,12 @@ class LockerController extends Controller
     public function getModules($id, GetModulesRequest $request) {
         $endDate = $request->end_date;
         $startDate = $request->start_date;
+        $numberOfSlots = $request->number_of_slots;
 
         $locker = $this->lockerService->getWithLocation($id);
         $listSlotsNotAvailable = $this->lockerSlotService->getSlotsNotAvailable($id, $startDate, $endDate);
         $module = $this->lockerService->getModulesAvailableBooking($locker, $listSlotsNotAvailable);
+        $slotsUserBooked = $this->lockerService->getSlotsUserBooked($locker, $id);
 
         return Reply::successWithData(
             'Get locker successfully',
@@ -47,6 +49,11 @@ class LockerController extends Controller
                 'data' =>  [
                     'locker' => $locker,
                     'module' => $module,
+                    'configNumberSlot' => [
+                        'max' => 2,
+                        'demand' => $numberOfSlots,
+                        'used' => $slotsUserBooked[0]->locker_slots_count,
+                    ]
                 ],
             ]
         );

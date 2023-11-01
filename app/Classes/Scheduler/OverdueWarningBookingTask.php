@@ -27,6 +27,7 @@ class OverdueWarningBookingTask
                 'bookings.id',
                 'bookings.owner_id',
                 'bookings.client_id',
+                'bookings.end_date',
                 'locations.description as address',
                 'lockers.code as locker_code')
             ->get();
@@ -38,7 +39,7 @@ class OverdueWarningBookingTask
                 case 20:
                     $this->sendNotification(
                         NotificationType::BOOKING,
-                        `Time expend will end in 20 minutes at locker ${$booking->locker_code} - ${$booking->address}`,
+                        "Time expend will end in 20 minutes at locker $booking->locker_code - $booking->address",
                         $booking->owner_id,
                         $booking->client_id,
                         'bookings',
@@ -48,7 +49,7 @@ class OverdueWarningBookingTask
                 case 15:
                     $this->sendNotification(
                         NotificationType::BOOKING,
-                        `Time expend will end in 15 minutes at locker ${$booking->locker_code} - ${$booking->address}`,
+                        "Time expend will end in 15 minutes at locker $booking->locker_code - $booking->address",
                         $booking->owner_id,
                         $booking->client_id,
                         'bookings',

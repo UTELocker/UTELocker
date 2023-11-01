@@ -27,21 +27,17 @@ class WarningExpireTask
                 'bookings.id',
                 'bookings.owner_id',
                 'bookings.client_id',
+                'bookings.end_date',
                 'locations.description as address',
                 'lockers.code as locker_code')
             ->get();
-        Log::info([
-            'listBookings' => $listBookings,
-            'warningExpireTask' => 'warningExpireTask',
-        ]);
-
         foreach ($listBookings as $booking) {
             $diffTime = Carbon::now()->diffInMinutes($booking->end_date);
             switch ($diffTime) {
                 case 14:
                     $this->sendNotification(
                         NotificationType::BOOKING,
-                        `Your booking will end in 15 minutes at locker ${$booking->locker_code} - ${$booking->address}`,
+                        "Your booking will end in 15 minutes at locker $booking->locker_code",
                         $booking->owner_id,
                         $booking->client_id,
                         'bookings',
@@ -51,7 +47,7 @@ class WarningExpireTask
                 case 4:
                     $this->sendNotification(
                         NotificationType::BOOKING,
-                        `Your booking will end in 5 minutes at locker ${$booking->locker_code} - ${$booking->address}`,
+                        "Your booking will end in 5 minutes at locker $booking->locker_code",
                         $booking->owner_id,
                         $booking->client_id,
                         'bookings',
@@ -61,8 +57,7 @@ class WarningExpireTask
                 case 0:
                     $this->sendNotification(
                         NotificationType::BOOKING,
-                        `Your booking is expending 30 minutes
-                        at locker ${$booking->locker_code} - ${$booking->address}`,
+                        "Your booking is expending 30 minutes at locker $booking->locker_code",
                         $booking->owner_id,
                         $booking->client_id,
                         'bookings',

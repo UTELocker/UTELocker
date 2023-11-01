@@ -4,6 +4,19 @@
         direction="vertical"
         style="width: 100%;"
     >
+        <a-card title="Number of slot can booking" :bordered="true">
+            <p>- Max booking slots of a user is {{ configNumberSlot.max }} slots</p>
+            <p>- Current booking slots of a user is <span
+                :style="{
+                    color: configNumberSlot.used + this.selectedSlots?.length === configNumberSlot.max
+                        ? 'var(--error-color)'
+                        : 'var(--green-6)',
+                    fontWeight: 'bold',
+                }"
+                >
+                {{ configNumberSlot.used + this.selectedSlots?.length }}
+            </span> slots</p>
+        </a-card>
         <a-page-header
             :title="locker.description"
             sub-title="Select slots for your booking"
@@ -108,6 +121,7 @@ export default defineComponent({
             lockerSlots: (state) => state.moduleBooking.lockerSlots,
             locker: (state) => state.moduleBooking.locker,
             selectedSlots: (state) => state.moduleBooking.selectedSlots,
+            configNumberSlot: (state) => state.moduleBooking.configNumberSlot,
         }),
     },
     setup() {
@@ -149,14 +163,17 @@ export default defineComponent({
             }
             return slot.statusSlot;
         },
-        selectSlot(slot) {
+        validateSelect(slot) {
             if (this.isBooked(slot)) {
-                return;
+                return false;
             }
 
-            if (this.selectedSlots.length === LIMIT_BOOKING_SLOTS
-                && !slot.is_selected
-            ) {
+            const sumUsedSlot = this.configNumberSlot.used + this.selectedSlots?.length;
+
+            return !(!slot.is_selected && sumUsedSlot === this.configNumberSlot.max);
+        },
+        selectSlot(slot) {
+            if (!this.validateSelect(slot)) {
                 return;
             }
 

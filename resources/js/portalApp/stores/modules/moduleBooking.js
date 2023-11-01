@@ -8,6 +8,7 @@ const state = {
     locker: {},
     lockerSlots: [],
     selectedSlots: [],
+    configNumberSlot: []
 }
 
 const getters = {
@@ -15,6 +16,7 @@ const getters = {
     lockerSlots: state => state.lockerSlots,
     locker: state => state.locker,
     selectedSlots: state => state.selectedSlots,
+    configNumberSlot: state => state.configNumberSlot,
 }
 
 const mutations = {
@@ -29,7 +31,10 @@ const mutations = {
     },
     setSelectedSlots(state, selectedSlots) {
         state.selectedSlots = selectedSlots;
-    }
+    },
+    setConfigNumberSlot(state, configNumberSlot) {
+        state.configNumberSlot = configNumberSlot;
+    },
 }
 
 const actions = {
@@ -65,37 +70,45 @@ const actions = {
     loadLockerSlots({ commit }, payload) {
         const { lockerId, startDate, endDate } = payload;
 
-        get(API.GET_LOCKER_SLOTS(lockerId, {
-            'start_date' : startDate,
-            'end_date' : endDate,
-        })).then(response => {
-            const data = response.data.data;
+        return new Promise((resolve, reject) => {
+            get(API.GET_LOCKER_SLOTS(lockerId, {
+                'start_date' : startDate,
+                'end_date' : endDate,
+            })).then(response => {
+                const data = response.data.data;
 
-            let numberOfSlot = 1;
+                let numberOfSlot = 1;
 
-            const locker = {
-                id: data.locker.id,
-                image: data.locker.image ? data.locker.image : 'https://via.placeholder.com/150',
-                description: data.locker.description,
-                location: {
-                    address: data.locker.address,
-                    latitude: data.locker.latitude,
-                    longitude: data.locker.longitude,
-                },
-            }
-            const modules = data.module.map(module => {
-                const slots = module.map(slot => {
-                    return {
-                        ...slot,
-                        is_selected: false,
-                        number_of_slot: slot.type === SLOT_TYPE.SLOT ? numberOfSlot++ : null,
-                    }
-                })
-                return slots;
+                const locker = {
+                    id: data.locker.id,
+                    image: data.locker.image ? data.locker.image : 'https://via.placeholder.com/150',
+                    description: data.locker.description,
+                    location: {
+                        address: data.locker.address,
+                        latitude: data.locker.latitude,
+                        longitude: data.locker.longitude,
+                    },
+                }
+                const modules = data.module.map(module => {
+                    const slots = module.map(slot => {
+                        return {
+                            ...slot,
+                            is_selected: false,
+                            number_of_slot: slot.type === SLOT_TYPE.SLOT ? numberOfSlot++ : null,
+                        }
+                    })
+                    return slots;
+                });
+
+                const configNumberSlot = data.configNumberSlot;
+
+                commit('setLocker', locker);
+                commit('setLockerSlots', modules);
+                commit('setConfigNumberSlot', configNumberSlot);
+                resolve();
+            }).catch(error => {
+                reject(error);
             });
-
-            commit('setLocker', locker);
-            commit('setLockerSlots', modules);
         });
     },
     setStatusSelectedSlot({ commit, state }, payload) {
