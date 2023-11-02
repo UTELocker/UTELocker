@@ -78,6 +78,7 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        totalPrice: 0,
     },
     data() {
         return {
@@ -108,7 +109,7 @@ export default defineComponent({
                     },
                 });
             }).catch((e) => {
-                const message = e?.response?.data?.message || 'Something went wrong';
+                const message = e?.message || 'Something went wrong';
                 Modal.error({
                     title: 'Booking error',
                     content: message,

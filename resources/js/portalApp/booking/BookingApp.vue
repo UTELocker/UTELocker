@@ -27,7 +27,6 @@
                         <a-col :span="24">
                             <a-range-picker
                                 showTime
-                                :presets="presets"
                                 format="YYYY-MM-DD HH:mm"
                                 @change="this.onRangePickerChange"
                                 :size="size"

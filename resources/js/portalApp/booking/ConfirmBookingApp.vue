@@ -34,17 +34,17 @@
     </a-page-header>
     <policy-modal
         :visible="this.isShowPolicyModal"
+        :totalPrice="this.totalPrice"
         @close="closePolicyModal"
     />
 </template>
 <script>
-import {defineComponent} from "vue";
+import {defineComponent, createVNode} from "vue";
 import {mapState} from "vuex";
 import PolicyModal from "./PolicyModal.vue";
 import postBooking from "../mixins/apiBooking.js";
 import {DONT_SHOW_POLICY_BOOKING, SHOW_POLICY_BOOKING_STATUS} from "../constants/bookingConstant";
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
-import { createVNode } from 'vue';
 import { Modal } from 'ant-design-vue';
 export default defineComponent({
     name: "ConfirmBookingApp",
@@ -71,7 +71,7 @@ export default defineComponent({
         handleTotalPrice() {
             const timeDiff = Math.abs(new Date(this.endDate).getTime() - new Date(this.startDate).getTime()) / 36e5;
             this.selectedSlots.forEach((slot) => {
-                this.totalPrice += (slot.config?.price_per_hour ?? 10) * timeDiff;
+                this.totalPrice += slot.config.price * timeDiff;
             });
         },
         submit() {
@@ -94,7 +94,7 @@ export default defineComponent({
                                 },
                             });
                         }).catch((e) => {
-                            const message = e?.response?.data?.message || 'Something went wrong';
+                            const message = e?.message || e;
                             this.isShowPolicyModal = false;
                             Modal.error({
                                 title: 'Booking error',
@@ -136,7 +136,7 @@ export default defineComponent({
                 },
                 {
                     label: 'Locker code',
-                    value: this.locker.id,
+                    value: this.locker.code,
                 },
                 {
                     label: "Locker address",
@@ -168,7 +168,7 @@ export default defineComponent({
                 },
                 {
                     label: "Total Price",
-                    value: this.totalPrice,
+                    value: parseInt(this.totalPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     options: {
                         stylesValue: {
                             color: 'var(--primary-color)',

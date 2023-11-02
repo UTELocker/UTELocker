@@ -1,9 +1,27 @@
 import {post} from "../helpers/api";
 import {API, DONT_SHOW_POLICY_BOOKING, SHOW_POLICY_BOOKING_STATUS} from "../constants/bookingConstant";
+import {mapActions, mapState} from "vuex";
 
 export default {
+    computed: {
+        ...mapState({
+            wallet: state => state.moduleBase.wallet,
+        }),
+    },
     methods: {
-        postBooking: function (booking) {
+        ...mapActions({
+            toggleIsVisibleBalance: 'moduleBase/toggleIsVisibleBalance',
+        }),
+        validateWallet(purchaseBooking) {
+            return this.wallet.balance + this.wallet.promotion_balance < purchaseBooking;
+        },
+        postBooking: function () {
+            if (!this.validateWallet(this.totalPrice)) {
+                return new Promise((resolve, reject) => {
+                    reject( {message: 'Insufficient balance'} );
+                });
+            }
+
             return new Promise((resolve, reject) => {
                 post(API.POST_BOOKING(), {
                     start_date: this.startDate,
@@ -15,7 +33,7 @@ export default {
                     }
                     resolve();
                 }).catch((err) => {
-                    reject(err);
+                    reject(err.response.data);
                 });
             });
         }

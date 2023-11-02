@@ -60,7 +60,7 @@
                                     <p>
                                         {{ slot.number_of_slot === null
                                             ? slot.type
-                                            : 'A' + slot.number_of_slot
+                                            : slot.number_of_slot
                                         }}
                                     </p>
                                 </a-popover>
@@ -99,7 +99,7 @@
 <script>
 import {defineComponent} from "vue";
 import {mapActions, mapState} from "vuex";
-import {LIMIT_BOOKING_SLOTS, SLOT_STATUS, SLOT_TYPE} from "../constants/bookingConstant";
+import {SLOT_STATUS, SLOT_TYPE} from "../constants/bookingConstant";
 import { Modal } from 'ant-design-vue';
 
 export default defineComponent({
@@ -161,21 +161,19 @@ export default defineComponent({
 
             const sumUsedSlot = this.configNumberSlot.used + this.selectedSlots?.length;
 
-            return !(!slot.is_selected && sumUsedSlot === this.configNumberSlot.max);
+            return !(!slot.is_selected && sumUsedSlot == this.configNumberSlot.max);
         },
         selectSlot(slot) {
             if (!this.validateSelect(slot)) {
                 return;
             }
 
-            let timeDiff = Math.abs(new Date(this.endDate).getTime() - new Date(this.startDate).getTime()) / 36e5;
-            timeDiff = Math.ceil(timeDiff);
-            const price = (slot.config?.price_per_hour ?? 10) * timeDiff;
-            this.totalPrice = slot.is_selected
-                ? this.totalPrice - price
-                : this.totalPrice + price;
-
-            console.log(this.totalPrice)
+            const timeDiff = Math.abs(new Date(this.endDate).getTime() - new Date(this.startDate).getTime()) / 36e5;
+            if (!slot.is_selected) {
+                this.totalPrice += slot.config.price * timeDiff;
+            } else {
+                this.totalPrice -= slot.config.price * timeDiff;
+            }
 
             this.setStatusSelectedSlot({
                 slotId: slot.id,

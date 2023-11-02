@@ -148,9 +148,13 @@ class LockerService extends BaseService
         return $this->model
             ->select(
                 'lockers.id', 'lockers.code', 'lockers.image', 'lockers.description',
-                'lockers.status', 'locations.description as address'
+                'lockers.status', 'locations.description as address', 'locker_slots.config'
             )
             ->join('locations', 'locations.id', '=', 'lockers.location_id')
+            ->join('licenses', 'licenses.locker_id', '=', 'lockers.id')
+            ->leftJoin('locker_slots', 'locker_slots.locker_id', '=', 'lockers.id')
+            ->where('locker_slots.type', LockerSlotType::CPU)
+            ->where('licenses.client_id', user()->client_id)
             ->when($locations, function ($query, $locations) {
                 $query->whereIn('locations.id', $locations);
             })
@@ -179,9 +183,11 @@ class LockerService extends BaseService
                 'lockers.status', 'locations.description as address',
                 'locations.latitude', 'locations.longitude'
             )
+            ->join('licenses', 'licenses.locker_id', '=', 'lockers.id')
             ->join('locations', 'locations.id', '=', 'lockers.location_id')
             ->where('lockers.id', $id)
-            ->firstOrFail();
+            ->where('licenses.client_id', user()->client_id)
+            ->first();
     }
 
     public function getSlotsUserBooked(Locker $locker, $lockerId)
@@ -199,5 +205,30 @@ class LockerService extends BaseService
                     });
             }])
             ->get();
+    }
+
+    public function getConfigLocker(Locker $locker)
+    {
+        return $locker
+            ->lockerCPUType()
+            ->select('locker_slots.config')
+            ->first()->config;
+    }
+
+    public function filterLimitTimeLocker($data, $startDate, $endDate)
+    {
+        return $data->filter(function ($item) use ($startDate, $endDate) {
+            $config = json_decode($item->config, true);
+            return !$this->isExceedingLimitTime($config, $startDate, $endDate);
+        });
+    }
+
+    public function isExceedingLimitTime($configLocker, $startDate, $endDate): bool
+    {
+        $limitMinutes = $configLocker['days'] * 24 * 60 + $configLocker['hours'] * 60 + $configLocker['minutes'];
+        $diffMinutes = Carbon::createFromFormat('Y-m-d H:i', $endDate)->diffInMinutes(
+            Carbon::createFromFormat('Y-m-d H:i', $startDate)
+        );
+        return $diffMinutes > $limitMinutes;
     }
 }

@@ -75,8 +75,17 @@
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-12">
+                                <label class="control-label">@lang('settings.maxBookings')</label>
+                                <input type="number" name="maxBookings" class="form-control"
+                                    value="{{ $slot?->maxBookings }}" min="0"
+                                    placeholder="@lang('settings.maxBookingsPlaceholder')">
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
                                 <label class="control-label">@lang('settings.defaultPrice')</label>
-                                <input type="number" name="price" class="form-control" value="{{ $slot?->price }}" min="0"
+                                <input type="number" name="price" class="form-control"
+                                    value="{{ $slot?->price }}" min="0"
                                     placeholder="@lang('settings.pricePlaceholder')">
                             </div>
                         </div>
@@ -93,7 +102,8 @@
                         <div class="row mt-2">
                             <div class="col-md-12">
                                 <label class="control-label">@lang('settings.price')</label>
-                                <input type="number" name="price" class="form-control" value="{{ $slot?->price }}" min="0"
+                                <input type="number" name="price" class="form-control"
+                                    value="{{ $slot?->price }}" min="0"
                                     placeholder="@lang('settings.pricePlaceholder')">
                             </div>
                         </div>
@@ -103,7 +113,9 @@
     </div>
     <div class="modal-footer">
         <x-forms.button-cancel data-dismiss="modal" class="border-0 mr-3">@lang('app.close')</x-forms.button-cancel>
-        <x-forms.button-primary id="save-slot-config" icon="save" type="submit" >@lang('app.save')</x-forms.button-primary>
+        <x-forms.button-primary id="save-slot-config" icon="save" type="submit" >
+            @lang('app.save')
+        </x-forms.button-primary>
     </div>
 </x-form>
 
@@ -127,6 +139,7 @@
                             $('#slotConfigForm').find('input[name="prefix"]').val($config.prefix);
                             $('#slotConfigForm').find('input[name="price"]').val($config.price);
                             $('#slotConfigForm').find('input[name="bufferTime"]').val($config.bufferTime);
+                            $('#slotConfigForm').find('input[name="maxBookings"]').val($config.maxBookings);
                         }
                     }
                     if (data.type == "{{ \App\Enums\LockerSlotType::SLOT }}") {

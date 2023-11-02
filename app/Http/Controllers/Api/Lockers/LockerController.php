@@ -39,6 +39,13 @@ class LockerController extends Controller
         $numberOfSlots = $request->number_of_slots;
 
         $locker = $this->lockerService->getWithLocation($id);
+        if (!$locker) {
+            return Reply::error('Locker not found', 'locker_not_found');
+        }
+        $configLocker = json_decode($this->lockerService->getConfigLocker($locker), true);
+        if ($this->lockerService->isExceedingLimitTime($configLocker, $startDate, $endDate)) {
+            return Reply::error('Exceeding limit time', 'exceeding_limit_time');
+        }
         $listSlotsNotAvailable = $this->lockerSlotService->getSlotsNotAvailable($id, $startDate, $endDate);
         $module = $this->lockerService->getModulesAvailableBooking($locker, $listSlotsNotAvailable);
         $slotsUserBooked = $this->lockerService->getSlotsUserBooked($locker, $id);
@@ -50,7 +57,7 @@ class LockerController extends Controller
                     'locker' => $locker,
                     'module' => $module,
                     'configNumberSlot' => [
-                        'max' => 2,
+                        'max' => $configLocker['maxBookings'],
                         'demand' => $numberOfSlots,
                         'used' => $slotsUserBooked[0]->locker_slots_count,
                     ]
@@ -64,7 +71,7 @@ class LockerController extends Controller
         return Reply::successWithData(
             'Get list lockers successfully',
             [
-                'data' => $res,
+                'data' => $this->lockerService->filterLimitTimeLocker($res, $request->start_date, $request->end_date),
             ]
         );
     }

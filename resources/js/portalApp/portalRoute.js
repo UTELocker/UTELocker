@@ -59,7 +59,12 @@ const routes = [
         path: '/wallet/transactions',
         name: 'wallet.transactions',
         component: Transaction,
-    }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: '404',
+        component: OverviewApp,
+    },
 ];
 
 export default createRouter({

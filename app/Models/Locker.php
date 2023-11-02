@@ -32,6 +32,12 @@ class Locker extends Model
             ->where('type', LockerSlotType::SLOT);
     }
 
+    public function lockerCPUType(): HasMany
+    {
+        return $this->hasMany(LockerSlot::class)
+            ->where('type', LockerSlotType::CPU);
+    }
+
     public function location(): BelongsTo
     {
         return $this->belongsTo(Location::class);

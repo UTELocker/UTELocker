@@ -16,4 +16,6 @@ return array(
     'minutes' => 'Minutes',
     'warning' => 'Warning',
     'slotHasBooking' => 'Slot has a booking',
+    'maxBookings' => 'Max Bookings',
+    'maxBookingsPlaceholder' => 'Ex: 3',
 );
