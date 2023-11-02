@@ -18,14 +18,18 @@
             </span> slots</p>
         </a-card>
         <a-page-header
-            :title="locker.description"
-            sub-title="Select slots for your booking"
+            title="Chọn ngăn tủ"
+            sub-title="Chọn ngăn tủ phù hợp với bạn"
             style="border: 1px solid rgb(235, 237, 240); border-radius: 0.5rem;"
             @back="() => $router.push({name: 'booking'})"
         >
             <template #extra>
-                <a-button type="primary" @click="() => $router.push({name: 'booking'})">
-                    Cancel
+                <a-button
+                    type="primary"
+                    @click="() => submit()"
+                    :disabled="totalPrice === 0"
+                >
+                    Tiếp tục
                 </a-button>
             </template>
             <a-row v-if="isLoading">
@@ -47,15 +51,14 @@
                                  @click="selectSlot(slot)"
                             >
                                 <a-popover
-                                    title="Slot Details"
+                                    title="Chi tiết ngăn"
                                 >
                                     <template #content>
-                                        <p>Slot Type: {{slot.type}}</p>
-                                        <p>Slot Status: {{slot.statusSlot}}</p>
+                                        <p>Loại ngăn: {{slot.type}}</p>
+                                        <p>Trạng thái: {{slot.statusSlot}}</p>
                                     </template>
                                     <p>
-                                        {{
-                                        slot.number_of_slot === null
+                                        {{ slot.number_of_slot === null
                                             ? slot.type
                                             : 'A' + slot.number_of_slot
                                         }}
@@ -68,20 +71,9 @@
             </a-row>
         </a-page-header>
         <a-page-header
-            :title="locker.description"
-            sub-title="Information about your booking"
+            title="Thông tin đặt chỗ"
             style="border: 1px solid rgb(235, 237, 240); border-radius: 0.5rem;"
         >
-            <template #extra>
-                <a-button
-                    type="primary"
-                    @click="() => submit()"
-                    :disabled="totalPrice === 0"
-                >
-                    Book Slots
-                </a-button>
-            </template>
-
             <template v-for="item in getInformationSelectedSlots()">
                 <a-row
                     style="justify-content: space-between; align-items: center;"
@@ -101,7 +93,6 @@
                     </p>
                 </a-row>
             </template>
-
         </a-page-header>
     </a-space>
 </template>
@@ -177,12 +168,14 @@ export default defineComponent({
                 return;
             }
 
-            const timeDiff = Math.abs(new Date(this.endDate).getTime() - new Date(this.startDate).getTime()) / 36e5;
-            if (!slot.is_selected) {
-                this.totalPrice += (slot.config?.price_per_hour ?? 10) * timeDiff;
-            } else {
-                this.totalPrice -= (slot.config?.price_per_hour ?? 10) * timeDiff;
-            }
+            let timeDiff = Math.abs(new Date(this.endDate).getTime() - new Date(this.startDate).getTime()) / 36e5;
+            timeDiff = Math.ceil(timeDiff);
+            const price = (slot.config?.price_per_hour ?? 10) * timeDiff;
+            this.totalPrice = slot.is_selected
+                ? this.totalPrice - price
+                : this.totalPrice + price;
+
+            console.log(this.totalPrice)
 
             this.setStatusSelectedSlot({
                 slotId: slot.id,
@@ -191,15 +184,15 @@ export default defineComponent({
         validate() {
             if (this.startDate === null || this.endDate === null) {
                 Modal.error({
-                    title: 'Error',
-                    content: 'Please select start date and end date',
+                    title: 'Lỗi',
+                    content: 'Vui lòng chọn thời gian thuê',
                 });
                 return false;
             }
             if (this.totalPrice === 0) {
                 Modal.error({
-                    title: 'Error',
-                    content: 'Please select at least one slot',
+                    title: 'Lỗi',
+                    content: 'Vui lòng chọn ít nhất 1 ngăn',
                 });
                 return false;
             }
@@ -220,7 +213,7 @@ export default defineComponent({
         getInformationSelectedSlots() {
             return [
                 {
-                    label: 'Number of selected slots',
+                    label: 'Số lượng ngăn đã chọn',
                     value: this.selectedSlots?.length,
                     options: {
                         stylesValue: {
@@ -230,7 +223,7 @@ export default defineComponent({
                     },
                 },
                 {
-                    label: 'Code of selected slots',
+                    label: 'Mã ngăn đã chọn',
                     value: this.selectedSlots?.map((slot) => slot.number_of_slot).join(', '),
                     options: {
                         stylesValue: {
@@ -239,8 +232,8 @@ export default defineComponent({
                     },
                 },
                 {
-                    label: 'Total price',
-                    value: parseFloat(this.totalPrice).toFixed(2),
+                    label: 'Tổng tiền',
+                    value: this.totalPrice.toLocaleString('vi-VN', {style : 'currency', currency : 'VND'}),
                     options: {
                         stylesValue: {
                             color: 'var(--green-6)',

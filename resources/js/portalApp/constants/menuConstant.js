@@ -1,34 +1,34 @@
 export default  {
     booking : {
-        title: 'New Booking',
+        title: 'Đặt Locker',
         path: '/portal/booking',
     },
     portal : {
-        title: 'Portal',
+        title: 'UTELocker Portal',
         children: [
             {
-                title: 'Overview',
+                title: 'Trang chủ',
                 path: '/portal',
             },
             {
-                title: 'Locations',
+                title: 'Địa điểm',
                 path: '/portal/locations',
             },
             {
-                title: 'Historical Bookings',
+                title: 'Lịch sử đặt',
                 path: '/portal/histories',
             },
         ]
     },
     wallet : {
-        title: 'Wallet',
+        title: 'Ví điện tử UTEPay',
         children: [
             {
-                title: 'Overview',
+                title: 'Ví của tôi',
                 path: '/wallet',
             },
             {
-                title: 'Transactions',
+                title: 'Lịch sử giao dịch',
                 path: '/wallet/transactions',
             }
         ]

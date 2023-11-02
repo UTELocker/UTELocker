@@ -12,4 +12,16 @@ final class TransactionType extends Enum
     public const PAYMENT = 3;
     public const REFUND = 4;
     public const PROMOTION = 5;
+
+    public static function getDescription($value): string
+    {
+        return match ($value) {
+            self::DEPOSIT => 'Deposit',
+            self::WITHDRAW => 'Withdraw',
+            self::TRANSFER => 'Transfer',
+            self::PAYMENT => 'Payment',
+            self::REFUND => 'Refund',
+            self::PROMOTION => 'Promotion',
+        };
+    }
 }

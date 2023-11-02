@@ -1,10 +1,8 @@
 <template>
     <article>
         <section class="markdown">
-            <h1>Find a locker</h1>
-            <section class="markdown">
-                <p>Select a locker to book</p>
-            </section>
+            <h1>Đặt Locker</h1>
+            <p>Dùng bộ lọc bên dưới để tìm kiếm locker phù hợp với nhu cầu của bạn.</p>
         </section>
         <a-card :style="{backgroundColor: 'var(--purple-3)'}">
             <a-row :gutter="16">
@@ -17,7 +15,7 @@
                                 :options="locations"
                                 mode="multiple"
                                 @change="this.setFormModel('selectedLocation', $event)"
-                                placeholder="Select a location"
+                                placeholder="Chọn địa điểm"
                                 style="width: 100%"
                                 :size="size"
                             />
@@ -35,6 +33,7 @@
                                 :size="size"
                                 style="width: 100%"
                                 :disabledDate="date => date < Date.now() - 24 * 60 * 60 * 1000"
+                                :placeholder="['Bắt đầu', 'Kết thúc']"
                             />
                         </a-col>
                     </a-row>
@@ -47,7 +46,7 @@
                                 max="10"
                                 :size="size"
                                 style="width: 100%"
-                                placeholder="Number of lockers"
+                                placeholder="Số ngăn trống tối thiểu"
                                 @change="this.setFormModel('numberOfSlots', $event)"
                             />
                         </a-col>
@@ -70,8 +69,10 @@
                 </a-col>
             </a-row>
         </a-card>
-        <section class="markdown" v-if="availableLockers.length > 0">
-            <h2>Available lockers</h2>
+        <template v-if="availableLockers.length > 0">
+            <section class="markdown">
+                <h2>Kết quả tìm kiếm</h2>
+            </section>
             <div class="site-card-wrapper">
                 <a-list
                     :grid="{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 }"
@@ -92,14 +93,14 @@
                                     }
                                 })"
                                 hoverable>
-                                <p>Address: {{item.address}}</p>
-                                <p>Available slots: {{item.locker_slots_count}}</p>
+                                <h3>Địa chỉ: {{item.address}}</h3>
+                                <h3>Số ngăn tủ trống: {{item.locker_slots_count}}</h3>
                             </a-card>
                         </a-list-item>
                     </template>
                 </a-list>
             </div>
-        </section>
+        </template>
     </article>
 </template>
 <script>
@@ -130,9 +131,9 @@ export default defineComponent({
             isLoading: false,
             isSubmitLoading: false,
             presets: [
-                { label: '1 hours', value: [dayjs(), dayjs().add(1, 'h')] },
-                { label: '1 Day', value: [dayjs(), dayjs().add(1, 'd')] },
-                { label: '2 Days', value: [dayjs(), dayjs().add(2, 'd')] },
+                { label: '1 giờ', value: [dayjs(), dayjs().add(1, 'h')] },
+                { label: '1 ngày', value: [dayjs(), dayjs().add(1, 'd')] },
+                { label: '2 ngày', value: [dayjs(), dayjs().add(2, 'd')] },
             ]
         };
     },
@@ -156,22 +157,22 @@ export default defineComponent({
         },
         validateForm() {
             if (this.formModel.startDate === null) {
-                this.showErrorMessage('Please select a start date');
+                this.showErrorMessage('Vui lòng chọn thời gian bắt đầu');
                 return false;
             }
             if (this.formModel.endDate === null) {
-                this.showErrorMessage('Please select an end date');
+                this.showErrorMessage('Vui lòng chọn thời gian kết thúc');
                 return false;
             }
             if (this.formModel.selectedLocation.endDate <= this.formModel.startDate) {
-                this.showErrorMessage('End date must be greater than start date');
+                this.showErrorMessage('Thời gian kết thúc phải sau thời gian bắt đầu');
                 return false;
             }
             return true;
         },
         showErrorMessage(message, onOk = null) {
             Modal.error({
-                title: 'Error',
+                title: 'Lỗi',
                 content: message,
                 onOk: onOk,
             });
@@ -188,10 +189,10 @@ export default defineComponent({
                 }).then(() => {
                     this.isSubmitLoading = false;
                 }).catch((e) => {
-                    const message = e?.response?.data?.message || e || 'Error searching lockers';
+                    const message = e?.response?.data?.message || e || 'Lỗi tìm kiếm locker'
                     this.isSubmitLoading = false;
                     Modal.error({
-                        title: 'Error searching lockers',
+                        title: 'Lỗi tìm kiếm locker',
                         content: message,
                     });
                 });
@@ -215,7 +216,7 @@ export default defineComponent({
             const message = e.response.data.message;
             this.isLoading = false;
             Modal.error({
-                title: 'Error loading locations',
+                title: 'Lỗi tải địa điểm',
                 content: message,
             });
         });

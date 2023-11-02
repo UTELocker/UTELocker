@@ -1,13 +1,13 @@
 <template>
     <a-page-header
-        title="Overview"
-        sub-title="List of all your bookings activities"
+        title="Trang chủ"
+        sub-title="Danh sách các tủ đang đặt"
         style="border: 1px solid rgb(235, 237, 240); border-radius: 0.5rem;"
         :back-icon="false"
     >
         <template #extra>
             <a-button type="primary" @click="() => $router.push({name: 'booking'})">
-                Book Now
+                Đặt tủ ngay
             </a-button>
         </template>
     </a-page-header>
@@ -66,18 +66,8 @@
                                         </a-row>
                                         <a-row>
                                             <a-col :span="24">
-                                                <p>Slot Code: {{item.slot_code}}</p>
-                                                <p v-if="isActive(item)">Remaining Time:</p>
-                                                <p v-if="isActive(item)">
-                                                    <a-statistic-countdown
-                                                        :value="handleTimeRemain(item)"
-                                                        format="D day HH:mm"
-                                                        :valueStyle= "{
-                                                            fontSize: '1rem',
-                                                        }"
-                                                    />
-                                                </p>
-                                                <p>Status: {{handleStatusText(item.status)}}</p>
+                                                <p>Mã ngăn: {{item.slot_code}}</p>
+                                                <p>Trạng thái: {{handleStatusText(item.status)}}</p>
                                             </a-col>
                                         </a-row>
                                     </a-col>
@@ -97,14 +87,26 @@
                                                 @click="handleClickShowButton(item)"
                                                 :disabled="!isActive(item)"
                                             >
-                                                Unlock
+                                                MỞ KHÓA
                                             </a-button>
+                                        </div>
+                                        <div>
+                                            <p v-if="isActive(item)">Còn lại</p>
+                                            <p v-if="isActive(item)">
+                                                <a-statistic-countdown
+                                                    :value="handleTimeRemain(item)"
+                                                    format="HH:mm"
+                                                    :valueStyle= "{
+                                                        fontSize: '1rem',
+                                                    }"
+                                                />
+                                            </p>
                                         </div>
                                     </a-col>
                                 </a-row>
                                 <a-divider />
                                 <a-collapse ghost>
-                                    <a-collapse-panel header="Booking settings">
+                                    <a-collapse-panel header="Cài đặt" :key="item.id">
                                         <a-button
                                             type="primary"
                                             size="large"
@@ -115,7 +117,7 @@
                                             @click="handleClickExtendButton(item)"
                                             :disable="!isActive(item)"
                                         >
-                                            Extend
+                                            Thêm thời gian
                                         </a-button>
                                         <a-button
                                             type="primary"
@@ -126,7 +128,7 @@
                                             }"
                                             @click="handleClickEndButton(item)"
                                         >
-                                            End Booking
+                                            {{isActive(item) ? 'Kết thúc' : 'Hủy đặt'}}
                                         </a-button>
                                     </a-collapse-panel>
                                 </a-collapse>
@@ -136,7 +138,7 @@
                 </a-list>
             </a-col>
             <a-drawer
-                title="Unlock Pin Code"
+                title="Chi tiết đặt tủ"
                 placement="right"
                 :open="isShowDrawer"
                 @close="onCloseDrawer"
@@ -240,14 +242,16 @@ export default defineComponent({
         },
         handleClickEndButton(booking) {
             Modal.confirm({
-                title: () => 'Do you want to end this booking?',
+                title: () => 'Bạn có chắc muốn kết thúc đặt tủ này?',
                 icon: () => createVNode(ExclamationCircleOutlined),
-                content: () => 'Booking will be ended and you can not use this slot anymore.',
+                content: () => 'Khi kết thúc đặt tủ, bạn sẽ không thể mở tủ này nữa',
                 onOk: () => {
                     this.deleteBooking({
                         bookingId: booking.id,
                     });
                 },
+                okText: 'Đồng ý',
+                cancelText: 'Hủy',
                 onCancel() {},
             });
         },

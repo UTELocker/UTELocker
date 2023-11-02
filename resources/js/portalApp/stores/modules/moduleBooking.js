@@ -54,7 +54,7 @@ const actions = {
                 const availableLockers = data.map(locker => {
                     return {
                         id: locker.id,
-                        description: locker.description,
+                        description: locker.description ? locker.description : 'Tủ đồ',
                         image: locker.image ? locker.image : 'https://via.placeholder.com/150',
                         address: locker.address,
                         locker_slots_count: locker.locker_slots_count,

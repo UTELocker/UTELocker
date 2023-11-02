@@ -11,6 +11,7 @@ export const WALLET_API = Object.freeze({
     GET_PAYMENT_METHODS: () => `${API_PAYMENT_PREFIX}/methods`,
     GET_PAYMENT_METHOD: (methodId) => `${API_PAYMENT_PREFIX}/methods/${methodId}`,
     POST_DEPOSIT: () => `${API_PREFIX}/payments/wallets/deposit`,
+    GET_TRANSACTIONS: (params) => `${API_PREFIX}/payments/transactions?` + jQuery.param(params),
     POST_AUTHENTICATE: () => `${API_WALLET_PREFIX}/auth`,
 });
 

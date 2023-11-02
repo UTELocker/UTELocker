@@ -47,6 +47,10 @@ class TransactionService extends BaseService
         Common::assignField($this->model, 'type', $inputs);
         Common::assignField($this->model, 'reference', $inputs);
         Common::assignField($this->model, 'reference_transaction_id', $inputs);
+        Common::assignField($this->model, 'balance', $inputs);
+        Common::assignField($this->model, 'promotion_balance', $inputs);
+        Common::assignField($this->model, 'time', $inputs);
+        Common::assignField($this->model, 'content', $inputs);
     }
 
     public function validateUniqueReference(string $reference): bool

@@ -5,7 +5,7 @@
             height: isMobile ? '30vh' : '30vh',
         }"
     >
-        <h3 style="margin-bottom: 10px;">Map Locker of booking </h3>
+        <h3 style="margin-bottom: 10px;">Bản đồ</h3>
         <l-map ref="map" v-model:zoom="zoom" :center="[
                     this.marker.lat,
                     this.marker.lng,

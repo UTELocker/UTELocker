@@ -6,25 +6,25 @@
         }">
             <div>
                 <p style="font-size: medium;">
-                    Current Balance
+                    Số dư ví
                     <a-tooltip placement="top">
                         <template #title>
-                            <span v-if="!isVisibleBalance">Click to show balance</span>
-                            <span v-else>Click to hide balance</span>
+                            <span v-if="!isVisibleBalance">Hiện số dư</span>
+                            <span v-else>Ẩn số dư</span>
                         </template>
                         <EyeOutlined v-if="!isVisibleBalance" @click="toggleIsVisibleBalance" />
                         <EyeInvisibleOutlined v-else @click="toggleIsVisibleBalance" />
                     </a-tooltip>
                 </p>
                 <h1>{{this.getWalletBalance()}}</h1>
-                <p style="font-size: medium;">Points: <strong>{{this.getWalletPoints()}}</strong></p>
+                <p style="font-size: medium;">Điểm thưởng: <strong>{{this.getWalletPoints()}}</strong></p>
             </div>
             <div
                 v-if="!isMobile"
                 class="wallet-action"
             >
-                <a-button type="primary" @click="this.$router.push({name: 'wallet.topup'})">Top Up</a-button>
-                <a-button type="primary">Withdraw</a-button>
+                <a-button type="primary" @click="this.$router.push({name: 'wallet.topup'})">Nạp Tiền</a-button>
+                <a-button type="primary">Rút Tiền</a-button>
             </div>
         </div>
     </a-card>

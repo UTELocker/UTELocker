@@ -2,9 +2,7 @@
     <a-row>
         <a-col :span="24" >
             <a-space
-                style="
-                    width: 100%;
-                   "
+                style="width: 100%;"
                 :size="10"
                 direction="vertical"
             >
@@ -12,12 +10,11 @@
                     style="
                     font-weight: bold;
                     margin-bottom: 10px
-                "
-                >
-                    Detail Booking Slot {{booking.slot_code}}
+                ">
+                    Chi tiết cho ngăn {{booking.slot_code}}
                 </div>
                 <a-row>
-                    Pin Code:
+                    Mã PIN (Dùng để mở ngăn)
                 </a-row>
                 <a-row>
                     <a-space
@@ -44,7 +41,7 @@
                     }"
                         :size="20"
                     >
-                        <a-tooltip placement="topLeft" title="Copy pin code">
+                        <a-tooltip placement="top" title="Sao chép">
                             <a-button
                                 style="width: 80px; height: 40px"
                                 @click="() => copyPinCode(booking)"
@@ -57,7 +54,7 @@
                                 </template>
                             </a-button>
                         </a-tooltip>
-                        <a-tooltip placement="topLeft" title="Random pin code">
+                        <a-tooltip placement="top" title="Đổi mã PIN">
                             <a-button
                                 style="width: 80px; height: 40px"
                                 @click="handlePinCode(booking)"
@@ -70,7 +67,7 @@
                                 </template>
                             </a-button>
                         </a-tooltip>
-                        <a-tooltip placement="topLeft" title="End booking">
+                        <a-tooltip placement="top" title="Kết thúc">
                             <a-button
                                 style="width: 80px; height: 40px"
                                 @click="handleEndBooking(booking)"
@@ -83,7 +80,7 @@
                                 </template>
                             </a-button>
                         </a-tooltip>
-                        <a-tooltip placement="topLeft" title="Report booking">
+                        <a-tooltip placement="top" title="Báo hỏng">
                             <a-button
                                 style="width: 80px; height: 40px"
                                 @click="() => $router.push({name: 'booking'})"
@@ -100,7 +97,7 @@
                 </a-row>
                 <a-row>
                     <p>
-                        Date Time:
+                        Thời gian đặt:
                     </p>
                 </a-row>
                 <a-row
@@ -117,27 +114,13 @@
                             }"
                             :size="10"
                         >
-                            <p>
-                                {{booking.start_date}}
-                            </p>
+                            <h3>{{booking.start_date}}</h3>
                             <swap-right-outlined
                                 style="font-size: 2rem; color: blue; font-weight: 600;"
                             />
-                            <p>
-                                {{booking.end_date}}
-                            </p>
+                            <h3>{{booking.end_date}}</h3>
                         </a-space>
                     </a-card>
-                </a-row>
-                <a-row>
-                    <p>
-                        Status: Active
-                    </p>
-                </a-row>
-                <a-row>
-                    <p>
-                        Time Remaining: {{booking.timeOut}}
-                    </p>
                 </a-row>
             </a-space>
         </a-col>

@@ -1,10 +1,10 @@
 <template>
     <a-modal
-        title="Extend booking"
+        title="Cộng thêm thời gian"
         v-model:open="visibleState"
         :onOk="onOk"
-        :okText="'Extend'"
-        :cancelText="'Cancel'"
+        :okText="'Thêm thời gian'"
+        :cancelText="'Hủy'"
         :width="800"
         :bodyStyle="{
             maxHeight: 'calc(100vh - 200px)',
@@ -22,15 +22,14 @@
                         show-time
                         style="width: 90%;"
                         v-model:value="value"
+                        placeholder="Chọn thời gian cộng thêm"
                     />
                 </a-col>
                 <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                     <p>
-                        Time extend: {{
-                            calculateTimeExtend()[0]
-                        }} hours {{
-                            calculateTimeExtend()[1]
-                        }} minutes
+                        Thời gian cộng thêm: &nbsp;
+                        {{calculateTimeExtend()[0]}} giờ &nbsp;
+                        {{calculateTimeExtend()[1]}} phút
                     </p>
                 </a-col>
             </a-row>
@@ -41,21 +40,21 @@
                         :disabled="this.isLoaded"
                         @click="addExtendTime(0, 30)"
                     >
-                        +30 minutes
+                        +30 phút
                     </a-button>
                     <a-button
                         type="primary"
                         :disabled="this.isLoaded"
                         @click="addExtendTime(1, 0)"
                     >
-                        +1 hour
+                        +1 tiếng
                     </a-button>
                     <a-button
                         type="primary"
                         :disabled="this.isLoaded"
                         @click="addExtendTime(2, 0)"
                     >
-                        +2 hours
+                        +2 tiếng
                     </a-button>
                 </a-space>
             </a-row>
@@ -63,7 +62,7 @@
                 style="display: flex; justify-content: flex-end; align-items: center; width: 100%;"
             >
                 <p>
-                    Total price:
+                    Tổng tiền: &nbsp;
                 </p>
                 <p>
                     {{calculatePrice()}}
@@ -139,16 +138,16 @@ export default defineComponent({
                 extendTime: this.calculateTimeExtend()[0] * 60 + this.calculateTimeExtend()[1],
             }).then(() => {
                 Modal.success({
-                    title: 'Success',
-                    content: 'Extend booking successfully',
+                    title: 'Thành công',
+                    content: 'Booking đã được cộng thêm thời gian',
                     onOk: () => {},
                 });
                 this.handleClose();
             }).catch((e) => {
                 this.handleClose();
-                const message = e?.response?.data?.message ?? 'Extend booking failed';
+                const message = e?.response?.data?.message ?? 'Có lỗi xảy ra';
                 Modal.error({
-                    title: 'Error',
+                    title: 'Lỗi',
                     content: message,
                 });
             });
