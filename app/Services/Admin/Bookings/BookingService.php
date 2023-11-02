@@ -226,4 +226,13 @@ class BookingService extends BaseService
         $booking->save();
         return $booking;
     }
+
+    public function getActiveBookingOfSlot(LockerSlot $lockerSlot)
+    {
+        return $lockerSlot->bookings()->where('status', BookingStatus::APPROVED)
+            ->select('bookings.id', 'bookings.status', 'bookings.start_date', 'bookings.end_date', 'owner_id')
+            ->where('bookings.end_date', '>=', now())
+            ->where('bookings.start_date', '<=', now())
+            ->first();
+    }
 }

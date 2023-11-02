@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Locations\LocationsController;
 use App\Http\Controllers\Api\Lockers\LockerController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Notifications\NotificationController;
+use App\Http\Controllers\Api\Payments\PaymentController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -68,5 +69,11 @@ Route::middleware('auth:sanctum')->group(function () {
             ->name('api.notifications.update.status');
         Route::post('/', [NotificationController::class, 'store'])->name('api.notifications.store');
         Route::get('/{id}', [NotificationController::class, 'show'])->name('api.notifications.show');
+    });
+
+    Route::prefix('payments')->group(function () {
+        Route::prefix('wallets')->group(function () {
+            Route::post('/auth', [PaymentController::class, 'auth'])->name('portal.wallet.auth');
+        });
     });
 });

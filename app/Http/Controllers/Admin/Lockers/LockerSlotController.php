@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin\Lockers;
 
 use App\Classes\Reply;
+use App\Enums\BookingStatus;
 use App\Enums\LockerSlotStatus;
+use App\Enums\LockerSlotType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Lockers\UpdateSlotRequest;
+use App\Services\Admin\Bookings\BookingService;
 use App\Services\Admin\Lockers\LockerService;
 use App\Services\Admin\Lockers\LockerSlotService;
 use Illuminate\Http\Request;
@@ -15,11 +18,17 @@ class LockerSlotController extends Controller
     private LockerSlotService $lockerSlotService;
     private LockerService $lockerService;
 
-    public function __construct(LockerSlotService $lockerSlotService, LockerService $lockerService)
-    {
+    private BookingService $bookingService;
+
+    public function __construct(
+        LockerSlotService $lockerSlotService,
+        LockerService $lockerService,
+        BookingService $bookingService
+    ){
         parent::__construct();
         $this->lockerSlotService = $lockerSlotService;
         $this->lockerService = $lockerService;
+        $this->bookingService = $bookingService;
     }
 
     /**
@@ -57,9 +66,20 @@ class LockerSlotController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, string $slotId)
     {
-        //
+        $this->pageTitle = 'Locker Slot';
+        $this->view = 'admin.lockers.slots.show';
+        $slot = $this->lockerSlotService->get($slotId);
+        if ($slot->type === LockerSlotType::SLOT) {
+            $bookingActive = $this->bookingService->getActiveBookingOfSlot($slot);
+        }
+        return Reply::successWithData('Success', [
+            'data' => [
+                'slot' => $slot,
+                'bookingActive' => $bookingActive ?? null,
+            ],
+        ]);
     }
 
     /**
@@ -81,9 +101,10 @@ class LockerSlotController extends Controller
     public function update(UpdateSlotRequest $request, string $lockerId, string $slotId)
     {
         $form = $request->all();
-        $this->lockerSlotService->updateStatus($slotId, $form['status']);
-
-        return Reply::success('Updated Successfully');
+        $status = $form['status'];
+        unset($form['status'], $form['redirect_url'], $form['_token'], $form['_method']);
+        $this->lockerSlotService->updateSetting($slotId, $status, $form);
+        return back()->with('success', 'Success');
     }
 
     /**

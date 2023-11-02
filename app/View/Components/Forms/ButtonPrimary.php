@@ -10,14 +10,16 @@ class ButtonPrimary extends Component
 {
     public $icon;
     public $disabled;
+    public $type;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($icon = '', $disabled = false)
+    public function __construct($icon = '', $disabled = false, $type = 'button')
     {
         $this->icon = $icon;
         $this->disabled = $disabled;
+        $this->type = $type;
     }
 
     /**

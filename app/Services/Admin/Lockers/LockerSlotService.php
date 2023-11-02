@@ -132,9 +132,10 @@ class LockerSlotService extends BaseService
         return $this->model;
     }
 
-    public function updateStatus($slotId, $status)
+    public function updateSetting($slotId, $status, $config)
     {
-        $this->model->where('id', $slotId)->update(['status' => $status]);
+        $config = json_encode($config);
+        $this->model->where('id', $slotId)->update(['status' => $status, 'config' => $config]);
     }
 
     public function getSlotsNotAvailable($lockerId, mixed $startDate, mixed $endDate)
