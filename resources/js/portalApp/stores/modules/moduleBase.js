@@ -168,6 +168,21 @@ const actions = {
                 reject(e);
             });
         });
+    },
+    updateUser({ commit }, payload) {
+        const { user } = payload;
+        return new Promise((resolve, reject) => {
+            put(API.PUT_UPDATE_USER(), user).then(response => {
+                if (response.data.status === 'success') {
+                    commit('setUser', response.data.data);
+                    resolve();
+                } else {
+                    reject(response);
+                }
+            }).catch(error => {
+                reject(error);
+            });
+        });
     }
 }
 

@@ -67,7 +67,9 @@ return array(
         'pusher_app_id' => 'Pusher App ID',
         'pusher_app_key' => 'Pusher App Key',
         'pusher_app_secret' => 'Pusher App Secret',
-        'pusher_app_cluster' => 'Pusher App Cluster'
+        'pusher_app_cluster' => 'Pusher App Cluster',
+        'is2FA' => 'Authentication OTP',
+        'is2FANote' => 'Enable/Disable OTP Authentication for login',
     ],
     'lockers' => [
         'title' => 'Lockers',

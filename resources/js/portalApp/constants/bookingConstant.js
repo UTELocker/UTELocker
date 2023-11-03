@@ -11,6 +11,7 @@ export const API = Object.freeze({
     PUT_EXTEND_TIME: (bookingId) => `${API_BOOKING_PREFIX}/${bookingId}/extend-time`,
     DEL_END_BOOKING: (bookingId) => `${API_BOOKING_PREFIX}/${bookingId}`,
     POST_CHANGE_PIN_CODE: () => `${API_BOOKING_PREFIX}/change-password`,
+    PUT_UPDATE_USER: () => `${API_PREFIX}/user`,
 });
 
 export const LOGOUT_URL = '/logout';

@@ -43,8 +43,14 @@ class UpdateUserRequest extends FormRequest
             'type' => 'nullable|int|in:0,1,2',
         ];
         if ($this->has('password')) {
-            $rules['password'] = 'required|string|min:8';
-            $rules['password_confirmation'] = 'required|string|min:8|same:password';
+            $rules['old_password'] = 'required|string';
+            $rules['password_confirmation'] = 'required|string|same:password';
+            $rules['password'] = 'required|string';
+        }
+        if ($this->has('password_is2FA')) {
+            $rules['old_password_is2FA'] = 'required|string|max:6|min:6';
+            $rules['password_is2FA_confirmation'] = 'required|string|max:6|min:6|same:password_is2FA';
+            $rules['password_is2FA'] = 'required|string|min:6|max:6';
         }
         return $rules;
     }

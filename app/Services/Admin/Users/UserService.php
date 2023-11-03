@@ -12,6 +12,8 @@ use App\Services\Wallets\WalletService;
 use Cassandra\Type\UserType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Classes\CommonConstant;
+use Illuminate\Support\Facades\Hash;
 
 class UserService extends BaseService
 {
@@ -72,6 +74,11 @@ class UserService extends BaseService
         $inputs['mobile'] = $inputs['mobile'] ?? $this->model->mobile;
         $inputs['gender'] = $inputs['gender'] ?? $this->model->gender;
         $inputs['locale'] = $inputs['locale'] ?? $this->model->locale;
+        if (isset($inputs['is2FA'])) {
+            $inputs['is2FA'] = $inputs['is2FA'] ? CommonConstant::DATABASE_YES : CommonConstant::DATABASE_NO;
+        } else {
+            $inputs['is2FA'] = CommonConstant::DATABASE_NO;
+        }
     }
 
     protected function setModelFields($inputs): void
@@ -85,6 +92,7 @@ class UserService extends BaseService
         Common::assignField($this->model, 'type', $inputs);
         Common::assignField($this->model, 'gender', $inputs);
         Common::assignField($this->model, 'locale', $inputs);
+        Common::assignField($this->model, 'is2FA', $inputs);
     }
 
     public function get($id)
@@ -98,8 +106,14 @@ class UserService extends BaseService
         if (isset($options['isPrefix']) && $options['isPrefix']) {
             $inputs = Common::mappingRemovePrefix($inputs, self::FORM_PREFIX);
         }
+
+        if (isset($inputs['old_password']) && !Hash::check($inputs['old_password'], $this->model->password)) {
+            return false;
+        }
+
         $this->formatInputData($inputs);
         $this->setModelFields($inputs);
+
         $user->save();
 
         return $user;

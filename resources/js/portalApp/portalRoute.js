@@ -8,6 +8,8 @@ import LocationApp from "./location/LocationApp.vue";
 import HistoryApp from "./history/HistoryApp.vue";
 import TopUp from "./wallet/TopUp/TopUp.vue";
 import Transaction from "./wallet/Transaction/Transaction.vue";
+import UserApp from "./user/UserApp.vue";
+import UserSettingsApp from "./user/UserSettingsApp.vue";
 
 const routes = [
     {
@@ -59,6 +61,16 @@ const routes = [
         path: '/wallet/transactions',
         name: 'wallet.transactions',
         component: Transaction,
+    },
+    {
+        path: '/portal/user',
+        name: 'user',
+        component: UserApp,
+    },
+    {
+        path: '/portal/user/settings',
+        name: 'user.settings',
+        component: UserSettingsApp,
     },
     {
         path: '/:pathMatch(.*)*',

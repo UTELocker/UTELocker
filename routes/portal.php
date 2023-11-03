@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Payments\PaymentMethodController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Locations\LocationsController;
 use App\Http\Controllers\Api\Notifications\NotificationController;
+use App\Http\Controllers\Api\Users\UserController;
 
 Route::prefix('api-portal')->group(function () {
     Route::prefix('locations')->group(function () {
@@ -57,5 +58,9 @@ Route::prefix('api-portal')->group(function () {
         Route::prefix('transactions')->group(function () {
             Route::get('/', [PaymentController::class, 'getTransactions'])->name('portal.payment.transaction.get');
         });
+    });
+
+    Route::prefix('user')->group(function () {
+        Route::put('/', [UserController::class, 'update'])->name('portal.user.update');
     });
 });

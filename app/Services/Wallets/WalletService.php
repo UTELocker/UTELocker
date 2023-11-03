@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class WalletService extends BaseService
 {
@@ -48,7 +49,10 @@ class WalletService extends BaseService
 
     protected function formatInputData(&$inputs)
     {
-        return;
+        $inputs['password'] = $this->model->password;
+        $inputs['user_id'] = isset($inputs['user_id']) ? $inputs['user_id'] : user()->id;
+        $inputs['balance'] = $this->model->balance;
+        $inputs['promotion_balance'] = $this->model->promotion_balance;
     }
 
     protected function setModelFields($inputs)
@@ -56,6 +60,7 @@ class WalletService extends BaseService
         Common::assignField($this->model, 'user_id', $inputs);
         Common::assignField($this->model, 'balance', $inputs);
         Common::assignField($this->model, 'promotion_balance', $inputs);
+        Common::assignField($this->model, 'password', $inputs);
     }
 
     public function getWalletByUserId(User $user): Wallet
@@ -130,5 +135,29 @@ class WalletService extends BaseService
         }
 
         return true;
+    }
+
+    public function update(Wallet $wallet, $inputs)
+    {
+        $this->setModel($wallet);
+        $this->formatInputData($inputs);
+        $this->setModelFields($inputs);
+
+        if (isset($inputs['old_password_is2FA'])) {
+            if (Hash::check($inputs['old_password_is2FA'], $this->model->password)) {
+                $this->model->password = bcrypt($inputs['password_is2FA']);
+            } else {
+                return false;
+            }
+        }
+
+        $this->model->save();
+
+        return $this->model;
+    }
+
+    public function get($id)
+    {
+        return $this->model->findOrFail($id);
     }
 }

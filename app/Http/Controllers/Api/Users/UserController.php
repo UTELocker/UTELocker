@@ -8,14 +8,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\GetClientByEmailRequest;
 use App\Http\Requests\Api\Users\UpdateUserRequest;
 use App\Services\Admin\Users\UserService;
+use App\Services\Wallets\WalletService;
 
 class UserController extends Controller
 {
     public ?UserService $userService;
 
-    public function __construct(UserService $userService)
+    public ?WalletService $walletService;
+
+    public function __construct(UserService $userService, WalletService $walletService)
     {
         $this->userService = $userService;
+        $this->walletService = $walletService;
     }
 
     public function get()
@@ -45,9 +49,21 @@ class UserController extends Controller
     }
 
     public function update(UpdateUserRequest $request) {
-        $user = auth()->user();
+        $user = user();
         $data = $request->all();
-        $user = $this->userService->update($user, $data);
+        if (isset($data['password_is2FA'])) {
+            $wallet = $this->walletService->get(user()->id);
+            $wallet = $this->walletService->update($wallet, $data);
+            if (!$wallet) {
+                return Reply::error('Old password is wrong');
+            }
+        } else {
+            $user = $this->userService->update($user, $data);
+            if (!$user) {
+                return Reply::error('Old password is wrong');
+            }
+        }
+
         return Reply::successWithData(
             'Update user success',
             [

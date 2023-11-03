@@ -102,6 +102,12 @@
                 </x-forms.select>
             </div>
         @endif
+        <div class="col-lg-4">
+            <x-forms.toggle-switch fieldId="user_is2FA" :fieldLabel="__('modules.settings.is2FA')"
+                fieldName="user_is2FA" :checked="$user->is2FA == true"
+                :popover="__('modules.settings.is2FANote')">
+            </x-forms.toggle-switch>
+        </div>
     </div>
 </div>
 

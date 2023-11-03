@@ -15,7 +15,7 @@
                     }"
                     >
                         <template #icon>
-                            <UserOutlined />
+                            <UserOutlined @click="this.$router.push({name:'user'})" />
                         </template>
                     </a-avatar>
                     <a-col :span="24"
@@ -26,7 +26,7 @@
                         }"
                     >
                         <div>
-                            <div>
+                            <div @click="this.$router.push({name:'user'})" style="cursor: pointer;">
                                 <span style="font-weight: bold; font-size: 16px;">{{user.name}}</span>
                             </div>
                             <div>
@@ -73,7 +73,7 @@ export default defineComponent({
     },
     computed: {
         ...mapState({
-            user: state => state.moduleBase.user,
+            user: (state) => state.moduleBase.user,
         }),
     },
     methods: {
