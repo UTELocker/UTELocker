@@ -4,8 +4,8 @@ namespace App\Traits\PaymentGateway;
 
 trait RequestEndpoint
 {
-    protected $productionEndpoint;
-    protected $testEndpoint;
+    protected string $productionEndpoint;
+    protected string $testEndpoint;
 
     protected function getEndpoint()
     {

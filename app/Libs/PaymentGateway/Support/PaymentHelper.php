@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Classes;
+namespace App\Libs\PaymentGateway\Support;
 
 class PaymentHelper
 {
@@ -51,5 +51,10 @@ class PaymentHelper
                 }
             }
         }
+    }
+
+    public static function getTimeStamp()
+    {
+        return round(microtime(true) * 1000);
     }
 }

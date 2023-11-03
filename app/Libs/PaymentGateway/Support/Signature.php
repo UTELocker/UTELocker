@@ -34,6 +34,8 @@ class Signature
 
     protected function isSupportHashType(string $type): bool
     {
-        return 0 === strcasecmp($type, 'md5') || 0 === strcasecmp($type, 'sha512');
+        return 0 === strcasecmp($type, 'md5')
+            || 0 === strcasecmp($type, 'sha512')
+            || 0 === strcasecmp($type, 'sha256');
     }
 }
