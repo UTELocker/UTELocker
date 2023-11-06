@@ -39,8 +39,8 @@ final class PaymentMethodType extends Enum
     public static function getNotAvailableTypes(): array
     {
         return [
+            self::CASH,
             self::PAYPAL,
-            self::ZALOPAY,
             self::BANK_TRANSFER
         ];
     }

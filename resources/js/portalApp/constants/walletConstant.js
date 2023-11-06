@@ -5,6 +5,7 @@ const API_WALLET_PREFIX = '/api-portal/payments/wallets';
 const API_PREFIX = '/api-portal';
 import vnpay from '../assets/images/payment-methods/vnpay.svg'
 import cash from '../assets/images/payment-methods/cash.svg'
+import zalopay from '../assets/images/payment-methods/zalopay.svg'
 
 export const WALLET_API = Object.freeze({
     GET_WALLET: () => `${API_WALLET_PREFIX}/getWallet`,
@@ -29,9 +30,11 @@ export const TOP_UP_STEPS = [
 export const PAYMENT_METHODS = Object.freeze({
     CASH: 'cash',
     VN_PAY: 'vnpay',
+    ZALO_PAY: 'zalopay',
 });
 
 export const PAYMENT_METHOD_IMAGES = Object.freeze({
     [PAYMENT_METHODS.CASH]: cash,
     [PAYMENT_METHODS.VN_PAY]: vnpay,
+    [PAYMENT_METHODS.ZALO_PAY]: zalopay,
 });

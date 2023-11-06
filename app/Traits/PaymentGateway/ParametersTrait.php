@@ -2,7 +2,7 @@
 
 namespace App\Traits\PaymentGateway;
 
-use App\Classes\PaymentHelper;
+use App\Libs\PaymentGateway\Support\PaymentHelper;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait ParametersTrait

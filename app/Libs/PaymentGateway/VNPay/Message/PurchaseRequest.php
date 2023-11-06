@@ -9,12 +9,12 @@ class PurchaseRequest extends AbstractSignatureRequest
     /**
      * {@inheritdoc}
      */
-    protected $productionEndpoint = 'https://pay.vnpay.vn/vpcpay.html';
+    protected string $productionEndpoint = 'https://pay.vnpay.vn/vpcpay.html';
 
     /**
      * {@inheritdoc}
      */
-    protected $testEndpoint = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
+    protected string $testEndpoint = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
 
     public function initialize(array $parameters = []): static
     {

@@ -2,8 +2,8 @@
 
 namespace App\Libs\PaymentGateway\Message;
 
-use App\Classes\PaymentHelper;
 use App\Libs\PaymentGateway\IPaymentClient;
+use App\Libs\PaymentGateway\Support\PaymentHelper;
 use App\Traits\PaymentGateway\ParametersTrait;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
