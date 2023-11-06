@@ -83,7 +83,7 @@
                         <a-tooltip placement="top" title="Báo hỏng">
                             <a-button
                                 style="width: 80px; height: 40px"
-                                @click="() => $router.push({name: 'booking'})"
+                                @click="createHelpCall()"
                             >
                                 <template #icon>
                                     <warning-two-tone
@@ -185,6 +185,7 @@ export default defineComponent({
             deleteBooking: 'moduleBase/deleteBooking',
         }),
         splitPinCode(booking) {
+            console.log('booking', booking);
             return booking.pin_code.split("");
         },
         copyPinCode(booking) {
@@ -222,6 +223,18 @@ export default defineComponent({
                 },
                 onCancel() {},
             });
+        },
+        createHelpCall() {
+            this.$router.push(
+                {
+                    name: 'help-call.create',
+                    query: {
+                        lockerId: this.booking.lockerId,
+                        lockerSlotId: this.booking.lockerSlotId,
+                        bookingId: this.booking.id,
+                    },
+                }
+            )
         }
     },
     created() {
@@ -242,6 +255,7 @@ export default defineComponent({
         },
         booking: {
             handler: function (booking) {
+                console.log('booking', booking);
                 this.pinCode = this.splitPinCode(booking);
             },
             deep: true,

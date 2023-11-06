@@ -94,11 +94,12 @@ class BookingService extends BaseService
             ->leftJoin('lockers', 'locker_slots.locker_id', '=', 'lockers.id')
             ->leftJoin('locations', 'lockers.location_id', '=', 'locations.id')
             ->select(
+                'lockers.id as locker_id', 'locker_slots.id as locker_slot_id',
                 'bookings.pin_code', 'bookings.start_date',
                 'bookings.end_date', 'bookings.created_at', 'bookings.id',
-                'lockers.code',
+                'lockers.code', 'lockers.image',
                 'locker_slots.row', 'locker_slots.column', 'locker_slots.locker_id',
-                'locker_slots.config', 'lockers.image',
+                'locker_slots.config',
                 'locations.description as address', 'locations.latitude', 'locations.longitude'
             )
             ->orderBy('locker_slots.locker_id', 'asc')
@@ -174,6 +175,8 @@ class BookingService extends BaseService
                     Files::CLIENT_UPLOAD_FOLDER
                 ) :
                 asset('images/default/lockerDefault.png'),
+                'lockerId' => $booking->locker_id,
+                'lockerSlotId' => $booking->locker_slot_id,
             ];
         }
 
@@ -234,5 +237,16 @@ class BookingService extends BaseService
             ->where('bookings.end_date', '>=', now())
             ->where('bookings.start_date', '<=', now())
             ->first();
+    }
+
+    public function getBookingsBySlotId($slotId)
+    {
+        return $this->model->where('locker_slot_id', $slotId)
+            ->whereIn('status', [BookingStatus::APPROVED, BookingStatus::PENDING])
+            ->where('start_date', '>=', now()->subDays(7))
+            ->select(
+                'id', 'start_date', 'end_date', 'status'
+            )
+            ->get();
     }
 }

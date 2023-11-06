@@ -86,7 +86,12 @@ const actions = {
                             }
                         })
                     });
-                    const configLocker = JSON.parse(slotCPU.config ? slotCPU.config : '{}');
+                    const configLocker = JSON.parse(slotCPU.config ? slotCPU.config : `
+                        {
+                            "price": 10000,
+                            "prefix": ""
+                        }
+                    `);
 
                     let numberOfSlot = 1;
 

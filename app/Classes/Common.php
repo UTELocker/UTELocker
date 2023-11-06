@@ -69,16 +69,35 @@ class Common
         ];
     }
 
-    public static function getListNameSlots($listSlotS)
+    public static function getListNameSlots($listSlotS, $slotId = null)
     {
         $numberSlot = 1;
         $listNameSlots = [];
+
+        $config = null;
+        foreach ($listSlotS as $slot) {
+            if ($slot->type === LockerSlotType::CPU) {
+                $config = $slot->config;
+                break;
+            }
+        }
+
+        if ($config) {
+            $config = json_decode($config);
+        }
+
+        $prefix = $config->prefix ?? '';
+
         foreach ($listSlotS as $slot) {
             if ($slot->type === LockerSlotType::SLOT) {
-                $listNameSlots[$slot->row . '-' . $slot->column] = $numberSlot;
+                if ($slotId && $slot->id == $slotId) {
+                    return $prefix . $numberSlot;
+                }
+                $listNameSlots[$slot->row . '-' . $slot->column] = $prefix . $numberSlot;
                 $numberSlot++;
             }
         }
+
         return $listNameSlots;
     }
 }

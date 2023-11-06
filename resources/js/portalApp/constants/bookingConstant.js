@@ -12,6 +12,7 @@ export const API = Object.freeze({
     DEL_END_BOOKING: (bookingId) => `${API_BOOKING_PREFIX}/${bookingId}`,
     POST_CHANGE_PIN_CODE: () => `${API_BOOKING_PREFIX}/change-password`,
     PUT_UPDATE_USER: () => `${API_PREFIX}/user`,
+    GET_BOOKING_OF_SLOT: (lockerSlotId) => `${API_BOOKING_PREFIX}/slot/${lockerSlotId}`,
 });
 
 export const LOGOUT_URL = '/logout';
@@ -42,3 +43,10 @@ export const BOOKING_ACTIVITY_STATUS = Object.freeze({
     ACTIVE: 1,
     EXPIRED: 4,
 });
+
+export const BOOKING_STATUS_TEXT = Object.freeze({
+    [BOOKING_ACTIVITY_STATUS.NOT_YET]: 'Chưa sử dụng',
+    [BOOKING_ACTIVITY_STATUS.ACTIVE]: 'Đang sử dụng',
+    [BOOKING_ACTIVITY_STATUS.EXPIRED]: 'Đã hết hạn',
+});
+

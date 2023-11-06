@@ -5,7 +5,7 @@
                 width: '400px',
             }"
         >
-            <div style="display: flex; justify-content: space-between; align-items: center; marginBottom: 10px">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px">
                 <h3 style="margin: 0;">Notifications</h3>
                 <a-button
                     type="link"
@@ -214,6 +214,9 @@ export default defineComponent({
                     return false;
                 case NOTIFICATION_TYPE.BOOKING:
                     this.visible = false;
+                    this.markNotificationAsRead({
+                        notificationChoose: notification,
+                    })
                     this.$router.push({
                         name: 'portal.booking',
                         params: {

@@ -43,6 +43,8 @@ Route::group(['middleware' => ['auth', 'auth.verify']], function () {
         Route::get('wallet', [PortalController::class, 'index'])->name('wallet');
         Route::get('wallet/transactions', [PortalController::class, 'index'])->name('wallet.transactions');
         Route::get('wallet/{any}', [PortalController::class, 'index'])->where('any', '.*');
+        Route::get('help-call', [PortalController::class, 'index'])->name('portal');
+        Route::get('help-call/{any}', [PortalController::class, 'index'])->where('any', '.*');
 });
 
 Route::group(['middleware' => ['auth', 'auth.verify', 'permissionAdmin']], function () {

@@ -225,10 +225,28 @@ class LockerService extends BaseService
 
     public function isExceedingLimitTime($configLocker, $startDate, $endDate): bool
     {
+        if (!$configLocker) {
+            return false;
+        }
         $limitMinutes = $configLocker['days'] * 24 * 60 + $configLocker['hours'] * 60 + $configLocker['minutes'];
         $diffMinutes = Carbon::createFromFormat('Y-m-d H:i', $endDate)->diffInMinutes(
             Carbon::createFromFormat('Y-m-d H:i', $startDate)
         );
         return $diffMinutes > $limitMinutes;
+    }
+
+    public function getLockerActivities()
+    {
+        return $this->model
+            ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
+            ->where(function ($q) {
+                $q->where('lockers.status', LockerStatus::IN_USE)
+                    ->orWhere('lockers.status', LockerStatus::AVAILABLE);
+            })
+            ->where('locations.client_id', user()->client_id)
+            ->select(
+                'lockers.id', 'lockers.code', 'locations.description as address',
+            )
+            ->get();
     }
 }

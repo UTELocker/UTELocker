@@ -57,7 +57,7 @@ class LockerController extends Controller
                     'locker' => $locker,
                     'module' => $module,
                     'configNumberSlot' => [
-                        'max' => $configLocker['maxBookings'],
+                        'max' => $configLocker['maxBookings'] ?? 5,
                         'demand' => $numberOfSlots,
                         'used' => $slotsUserBooked[0]->locker_slots_count,
                     ]
@@ -72,6 +72,26 @@ class LockerController extends Controller
             'Get list lockers successfully',
             [
                 'data' => $this->lockerService->filterLimitTimeLocker($res, $request->start_date, $request->end_date),
+            ]
+        );
+    }
+
+    public function getLockerActivities() {
+        $res = $this->lockerService->getLockerActivities();
+        return Reply::successWithData(
+            'Get locker activities successfully',
+            [
+                'data' => $res,
+            ]
+        );
+    }
+
+    public function getSlots($id) {
+        $res = $this->lockerSlotService->getSlots($id);
+        return Reply::successWithData(
+            'Get locker slots successfully',
+            [
+                'data' => $this->lockerSlotService->formatOutPutSlots($res),
             ]
         );
     }

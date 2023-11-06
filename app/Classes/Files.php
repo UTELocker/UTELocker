@@ -14,6 +14,7 @@ class Files
     public const CLIENT_LOGO_FOLDER = 'client-logo';
     public const USER_AVATAR_FOLDER ='user-avatar';
     public const DEFAULT_IMAGE_HEIGHT = 800;
+    public const HELP_CALL_FOLDER = 'help-call';
 
     /**
      * @throws ApiException
@@ -132,5 +133,20 @@ class Files
             return '';
         }
         return asset("$folderType/$folder/$fileName");
+    }
+
+    public static function uploadMultipleFiles(
+        $files,
+        $dir,
+        $width = null,
+        $height = self::DEFAULT_IMAGE_HEIGHT,
+        $options = []
+    ): array
+    {
+        $fileNames = [];
+        foreach ($files as $file) {
+            $fileNames[] = self::upload($file, $dir, $width, $height, $options);
+        }
+        return $fileNames;
     }
 }

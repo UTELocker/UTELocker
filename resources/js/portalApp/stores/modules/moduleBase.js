@@ -95,7 +95,7 @@ const actions = {
                 data.forEach(activity => {
                     const booking = {
                         id: activity.id,
-                        slot_code: 'A' + activity.code,
+                        slot_code: activity.code,
                         title: activity.lockerCode,
                         pin_code: activity.pin_code,
                         status: activity.status,
@@ -105,6 +105,8 @@ const actions = {
                         address: activity.address,
                         location: activity.location,
                         lockerImage: activity.lockerImage,
+                        lockerId: activity.lockerId,
+                        lockerSlotId: activity.lockerSlotId,
                     }
                     if (activity.status === BOOKING_ACTIVITY_STATUS.ACTIVE) {
                         bookingActivitiesActive.push(booking);

@@ -8,6 +8,9 @@ use App\Http\Controllers\Api\Lockers\LockerController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Notifications\NotificationController;
 use App\Http\Controllers\Api\Payments\PaymentController;
+use App\Http\Controllers\Api\HelpCall\HelpCallController;
+use App\Http\Controllers\Api\HelpCall\HelpCallStdProblemController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,7 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('lockers')->group(function () {
         Route::get('/', [LockerController::class, 'get'])->name('api.locker.get');
+        Route::get('get-activities', [LockerController::class, 'getLockerActivities'])
+            ->name('portal.locker.activities');
         Route::post('/{id}/modules', [LockerController::class, 'getModules'])->name('api.locker.getModules');
+        Route::get('{lockerId}/slots/', [LockerController::class, 'getSlots'])->name('portal.locker.slot');
     });
 
     Route::prefix('bookings')->group(function () {
@@ -53,6 +59,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [BookingController::class, 'destroy'])->name('api.bookings.destroy');
         Route::post('/change-password', [BookingController::class, 'changePassword'])
             ->name('api.bookings.changePassword');
+        Route::get('slot/{slotId}', [BookingController::class, 'getBookingsBySlotId'])
+            ->name('api.bookings.getBookingsBySlotId');
     });
 
     Route::prefix('search')->group(function () {
@@ -74,6 +82,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('payments')->group(function () {
         Route::prefix('wallets')->group(function () {
             Route::post('/auth', [PaymentController::class, 'auth'])->name('portal.wallet.auth');
+        });
+    });
+
+    Route::prefix('help-call')->group(function () {
+        Route::prefix('std-problems')->group(function () {
+            Route::get('/', [HelpCallStdProblemController::class, 'index'])->name('portal.help-call.std-problems');
+            Route::post('/', [HelpCallStdProblemController::class, 'store'])
+                ->name('portal.help-call.std-problems.store');
+        });
+
+        Route::prefix('/')->group(function () {
+            Route::get('/user', [HelpCallController::class, 'getHelpCallUser'])->name('portal.help-call.user');
+            Route::post('/', [BookingController::class, 'storeHelpCall'])->name('portal.help-call.store');
+            Route::get('/{id}', [HelpCallController::class, 'show'])->name('portal.help-call.show');
+            Route::post('/{id}/comment', [HelpCallController::class, 'comment'])
+                ->name('portal.help-call.comment');
         });
     });
 });

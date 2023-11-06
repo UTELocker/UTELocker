@@ -71,4 +71,14 @@ class UserController extends Controller
             ]
         );
     }
+
+    public function getListAdmin() {
+        $listAdmin = $this->userService->getListAdmin();
+        return Reply::successWithData(
+            'List admin',
+            [
+                'data' => $listAdmin,
+            ]
+        );
+    }
 }

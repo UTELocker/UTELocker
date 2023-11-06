@@ -104,4 +104,14 @@ class BookingController extends Controller
             ]
         );
     }
+
+    public function getBookingsBySlotId ($slotId) {
+        $bookings = $this->bookingService->getBookingsBySlotId($slotId);
+        return Reply::successWithData('Get bookings by slot id successfully',
+            [
+                'data' => $bookings
+            ]
+        );
+    }
+
 }

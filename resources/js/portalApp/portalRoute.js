@@ -10,6 +10,9 @@ import TopUp from "./wallet/TopUp/TopUp.vue";
 import Transaction from "./wallet/Transaction/Transaction.vue";
 import UserApp from "./user/UserApp.vue";
 import UserSettingsApp from "./user/UserSettingsApp.vue";
+import HelpCallApp from "./helpCall/HelpCallApp.vue";
+import HelpCallAdminApp from "./helpCall/HelpCallAdminApp.vue";
+import HelpCallCreateApp from "./helpCall/HelpCallCreateApp.vue";
 
 const routes = [
     {
@@ -71,6 +74,21 @@ const routes = [
         path: '/portal/user/settings',
         name: 'user.settings',
         component: UserSettingsApp,
+    },
+    {
+        path: '/help-call/',
+        name: 'help-call',
+        component: HelpCallApp,
+    },
+    {
+        path: '/help-call/admin',
+        name: 'help-call.admin',
+        component: HelpCallAdminApp,
+    },
+    {
+        path: '/help-call/create',
+        name: 'help-call.create',
+        component: HelpCallCreateApp,
     },
     {
         path: '/:pathMatch(.*)*',

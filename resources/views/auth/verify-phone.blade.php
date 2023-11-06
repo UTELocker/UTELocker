@@ -9,8 +9,9 @@
                        class="form-control height-50 f-15 light_text mb-3"
                        autofocus
                        readonly
-                       value={{user()->mobile}}
-                       placeholder="@lang('auth.phone')" id="number"
+                       value='{{user()->mobile}}'
+                       placeholder="@lang('auth.phone')"
+                       id="number"
                        name="phone"
                 >
                 <input type="hidden" name="email" value="{{user()->email}}">

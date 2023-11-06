@@ -151,4 +151,17 @@ class UserService extends BaseService
     {
         return $this->model->where('email', $email)->first();
     }
+
+    public function getListAdmin()
+    {
+        return $this->model
+            ->where('type', UserRole::ADMIN)
+            ->where('client_id', user()->client_id)
+            ->select(
+                'id',
+                'name',
+                'email',
+            )
+            ->get();
+    }
 }

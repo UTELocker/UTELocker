@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Locations\LocationsController;
 use App\Http\Controllers\Api\Notifications\NotificationController;
 use App\Http\Controllers\Api\Users\UserController;
+use App\Http\Controllers\Api\HelpCall\HelpCallController;
+use App\Http\Controllers\Api\HelpCall\HelpCallStdProblemController;
 
 Route::prefix('api-portal')->group(function () {
     Route::prefix('locations')->group(function () {
@@ -16,7 +18,10 @@ Route::prefix('api-portal')->group(function () {
 
     Route::prefix('lockers')->group(function () {
         Route::get('get-available', [LockerController::class, 'search'])->name('portal.locker.available');
+        Route::get('get-activities', [LockerController::class, 'getLockerActivities'])
+            ->name('portal.locker.activities');
         Route::get('{lockerId}/slots', [LockerController::class, 'getModules'])->name('portal.locker.slots');
+        Route::get('{lockerId}/slots-short', [LockerController::class, 'getSlots'])->name('portal.locker.slots.short');
 
     });
 
@@ -30,6 +35,8 @@ Route::prefix('api-portal')->group(function () {
             ->name('portal.bookings.extendTime');
         Route::post('/change-password', [BookingController::class, 'changePassword'])
             ->name('portal.bookings.changePassword');
+        Route::get('slot/{slotId}', [BookingController::class, 'getBookingsBySlotId'])
+            ->name('api.bookings.getBookingsBySlotId');
     });
 
     Route::prefix('histories')->group(function () {
@@ -62,5 +69,28 @@ Route::prefix('api-portal')->group(function () {
 
     Route::prefix('user')->group(function () {
         Route::put('/', [UserController::class, 'update'])->name('portal.user.update');
+        Route::get('/list-admins', [UserController::class, 'getListAdmin'])->name('portal.user.list-admin');
+    });
+
+    Route::prefix('help-call')->group(function () {
+        Route::prefix('std-problems')->group(function () {
+            Route::get('/', [HelpCallStdProblemController::class, 'index'])->name('portal.help-call.std-problems');
+            Route::put('/{id}', [HelpCallStdProblemController::class, 'update'])
+                ->name('portal.help-call.std-problems.update');
+            Route::post('/', [HelpCallStdProblemController::class, 'store'])
+                ->name('portal.help-call.std-problems.store');
+            Route::delete('/{id}', [HelpCallStdProblemController::class, 'destroy'])
+                ->name('portal.help-call.std-problems.destroy');
+        });
+        Route::prefix('/')->group(function () {
+            Route::get('/user', [HelpCallController::class, 'getHelpCallUser'])->name('portal.help-call.user');
+            Route::get('/admin', [HelpCallController::class, 'getHelpCallAdmin'])->name('portal.help-call.admin');
+            Route::post('/', [HelpCallController::class, 'store'])->name('portal.help-call.store');
+            Route::get('/{id}', [HelpCallController::class, 'show'])->name('portal.help-call.show');
+            Route::post('/{id}/comment', [HelpCallController::class, 'comment'])
+                ->name('portal.help-call.comment');
+            Route::put('/{id}', [HelpCallController::class, 'update'])
+                ->name('portal.help-call.update');
+        });
     });
 });

@@ -162,4 +162,41 @@ class LockerSlotService extends BaseService
     {
         return $this->model->findOrFail($id);
     }
+
+    public function getSlots($lockerId)
+    {
+        return $this->model->where('locker_id', $lockerId)
+            ->where(function($q) {
+                $q->where('type', LockerSlotType::SLOT)
+                    ->orWhere('type', LockerSlotType::CPU);
+            })
+            ->select('id', 'type', 'row', 'column', 'config')
+            ->orderBy('row')
+            ->orderBy('column')
+            ->get();
+    }
+
+    public function formatOutPutSlots($slots)
+    {
+        $modules = [];
+        $count = 1;
+
+        $configLocker = json_decode($slots->where('type', LockerSlotType::CPU)->first()->config, true);
+        $prefix = $configLocker['prefix'] ?? '';
+
+        foreach ($slots as $slot) {
+            if ($slot->type == LockerSlotType::CPU) {
+                continue;
+            }
+            $modules[] = [
+                'id' => $slot->id,
+                'type' => $slot->type,
+                'config' => json_decode($slot->config),
+                'status' => $slot->status,
+                'name' => $prefix . $count++,
+            ];
+        }
+
+        return $modules;
+    }
 }
