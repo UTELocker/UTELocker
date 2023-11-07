@@ -14,4 +14,8 @@ return array(
     'recordDeleted' => 'Record deleted successfully.',
     'recordLinked' => 'Record linked successfully.',
     'depositSuccess' => 'Top up :amount successfully',
+    'auth' => array(
+        'failed' => 'Failed',
+        'not_active' => 'Your account is not active. Please contact admin.',
+    )
 );

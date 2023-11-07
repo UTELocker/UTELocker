@@ -6,6 +6,7 @@ use App\Classes\Common;
 use App\Classes\Files;
 use App\Enums\UserRole;
 use App\Exceptions\ApiException;
+use App\Models\LanguageSetting;
 use App\Models\User;
 use App\Services\BaseService;
 use App\Services\Wallets\WalletService;
@@ -39,11 +40,11 @@ class UserService extends BaseService
         $this->setModelFields($inputs);
         DB::transaction(function () {
             $this->model->save();
-            $this->walletService->add([
+            $wallet = $this->walletService->add([
                 'user_id' => $this->model->id,
-                'balance' => 0,
-                'promotion_balance' => 0,
             ]);
+            $this->model->wallet_id = $wallet->id;
+            $this->model->save();
         });
 
         return $this->model;
@@ -63,22 +64,37 @@ class UserService extends BaseService
             options: ['isUser' => true]
         ) : $this->model->avatar;
 
-        if (!user()->isSuperUser()) {
+        if (user() && !user()->isSuperUser()) {
             $inputs['client_id'] = user()->client_id;
         } else {
             $inputs['client_id'] = $inputs['client_id'] ?? $this->model->client_id;
         }
-        $inputs['type'] = $inputs['type'] ?? $this->model->type;
+
+        if (user()) {
+            $inputs['type'] = $inputs['type'] ?? $this->model->type;
+            $inputs['locale'] = $inputs['locale'] ?? $this->model->locale;
+        } else {
+            $inputs['type'] = UserRole::NORMAL;
+            $inputs['locale'] = LanguageSetting::getEnabledLanguages()->first()->language_code;
+        }
+
+        $inputs['active'] = $inputs['active'] ?? $this->model->active;
         $inputs['name'] = $inputs['name'] ?? $this->model->name;
         $inputs['email'] = $inputs['email'] ?? $this->model->email;
         $inputs['mobile'] = $inputs['mobile'] ?? $this->model->mobile;
         $inputs['gender'] = $inputs['gender'] ?? $this->model->gender;
-        $inputs['locale'] = $inputs['locale'] ?? $this->model->locale;
         if (isset($inputs['is2FA'])) {
             $inputs['is2FA'] = $inputs['is2FA'] ? CommonConstant::DATABASE_YES : CommonConstant::DATABASE_NO;
         } else {
             $inputs['is2FA'] = CommonConstant::DATABASE_NO;
         }
+    }
+
+    public function initDefaultData(): static
+    {
+        $this->model->active = CommonConstant::DATABASE_YES;
+
+        return $this;
     }
 
     protected function setModelFields($inputs): void
@@ -93,6 +109,7 @@ class UserService extends BaseService
         Common::assignField($this->model, 'gender', $inputs);
         Common::assignField($this->model, 'locale', $inputs);
         Common::assignField($this->model, 'is2FA', $inputs);
+        Common::assignField($this->model, 'active', $inputs);
     }
 
     public function get($id)

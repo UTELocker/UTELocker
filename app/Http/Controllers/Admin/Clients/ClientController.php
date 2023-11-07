@@ -147,6 +147,7 @@ class ClientController extends Controller
 
     public function update(UpdateClientRequest $request, string $id)
     {
+        dd ($request->all());
         $this->editPermission = user()->canAccess(UserRole::ADMIN);
         if (!$this->editPermission) {
             abort(403);

@@ -20,6 +20,13 @@
             {{ __('app.getSiteGroup') }} <i class="fa fa-arrow-right pl-1"></i>
         </button>
 
+        <a href="{{ route('register') }}" id="btnRegister">
+            <button type="button" id="submit-email"
+                    class="btn-secondary f-w-500 rounded w-100 height-50 f-18">
+                {{ __('app.register') }} <i class="fa fa-arrow-right pl-1"></i>
+            </button>
+        </a>
+
         <div class="@if(!isset($cliets)) d-none @endif" id="site-group-section">
             <div class="form-group text-left" id="client-section">
                 <label for="client_id">{{ __('app.listSiteGroups') }}</label>
@@ -93,6 +100,7 @@
                             email: email
                         },
                         success: function (data) {
+                            $('#btnRegister').addClass('d-none');
                             $('#email').attr('readonly', true);
                             $('#submit-email').addClass('d-none');
                             $('#site-group-section').removeClass('d-none');

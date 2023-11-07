@@ -98,4 +98,7 @@ return array(
     'verifyPhone' => 'Verify by Phone',
     'listSiteGroups' => 'List Site Groups',
     'getSiteGroup' => 'Get Site Group',
+    'register' => 'Register',
+    'createTokenRegister' => 'Create Token Register',
+    'error' => 'Error',
 );

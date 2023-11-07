@@ -15,7 +15,7 @@ final class UserRole extends Enum
         return self::getDescriptions()[$value];
     }
 
-    public static function getDescriptions($exclude = []): array
+    public static function getDescriptions(): array
     {
         $descriptions = [
             self::SUPER_USER => 'Super User',
@@ -23,10 +23,12 @@ final class UserRole extends Enum
             self::NORMAL => 'Normal',
         ];
 
-        if (count($exclude) > 0) {
-            foreach ($exclude as $value) {
-                unset($descriptions[$value]);
-            }
+        if (user()->type == self::ADMIN) {
+            unset($descriptions[self::SUPER_USER]);
+        }
+        if (user()->type == self::NORMAL) {
+            unset($descriptions[self::SUPER_USER]);
+            unset($descriptions[self::ADMIN]);
         }
 
         return $descriptions;

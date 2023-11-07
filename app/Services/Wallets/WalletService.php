@@ -3,6 +3,7 @@
 namespace App\Services\Wallets;
 
 use App\Classes\Common;
+use App\Classes\CommonConstant;
 use App\Enums\NotificationParentTable;
 use App\Enums\NotificationType;
 use App\Enums\TransactionStatus;
@@ -33,6 +34,7 @@ class WalletService extends BaseService
     {
         $this->model->balance = 0;
         $this->model->promotion_balance = 0;
+        $this->model->password = Hash::make(CommonConstant::DEFAULT_PASSWORD);
 
         return $this;
     }

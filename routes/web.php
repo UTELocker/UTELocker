@@ -195,6 +195,8 @@ Route::group(['middleware' => ['auth']], function () {
         ]);
 });
 
+Route::get('qr-code', [UserController::class, 'qrCode'])->name('qr-code');
+
 Route::get('/event', [LockerController::class, 'event'])->name('event');
 
 require __DIR__.'/auth.php';

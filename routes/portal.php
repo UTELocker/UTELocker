@@ -70,6 +70,12 @@ Route::prefix('api-portal')->group(function () {
     Route::prefix('user')->group(function () {
         Route::put('/', [UserController::class, 'update'])->name('portal.user.update');
         Route::get('/list-admins', [UserController::class, 'getListAdmin'])->name('portal.user.list-admin');
+        Route::get('user/create-token-register', [UserController::class, 'createTokenRegister'])
+            ->name('portal.user.token-register.create');
+        Route::get('user/token-register', [UserController::class, 'getTokenRegister'])
+            ->name('portal.user.token-register');
+        Route::get('user/token-register/delete/{id}', [UserController::class, 'deleteTokenRegister'])
+            ->name('portal.user.token-register.delete');
     });
 
     Route::prefix('help-call')->group(function () {

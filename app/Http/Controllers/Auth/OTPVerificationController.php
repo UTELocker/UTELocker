@@ -11,7 +11,11 @@ class OTPVerificationController extends Controller
 {
     public function show(Request $request): View
     {
-        return view('auth.verify-phone');
+        return view('auth.verify-phone',
+            [
+                'phone' => user()->mobile,
+            ]
+        );
     }
 
     public function store(Request $request)

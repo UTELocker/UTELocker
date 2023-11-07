@@ -26,4 +26,6 @@ class CommonConstant
     const INNER_RELATED_RESOURCE_NOT_EXISTS = 1010;
 
     const LIMIT_MONTH_BOOKING = 6;
+
+    const DEFAULT_PASSWORD = '123456';
 }

@@ -10,7 +10,10 @@ return array(
         'client' => 'Client List',
         'mobile' => 'Mobile',
         'gender' => 'Gender',
-        'profileInfo' => 'Profile Info'
+        'profileInfo' => 'Profile Info',
+        'active' => 'Active',
+        'activeNote' => 'Active Account',
+        'inactive' => 'Inactive Account',
     ],
     'clients' => [
         'addedOn' => 'Added On',
@@ -70,6 +73,12 @@ return array(
         'pusher_app_cluster' => 'Pusher App Cluster',
         'is2FA' => 'Authentication OTP',
         'is2FANote' => 'Enable/Disable OTP Authentication for login',
+        'statusSiteGroup' => 'Status Site Group',
+        'allowGuestRegistration' => 'Allow Guest Registration',
+        'public' => 'Public',
+        'private' => 'Private',
+        'allowSignup' => 'Allow Signup',
+        'notAllowSignup' => 'Disable Allow Signup',
     ],
     'lockers' => [
         'title' => 'Lockers',

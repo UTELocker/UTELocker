@@ -87,18 +87,20 @@
                             <div class="col-md-4">
                                 @include('components.select-languages', ['name' => 'user_locale'])
                             </div>
-                            @if ($user->type != \App\Enums\UserRole::SUPER_USER)
-                                <div class="col-md-4">
-                                    <x-forms.select fieldId="user_client_id" :fieldLabel="__('modules.users.client')"
-                                                    fieldName="user_client_id" :disabled="(user()->type != \App\Enums\UserRole::SUPER_USER)" search="true">
-                                        @foreach($clients as $client)
-                                            <option @if ($user->client_id == $client->id) selected @endif value={{ $client->id }}>{{ $client->name }}</option>
-                                        @endforeach
-                                    </x-forms.select>
-                                </div>
-                            @endif
+                            <div class="col-md-4">
+                                <x-forms.select fieldId="user_active" :fieldLabel="__('modules.users.active')"
+                                                fieldName="user_active" >
+                                    <option @if ($user->active == \App\Classes\CommonConstant::DATABASE_YES) selected @endif value={{ \App\Classes\CommonConstant::DATABASE_YES }}>
+                                        @lang('modules.users.activeNote')
+                                    </option>
+                                    <option @if ($user->active == \App\Classes\CommonConstant::DATABASE_NO) selected @endif value={{ \App\Classes\CommonConstant::DATABASE_NO }}>
+                                        @lang('modules.users.inactive')
+                                    </option>
+                                </x-forms.select>
+                            </div>
                         </div>
                     </div>
+
                     <div class="col-lg-3">
                         <x-forms.file
                             allowedFileExtensions="png jpg jpeg svg" class="mr-0 mr-lg-2 mr-md-2 cropper"

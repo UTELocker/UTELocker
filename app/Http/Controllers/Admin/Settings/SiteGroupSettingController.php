@@ -62,7 +62,7 @@ class SiteGroupSettingController extends BaseSettingController
             abort(403);
         }
         $this->client = $this->clientService->get($id);
-        $form = $request->only(['date_format', 'locale', 'time_format', 'timezone']);
+        $form = $request->only(['date_format', 'locale', 'time_format', 'timezone', 'status', 'allow_signup']);
         $this->clientService->update($this->client, $form, ['isPrefix' => false]);
 
         $redirectUrl = urldecode($request->redirect_url);

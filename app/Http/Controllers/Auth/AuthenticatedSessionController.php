@@ -12,6 +12,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -32,6 +33,13 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        if (user()->active == CommonConstant::DATABASE_NO) {
+            Auth::guard('web')->logout();
+            throw ValidationException::withMessages([
+                'email' => __('messages.auth.not_active'),
+            ]);
+        }
 
         if (user()->is2FA == CommonConstant::DATABASE_YES)
         {

@@ -31,6 +31,8 @@ class SettingService extends BaseService
         $inputs['pusher_app_key'] = $inputs['pusher_app_key'] ?? $this->model->pusher_app_key;
         $inputs['pusher_app_secret'] = $inputs['pusher_app_secret'] ?? $this->model->pusher_app_secret;
         $inputs['pusher_app_cluster'] = $inputs['pusher_app_cluster'] ?? $this->model->pusher_app_cluster;
+        $inputs['status'] = $inputs['status'] ?? $this->model->status;
+        $inputs['allow_signup'] = $inputs['allow_signup'] ?? $this->model->allow_signup;
     }
 
     protected function setModelFields($inputs): void
@@ -42,6 +44,8 @@ class SettingService extends BaseService
         Common::assignField($this->model, 'pusher_app_key', $inputs);
         Common::assignField($this->model, 'pusher_app_secret', $inputs);
         Common::assignField($this->model, 'pusher_app_cluster', $inputs);
+        Common::assignField($this->model, 'status', $inputs);
+        Common::assignField($this->model, 'allow_signup', $inputs);
     }
 
     public function get($id)

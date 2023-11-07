@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth.verify' => \App\Http\Middleware\AuthenticateFirebase::class,
         'permissionAdmin' => \App\Http\Middleware\PermissionAdmin::class,
+        'permission.register' => \App\Http\Middleware\PermissionRegister::class,
     ];
 }

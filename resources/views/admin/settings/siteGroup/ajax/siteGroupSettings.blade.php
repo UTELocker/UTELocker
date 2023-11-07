@@ -52,6 +52,34 @@
             </x-forms.select>
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <x-forms.select fieldId="status" :fieldLabel="__('modules.settings.statusSiteGroup')"
+                            fieldName="status">
+                <option
+                    {{ siteGroup()->status == \App\Enums\ClientStatus::PUBLIC ? 'selected' : '' }}
+                    value="{{ \App\Enums\ClientStatus::PUBLIC }}"> @lang('modules.settings.public')
+                </option>
+                <option
+                    {{ siteGroup()->status == \App\Enums\ClientStatus::PRIVATE ? 'selected' : '' }}
+                    value="{{ \App\Enums\ClientStatus::PRIVATE }}"> @lang('modules.settings.private')
+            </x-forms.select>
+        </div>
+        <div class="col-lg-3">
+            <x-forms.select fieldId="allow_signup" :fieldLabel="__('modules.settings.allowGuestRegistration')"
+                            fieldName="allow_signup">
+                <option
+                    {{ siteGroup()->allow_signup == \App\Classes\CommonConstant::DATABASE_YES ? 'selected' : '' }}
+                    value="{{ \App\Classes\CommonConstant::DATABASE_YES }}"> @lang('modules.settings.allowSignup')
+                </option>
+
+                <option
+                    {{ siteGroup()->allow_signup == \App\Classes\CommonConstant::DATABASE_NO ? 'selected' : '' }}
+                    value="{{ \App\Classes\CommonConstant::DATABASE_NO }}"> @lang('modules.settings.notAllowSignup')
+                </option>
+            </x-forms.select>
+        </div>
+    </div>
 </div>
 
 <div class="w-100 border-top-grey set-btns">

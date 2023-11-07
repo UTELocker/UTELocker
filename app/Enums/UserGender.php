@@ -18,4 +18,13 @@ final class UserGender extends Enum
             self::OTHER => __('app.others'),
         ];
     }
+
+    public static function getAll()
+    {
+        return [
+            self::MALE,
+            self::FEMALE,
+            self::OTHER,
+        ];
+    }
 }

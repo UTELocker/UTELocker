@@ -31,7 +31,16 @@ class UpdateUserRequest extends FormRequest
             'user_gender' => 'required|int|in:0,1,2',
             'user_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'user_locale' => 'required|string|in:en,vi',
-            'user_type' => 'required|int|in:0,1,2',
+            'user_type' => [
+                'required',
+                'int',
+                'in:' . implode(',', UserRole::getValues()),
+                function ($attribute, $value, $fail) {
+                    if ($value == UserRole::SUPER_USER && !User::hasPermission(UserRole::SUPER_USER)) {
+                        $fail('You do not have permission to create super user');
+                    }
+                }
+            ]
         ];
         if (User::hasPermission(    UserRole::SUPER_USER)) {
             $rules['user_client_id'] = 'required|exists:clients,id';

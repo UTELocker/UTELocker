@@ -223,10 +223,13 @@ class UserController extends Controller
         return view('admin.users.ajax.profileSettings', $this->data);
     }
 
-//    public function invoices()
-//    {
-//        $tab = request('tab');
-//        $this->activeTab = $tab ?: 'profile';
-//        $this->view = 'clients.users.ajax.invoices';
-//    }
+    public function qrCode(Request $request)
+    {
+        $domain = env('APP_URL');
+        $linkRegister = $domain . '/register?token=' . $request->token;
+        return view('auth.qr_code', [
+            'title' => 'Scan QR Code to Register',
+            'qrCode' => $linkRegister
+        ]);
+    }
 }

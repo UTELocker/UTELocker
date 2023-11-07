@@ -3,23 +3,34 @@
 namespace App\Http\Controllers\Api\Users;
 
 use App\Classes\Reply;
+use App\Enums\TokenType;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\GetClientByEmailRequest;
 use App\Http\Requests\Api\Users\UpdateUserRequest;
+use App\Services\Admin\Clients\ClientService;
 use App\Services\Admin\Users\UserService;
 use App\Services\Wallets\WalletService;
+use App\Traits\ManageCustomToken;
+use App\View\Components\Auth;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    use ManageCustomToken;
     public ?UserService $userService;
 
     public ?WalletService $walletService;
+    public ?ClientService $clientService;
 
-    public function __construct(UserService $userService, WalletService $walletService)
-    {
+    public function __construct(
+        UserService $userService,
+        WalletService $walletService,
+        ClientService $clientService
+    ) {
         $this->userService = $userService;
         $this->walletService = $walletService;
+        $this->clientService = $clientService;
     }
 
     public function get()
@@ -80,5 +91,45 @@ class UserController extends Controller
                 'data' => $listAdmin,
             ]
         );
+    }
+
+    public function getListClientForGuest(Request $request)
+    {
+        $token = $request->get('token');
+        if ($token) {
+            $result = $this->verifyToken($token);
+            if (!$result) {
+                return Reply::error('Token is invalid');
+            }
+            $listClientGuest = $this->clientService->getListClientForGuest($result->client_id);
+
+        } else {
+            $listClientGuest = $this->clientService->getListClientForGuest();
+        }
+        return Reply::successWithData(
+            'List client guest',
+            [
+                'data' => $listClientGuest,
+            ]
+        );
+    }
+
+    public function getTokenRegister()
+    {
+        return Reply::successWithData('Get tokens successfully', [
+            'data' => $this->getTokenOfClient(TokenType::AUTH)
+        ]);
+    }
+
+    public function createTokenRegister()
+    {
+        return Reply::successWithData('Create token successfully', [
+            'token' => $this->createCustomToken()
+        ]);
+    }
+
+    public function deleteTokenRegister($id) {
+        $this->deleteToken($id);
+        return Reply::success('Delete token successfully');
     }
 }

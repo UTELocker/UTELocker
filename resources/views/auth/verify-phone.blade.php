@@ -9,7 +9,7 @@
                        class="form-control height-50 f-15 light_text mb-3"
                        autofocus
                        readonly
-                       value='{{user()->mobile}}'
+                       value='{{$phone}}'
                        placeholder="@lang('auth.phone')"
                        id="number"
                        name="phone"
@@ -77,7 +77,7 @@
                 render();
             };
 
-            const phoneUser = {!! json_encode(user()->mobile) !!};
+            const phoneUser = {!! json_encode($phone) !!};
 
             function render(idRender = 'recaptcha-container') {
                 window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(idRender);

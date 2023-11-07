@@ -4,10 +4,12 @@ namespace App\Services\Admin\Clients;
 
 use App\Classes\Common;
 use App\Classes\Files;
+use App\Enums\ClientStatus;
 use App\Exceptions\ApiException;
 use App\Models\Client;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Artisan;
 
 class ClientService extends BaseService
 {
@@ -38,7 +40,7 @@ class ClientService extends BaseService
     /**
      * @throws ApiException
      */
-    protected function formatInputData(&$inputs): void
+    protected function  formatInputData(&$inputs): void
     {
         if (!empty($inputs['logo'])) {
             $inputs['logo'] = Files::upload($inputs['logo'], Files::CLIENT_LOGO_FOLDER, width: 300);
@@ -54,6 +56,8 @@ class ClientService extends BaseService
         $inputs['locale'] = $inputs['locale'] ?? $this->model->locale;
         $inputs['time_format'] = $inputs['time_format'] ?? $this->model->time_format;
         $inputs['timezone'] = $inputs['timezone'] ?? $this->model->timezone;
+        $inputs['status'] = $inputs['status'] ?? $this->model->status;
+        $inputs['allow_signup'] = $inputs['allow_signup'] ?? $this->model->allow_signup;
     }
 
     protected function setModelFields($inputs): void
@@ -69,6 +73,8 @@ class ClientService extends BaseService
         Common::assignField($this->model, 'time_format', $inputs);
         Common::assignField($this->model, 'timezone', $inputs);
         Common::assignField($this->model, 'locale', $inputs);
+        Common::assignField($this->model, 'status', $inputs);
+        Common::assignField($this->model, 'allow_signup', $inputs);
     }
 
     public function get($id)
@@ -87,8 +93,17 @@ class ClientService extends BaseService
         }
         $this->formatInputData($inputs);
         $this->setModelFields($inputs);
-        $client->save();
+        $this->model->save();
 
         return $client;
+    }
+
+    public function getListClientForGuest($id = null)
+    {
+        return $this->model
+            ->select('id', 'name')
+            ->where('status', ClientStatus::PUBLIC)
+            ->when($id, fn ($query) => $query->where('id', $id))
+            ->get();
     }
 }

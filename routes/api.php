@@ -23,7 +23,10 @@ use App\Http\Controllers\Api\HelpCall\HelpCallStdProblemController;
 */
 
 Route::prefix('auth')->group(function () {
-    Route::get('/list-client', [UserController::class, 'getListClient'])->name('api.user.listClient');
+    Route::get('/list-client', [UserController::class, 'getListClient'])
+        ->name('api.user.listClient');
+    Route::get('/list-client-guest', [UserController::class, 'getListClientForGuest'])
+        ->name('api.user.listClientGuest');
     Route::post('login', [AuthController::class, 'login'])->name('api.auth.login');
     Route::post('signUp', [AuthController::class, 'signUp'])->name('api.auth.signUp');
     Route::middleware('auth:sanctum')
