@@ -82,8 +82,13 @@ class HelpCallService extends BaseService {
             $inputs['src_id'] = $this->model->src_id;
         }
 
-        $inputs['help_call_std_problems_id'] = $inputs['helpCallstdProblemId'] ??
-            $this->model->help_call_std_problems_id;
+        if ($inputs['helpCallstdProblemId']) {
+            $inputs['help_call_std_problems_id'] = $inputs['helpCallstdProblemId'] == -1 ?
+                null :
+                $inputs['helpCallstdProblemId'];
+        } else {
+            $inputs['help_call_std_problems_id'] = $this->model->help_call_std_problems_id;
+        }
 
         $inputs['supporter_id'] = $inputs['supporterId'] ?? $this->model->supporter_id;
         $inputs['content'] = $inputs['content'] ?? $this->model->content;

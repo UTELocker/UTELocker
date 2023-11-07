@@ -5,7 +5,7 @@
         sub-title="Tạo yêu cầu hỗ trợ"
     />
     <a-form
-        ref="form"
+        :model="form"
         :layout="formLayout"
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
@@ -176,7 +176,7 @@ export default defineComponent({
 
         const optionsType = [];
 
-        for (const value of Object.entries(HELP_CALL_TYPE)) {
+        for (const [key, value] of Object.entries(HELP_CALL_TYPE)) {
             optionsType.push({
                 label: HELP_CALL_TYPE_TEXT[value],
                 value,

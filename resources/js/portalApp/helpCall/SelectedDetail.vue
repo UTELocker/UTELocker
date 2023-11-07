@@ -1,63 +1,45 @@
 <template>
     <a-form-item
         label="Tủ chứa"
-        name="src_id"
+        name="lockerId"
         :rules="rules.lockerId"
         v-if="step >= 1 && type >= step"
     >
         <a-select
             placeholder="Chọn tủ"
-            @change="handleSelectLocker"
-            :value="formSelectedLabel.locker"
+            :value="lockerId"
+            @change="$emit('updateForm', { key: 'lockerId', value: $event })"
+            :options="optionsLocker"
         >
-            <template v-for="option in optionsLocker" :key="option.id">
-                <a-select-option
-                    :value="option.id"
-                >
-                    {{ option.code }} - {{ option.address }}
-                </a-select-option>
-            </template>
         </a-select>
     </a-form-item>
     <a-form-item
         label="Ngăn tủ"
-        name="src_id"
+        name="lockerSlotId"
         :rules="rules.lockerSlotId"
         v-if="step >= 2 && type >= step"
     >
         <a-select
             placeholder="Chọn ngăn tủ"
-            @change="handleSelectLockerSlot"
-            :value="formSelectedLabel.lockerSlot"
+            :value="lockerSlotId"
+            @change="$emit('updateForm', { key: 'lockerSlotId', value: $event })"
+            :options="optionsLockerSlot"
         >
-            <template v-for="option in this.optionsLockerSlot" :key="option.id">
-                <a-select-option
-                    :value="option.id"
-                >
-                    {{ option.name }}
-                </a-select-option>
-            </template>
         </a-select>
     </a-form-item>
 
     <a-form-item
         label="Đơn đặt chỗ"
-        name="src_id"
+        name="bookingId"
         :rules="rules.bookingId"
         v-if="step >= 3 && type >= step"
     >
         <a-select
             placeholder="Chọn đơn đặt chỗ"
-            @change="handleSelectBooking"
-            :value="formSelectedLabel.booking"
+            :value="bookingId"
+            @change="$emit('updateForm', { key: 'bookingId', value: $event })"
+            :options="optionsBooking"
         >
-            <template v-for="option in this.optionsBooking" :key="option.id">
-                <a-select-option
-                    :value="option.id"
-                >
-                    Đặt chỗ {{ option.start_date }} - {{ option.end_date }} ({{ renderStatus(option.status) }})
-                </a-select-option>
-            </template>
         </a-select>
     </a-form-item>
 </template>
@@ -112,32 +94,27 @@
             optionsBooking: [],
             step: 1,
             hasQuery: false,
-            formSelectedLabel: {
-                locker: null,
-                lockerSlot: null,
-                booking: null,
-            }
         }),
         methods: {
             handleCancel() {
                 this.$emit('handleCancel');
             },
             handleSelectLocker(value) {
-                this.$emit('updateForm', {
-                    key: 'lockerId',
-                    value,
-                });
                 get(API_LOCKER.GET_LOCKER_SLOTS(value)).then((res) => {
-                    this.optionsLockerSlot = res.data.data;
+                    this.optionsLockerSlot = res.data.data.map((item) => ({
+                        value: item.id,
+                        label: item.name
+                    }));
                     if (this.$route.query.lockerSlotId === undefined) {
                         this.$emit('updateForm', {
                             key: 'lockerSlotId',
                             value : null,
                         });
                     } else {
-                        this.handleSelectLockerSlot(this.$route.query.lockerSlotId);
-                        this.lockerSlotLabel = this.optionsLockerSlot.find((lockerSlot) => lockerSlot.id == this.$route.query.lockerSlotId);
-                        this.formSelectedLabel.lockerSlot = this.lockerSlotLabel.name;
+                        this.$emit('updateForm', {
+                            key: 'lockerSlotId',
+                            value : this.$route.query.lockerSlotId,
+                        });
                     }
                 });
                 if (this.type >= HELP_CALL_TYPE.LOCKER_SLOT) {
@@ -145,32 +122,26 @@
                 }
             },
             handleSelectLockerSlot(value) {
-                this.$emit('updateForm', {
-                    key: 'lockerSlotId',
-                    value,
-                });
                 get(API_BOOKING.GET_BOOKING_OF_SLOT(value)).then((res) => {
-                    this.optionsBooking = res.data.data;
+                    this.optionsBooking = res.data.data.map((item) => ({
+                        value: item.id,
+                        label: `Đặt chỗ ${ item.start_date } - ${ item.end_date } (${ this.renderStatus(item.status) })`
+                    }));
                     if (this.$route.query.bookingId === undefined) {
                         this.$emit('updateForm', {
                             key: 'bookingId',
                             value : null,
                         });
                     } else {
-                        this.handleSelectBooking(this.$route.query.bookingId);
-                        this.bookingLabel = this.optionsBooking.find((booking) => booking.id == this.$route.query.bookingId);
-                        this.formSelectedLabel.booking = `Đặt chỗ ${this.bookingLabel.start_date} - ${this.bookingLabel.end_date} (${this.renderStatus(this.bookingLabel.status)})`;
+                        this.$emit('updateForm', {
+                            key: 'bookingId',
+                            value : this.$route.query.bookingId,
+                        });
                     }
                 });
                 if (this.type >= HELP_CALL_TYPE.BOOKING) {
                     this.step = 3;
                 }
-            },
-            handleSelectBooking(value) {
-                this.$emit('updateForm', {
-                    key: 'bookingId',
-                    value,
-                });
             },
             renderStatus(status) {
                 return BOOKING_STATUS_TEXT[status];
@@ -178,11 +149,15 @@
         },
         created() {
             get(API_LOCKER.GET_LOCKERS_ACTIVITIES()).then((res) => {
-                this.optionsLocker.push(...res.data.data);
+                this.optionsLocker = res.data.data.map((item) => ({
+                        value: item.id,
+                        label: `${item.code} - ${item.address}`
+                    }));
                 if (this.$route.query.lockerId) {
-                    this.handleSelectLocker(this.$route.query.lockerId);
-                    this.lockerLabel = this.optionsLocker.find((locker) => locker.id == this.$route.query.lockerId);
-                    this.formSelectedLabel.locker = `${this.lockerLabel.code} - ${this.lockerLabel.address}`;
+                    this.$emit('updateForm', {
+                        key: 'lockerId',
+                        value : this.$route.query.lockerId,
+                    });
                 }
             });
 
@@ -212,7 +187,6 @@
                 });
             }
 
-            this.step = this.form.type;
         },
         watch: {
             type() {
@@ -232,6 +206,32 @@
                     this.step = 1;
                 }
             },
+            'form.lockerId': function (value) {
+                this.handleSelectLocker(value);
+            },
+            'form.lockerSlotId': function (value) {
+                this.handleSelectLockerSlot(value);
+            },
         },
+        computed: {
+            lockerId() {
+                if (this.form.lockerId === null) {
+                    return null;
+                }
+                return this.optionsLocker.find((item) => item.value == this.form.lockerId)?.label;
+            },
+            lockerSlotId() {
+                if (this.form.lockerSlotId === null) {
+                    return null;
+                }
+                return this.optionsLockerSlot.find((item) => item.value == this.form.lockerSlotId)?.label;
+            },
+            bookingId() {
+                if (this.form.bookingId === null) {
+                    return null;
+                }
+                return this.optionsBooking.find((item) => item.value == this.form.bookingId)?.label;
+            },
+        }
     })
 </script>
