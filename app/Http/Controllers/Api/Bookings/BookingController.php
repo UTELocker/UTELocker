@@ -7,17 +7,28 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\bookings\ChangePassRequest;
 use App\Http\Requests\Api\Bookings\PutExtendTimeRequest;
 use App\Http\Requests\Api\Bookings\StoreBookingRequest;
+use App\Models\Transaction;
 use App\Services\Admin\Bookings\BookingService;
+use App\Services\Wallets\TransactionService;
+use App\Services\Wallets\WalletService;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
     public ?BookingService $bookingService;
+    public ?TransactionService $transactionService;
 
-    public function __construct(BookingService $bookingService)
-    {
+    public WalletService $walletService;
+
+    public function __construct(
+        BookingService $bookingService,
+        TransactionService $transactionService,
+        WalletService $walletService
+    ) {
         parent::__construct();
         $this->bookingService = $bookingService;
+        $this->transactionService = $transactionService;
+        $this->walletService = $walletService;
     }
 
     public function getBookingActivities()
@@ -43,12 +54,15 @@ class BookingController extends Controller
     public function store(StoreBookingRequest $request)
     {
         $data = $request->all();
-        $bookings = $this->bookingService->addListBooking($data);
-        return Reply::successWithData('Create bookings successfully',
-            [
-                'data' => $bookings
-            ]
-        );
+        $bookings = $this->bookingService->addBooking($data);
+        if ($bookings) {
+            return Reply::successWithData('Create bookings successfully',
+                [
+                    'data' => $bookings
+                ]);
+        } else {
+            return Reply::error('Create bookings failed');
+        }
     }
 
     public function update(Request $request, $id)

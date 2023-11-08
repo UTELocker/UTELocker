@@ -16,11 +16,6 @@ export default {
             return this.wallet.balance + this.wallet.promotion_balance < purchaseBooking;
         },
         postBooking: function () {
-            if (!this.validateWallet(this.totalPrice)) {
-                return new Promise((resolve, reject) => {
-                    reject( {message: 'Insufficient balance'} );
-                });
-            }
 
             return new Promise((resolve, reject) => {
                 post(API.POST_BOOKING(), {

@@ -26,7 +26,8 @@ Route::prefix('api-portal')->group(function () {
     });
 
     Route::prefix('bookings')->group(function () {
-        Route::post('/', [BookingController::class, 'store'])->name('portal.booking.store');
+        Route::post('/', [BookingController::class, 'store'])->name('portal.booking.store')
+            ->middleware('enoughMoney');
         Route::put('{bookingId}', [BookingController::class, 'update'])->name('portal.booking.update');
         Route::delete('{bookingId}', [BookingController::class, 'destroy'])->name('portal.booking.destroy');
         Route::get('activities', [BookingController::class, 'getBookingActivities'])

@@ -151,6 +151,7 @@ export default defineComponent({
             increaseNotificationUnreadCount: 'moduleNotification/increaseNotificationUnreadCount',
             markNotificationAsRead: 'moduleNotification/markNotificationAsRead',
             markAllNotificationAsRead: 'moduleNotification/markAllNotificationAsRead',
+            loadWallet: 'moduleBase/loadWallet',
         }),
         handleTypeNotification(notification) {
             switch (notification.type) {
@@ -204,6 +205,9 @@ export default defineComponent({
                 message: this.handleTypeNotification(item),
                 description: item.content,
             });
+            if (item.type === NOTIFICATION_TYPE.PAYMENT) {
+                this.loadWallet();
+            }
         },
         isRead(notification) {
             return notification.status === NOTIFICATION_STATUS.READ;

@@ -4,6 +4,7 @@ namespace App\Services\Admin\Bookings;
 
 use App\Classes\Common;
 use App\Classes\CommonConstant;
+use App\Classes\Reply;
 use App\Enums\BookingActivitiesStatus;
 use App\Enums\BookingStatus;
 use App\Enums\HistoryLimitTime;
@@ -13,15 +14,18 @@ use App\Models\Locker;
 use App\Models\LockerSlot;
 use App\Models\User;
 use App\Services\BaseService;
+use App\Services\Wallets\TransactionService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Classes\Files;
 
 class BookingService extends BaseService
 {
-    public function __construct(Booking $model)
+    private TransactionService $transactionService;
+    public function __construct(Booking $model, TransactionService $transactionService)
     {
         parent::__construct($model);
+        $this->transactionService = $transactionService;
     }
 
     public function initDefaultData(): static
@@ -248,5 +252,26 @@ class BookingService extends BaseService
                 'id', 'start_date', 'end_date', 'status'
             )
             ->get();
+    }
+
+    public function addBooking($data)
+    {
+        try {
+            return DB::transaction(function () use ($data) {
+                $bookings = $this->addListBooking($data);
+                $wallet = user()->wallet;
+                $amount = LockerSlot::caculatePriceBooking($data['list_slots_id'], $data['start_date'], $data['end_date']);
+                if (!$this->transactionService->handlePayment(
+                    $wallet,
+                    $amount,
+                    'Thanh toán đặt tủ',
+                )) {
+                    throw new \Exception('');
+                }
+                return $bookings;
+            });
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

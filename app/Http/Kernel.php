@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'auth.verify' => \App\Http\Middleware\AuthenticateFirebase::class,
         'permissionAdmin' => \App\Http\Middleware\PermissionAdmin::class,
         'permission.register' => \App\Http\Middleware\PermissionRegister::class,
+        'enoughMoney' => \App\Http\Middleware\CheckEnoughMoney::class,
     ];
 }

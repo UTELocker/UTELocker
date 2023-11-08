@@ -86,6 +86,7 @@ export default defineComponent({
                     const isDontShowPolicy = localStorage.getItem(DONT_SHOW_POLICY_BOOKING);
                     if (isDontShowPolicy == SHOW_POLICY_BOOKING_STATUS.DONT_SHOW) {
                         this.postBooking().then(() => {
+                            this.isShowPolicyModal = false;
                             Modal.success({
                                 title: 'Booking success',
                                 content: 'Your booking has been successfully booked',

@@ -55,7 +55,11 @@
                                 >
                                     <template #content>
                                         <p>Loại ngăn: {{slot.type}}</p>
-                                        <p>Trạng thái: {{slot.statusSlot}}</p>
+                                        <p v-if="slot.type == SLOT_TYPE.SLOT">Trạng thái: {{
+                                            slot.statusSlot === SLOT_STATUS.AVAILABLE
+                                                ? 'Còn trống'
+                                                : 'Đã đặt'
+                                        }}</p>
                                     </template>
                                     <p>
                                         {{ slot.number_of_slot === null

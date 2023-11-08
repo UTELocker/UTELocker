@@ -32,4 +32,30 @@ class LockerSlot extends Model
         }
         return $code;
     }
+
+    public static function caculatePriceBooking($lockerSlotId, $startTime, $endTime)
+    {
+        $lockerSlot = self::whereIn('id', $lockerSlotId)
+            ->orWhere('id', function ($query) use ($lockerSlotId) {
+                $query->select('id')
+                    ->from('locker_slots')
+                    ->where('type', LockerSlotType::CPU)
+                    ->where('locker_id', $lockerSlotId[0]);
+            })
+            ->select('id', 'config', 'type')
+            ->get();
+        $configLocker = $lockerSlot->where('type', LockerSlotType::CPU)->first()->config ?? '{}';
+        $configLocker = json_decode($configLocker, true);
+
+        $totalHours = (strtotime($endTime) - strtotime($startTime)) / 3600;
+        $price = 0;
+        foreach ($lockerSlot as $slot) {
+            if ($slot->type == LockerSlotType::SLOT) {
+                $configSlot = json_decode($slot->config, true);
+                $priceOfHour = $configSlot['price'] ?? $configLocker['price'] ?? 10000;
+                $price += $priceOfHour * $totalHours;
+            }
+        }
+        return $price;
+    }
 }
