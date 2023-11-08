@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Classes\Scheduler\ApprovedBookingTask;
+use App\Classes\Scheduler\ExpireTokenTask;
 use App\Classes\Scheduler\OverdueWarningBookingTask;
 use App\Classes\Scheduler\OverdueBookingTask;
 use App\Classes\Scheduler\WarningExpireTask;
@@ -20,6 +21,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(new ApprovedBookingTask())->everyMinute();
         $schedule->call(new OverdueBookingTask())->everyMinute();
         $schedule->call(new WarningExpireTask())->everyMinute();
+        $schedule->call(new ExpireTokenTask())->everyMinute();
     }
 
     /**

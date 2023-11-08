@@ -3,6 +3,7 @@
 namespace App\Services\Admin\Clients;
 
 use App\Classes\Common;
+use App\Classes\CommonConstant;
 use App\Classes\Files;
 use App\Enums\ClientStatus;
 use App\Exceptions\ApiException;
@@ -105,5 +106,16 @@ class ClientService extends BaseService
             ->where('status', ClientStatus::PUBLIC)
             ->when($id, fn ($query) => $query->where('id', $id))
             ->get();
+    }
+    public function initDefaultData(): static
+    {
+        $this->model->date_format = 'd-m-Y';
+        $this->model->time_format = 'H:i';
+        $this->model->timezone = 'Asia/Ho_Chi_Minh';
+        $this->model->locale = 'vi';
+        $this->model->status = ClientStatus::PUBLIC;
+        $this->model->allow_signup = CommonConstant::DATABASE_YES;
+
+        return $this;
     }
 }

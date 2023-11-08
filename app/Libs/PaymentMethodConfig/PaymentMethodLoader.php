@@ -12,6 +12,7 @@ class PaymentMethodLoader
         PaymentMethodType::BANK_TRANSFER => BankTransferPaymentMethodConfig::class,
         PaymentMethodType::VNPAY => VNPayPaymentMethodConfig::class,
         PaymentMethodType::ZALOPAY => ZaloPayPaymentMethodConfig::class,
+        PaymentMethodType::UTEPAY => UTEPaymentMethodConfig::class,
     ];
 
     public static function load(string $paymentMethodType, array|string $config = []): IPaymentMethodConfig

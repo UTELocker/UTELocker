@@ -11,6 +11,7 @@ final class PaymentMethodType extends Enum
     const PAYPAL = 'paypal';
     const ZALOPAY = 'zalopay';
     const VNPAY = 'vnpay';
+    const UTEPAY = 'utepay';
 
     public static function getDescription($value): string
     {
@@ -25,6 +26,7 @@ final class PaymentMethodType extends Enum
             self::PAYPAL => 'Paypal',
             self::ZALOPAY => 'Zalopay',
             self::VNPAY => 'VNPay',
+            self::UTEPAY => 'UtePay',
         ];
 
         if (count($exclude) > 0) {
@@ -41,7 +43,8 @@ final class PaymentMethodType extends Enum
         return [
             self::CASH,
             self::PAYPAL,
-            self::BANK_TRANSFER
+            self::BANK_TRANSFER,
+            self::UTEPAY
         ];
     }
 }
