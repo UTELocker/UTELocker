@@ -43,7 +43,7 @@ class LockerController extends Controller
             return Reply::error('Locker not found', 'locker_not_found');
         }
         $configLocker = json_decode($this->lockerService->getConfigLocker($locker), true);
-        if ($this->lockerService->isExceedingLimitTime($configLocker, $startDate, $endDate)) {
+        if (!$this->lockerService->isNotExceedingLimitTime($configLocker, $startDate, $endDate)) {
             return Reply::error('Exceeding limit time', 'exceeding_limit_time');
         }
         $listSlotsNotAvailable = $this->lockerSlotService->getSlotsNotAvailable($id, $startDate, $endDate);

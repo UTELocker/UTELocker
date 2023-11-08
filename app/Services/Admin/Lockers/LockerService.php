@@ -168,8 +168,10 @@ class LockerService extends BaseService
                             $q->where('status', BookingStatus::PENDING)
                                 ->orWhere('status', BookingStatus::APPROVED);
                         })
-                        ->whereBetween('start_date', [$startDate, $endDate])
-                        ->orWhereBetween('end_date', [$startDate, $endDate]);
+                        ->where(function ($q) use ($startDate, $endDate) {
+                            $q->whereBetween('start_date', [$startDate, $endDate])
+                                ->orWhereBetween('end_date', [$startDate, $endDate]);
+                        });
                     });
             }])
             ->having('locker_slots_count', '>=', $numberSlot)
@@ -219,20 +221,20 @@ class LockerService extends BaseService
     {
         return $data->filter(function ($item) use ($startDate, $endDate) {
             $config = json_decode($item->config, true);
-            return !$this->isExceedingLimitTime($config, $startDate, $endDate);
+            return $this->isNotExceedingLimitTime($config, $startDate, $endDate);
         });
     }
 
-    public function isExceedingLimitTime($configLocker, $startDate, $endDate): bool
+    public function isNotExceedingLimitTime($configLocker, $startDate, $endDate): bool
     {
-        if (!$configLocker) {
-            return false;
+        if (empty($configLocker)) {
+            return true;
         }
         $limitMinutes = $configLocker['days'] * 24 * 60 + $configLocker['hours'] * 60 + $configLocker['minutes'];
         $diffMinutes = Carbon::createFromFormat('Y-m-d H:i', $endDate)->diffInMinutes(
-            Carbon::createFromFormat('Y-m-d H:i', $startDate)
-        );
-        return $diffMinutes > $limitMinutes;
+                Carbon::createFromFormat('Y-m-d H:i', $startDate)
+            );
+        return $diffMinutes <= $limitMinutes || $limitMinutes === 0;
     }
 
     public function getLockerActivities()
