@@ -30,40 +30,10 @@
                     @if($slot->type == \App\Enums\LockerSlotType::CPU)
                         <div class="row mt-2">
                             <div class="col-md-12">
-                                <label class="control-label m-0 mt-10">@lang('settings.dateTimeLimit')</label>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label class="control-label">@lang('settings.days')</label>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <input type="text" name="days" class="form-control"
-                                            value="{{ $slot?->days ?? 0 }}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label class="control-label">@lang('settings.hours')</label>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <input type="number" name="hours" class="form-control"
-                                            value="{{ $slot?->hours ?? 0 }}" min="0" max="23">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label class="control-label">@lang('settings.minutes')</label>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <input type="number" name="minutes" class="form-control"
-                                            value="{{ $slot?->minutes ?? 0 }}" min="0" max="59">
-                                    </div>
-                                </div>
+                                <label class="control-label">@lang('settings.maxTimeHoursBooking')</label>
+                                <input type="number" name="hours" class="form-control"
+                                       value="{{ $slot?->hours }}" min="0"
+                                       placeholder="@lang('settings.maxTimeHoursBookingPlaceholder')">
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -124,7 +94,7 @@
         UTELocker.common.init(MODAL_LG);
 
         const url = "{{ route('admin.lockers.slots.show', ['locker' => $lockerId, 'slot' => $slot->id]) }}";
-        $.easyAjax({
+        $.ajax({
             type: 'GET',
             url: url,
             success: function(response) {
@@ -133,9 +103,7 @@
                     if (data.type == "{{ \App\Enums\LockerSlotType::CPU }}") {
                         if (data.config != null) {
                             $config = JSON.parse(data.config);
-                            $('#slotConfigForm').find('input[name="days"]').val($config.days);
                             $('#slotConfigForm').find('input[name="hours"]').val($config.hours);
-                            $('#slotConfigForm').find('input[name="minutes"]').val($config.minutes);
                             $('#slotConfigForm').find('input[name="prefix"]').val($config.prefix);
                             $('#slotConfigForm').find('input[name="price"]').val($config.price);
                             $('#slotConfigForm').find('input[name="bufferTime"]').val($config.bufferTime);

@@ -7,6 +7,7 @@ use App\Enums\LockerSlotType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
 class Locker extends Model
@@ -59,5 +60,10 @@ class Locker extends Model
     {
         $license = License::where('locker_id', $lockerId)->first();
         return Client::where('id', $license->client_id)->first();
+    }
+
+    public function license(): HasOne
+    {
+        return $this->hasOne(License::class);
     }
 }

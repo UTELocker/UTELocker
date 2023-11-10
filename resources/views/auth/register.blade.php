@@ -5,12 +5,12 @@
         <div class="form-group text-left" id="client-section">
             <label for="client_id">{{ __('app.listSiteGroups') }}</label>
             <select
-                class="form-control height-50 f-15 light_text @error('client') is-invalid @enderror"
+                class="form-control height-50 f-15 light_text @error('client_id') is-invalid @enderror"
                 name="client_id" id="client" tabindex="2">
                     <option value="">{{ __('app.listSiteGroups') }}</option>
             </select>
             @if ($errors->has('client_id'))
-                <div class="invalid-feedback">{{ $errors->first('client_id') }}</div>
+                <div class="invalid-feedback pt-1">{{ $errors->first('client_id') }}</div>
             @endif
         </div>
 

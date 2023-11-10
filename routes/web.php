@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\Settings\PusherSettingController;
 use App\Http\Controllers\Admin\Users\UserController;
 use App\Http\Controllers\PortalController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\Payments\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,6 +133,8 @@ Route::group(['middleware' => ['auth', 'auth.verify', 'permissionAdmin']], funct
     Route::group(['middleware' => ['auth'], 'prefix' => 'bookings'], function () {
         Route::get('/', [BookingController::class, 'index'])
             ->name('admin.bookings.index');
+        Route::get('/{booking}', [BookingController::class, 'show'])
+            ->name('admin.bookings.show');
     });
 
     Route::get(
@@ -163,10 +166,10 @@ Route::group(['middleware' => ['auth', 'auth.verify', 'permissionAdmin']], funct
         Route::get('/', [PaymentController::class, 'index'])
             ->name('admin.payment.index');
         Route::prefix('transactions')->group(function () {
-            Route::get('/', [PaymentController::class, 'transactions'])
+            Route::get('/', [TransactionController::class, 'index'])
                 ->name('admin.payment.transactions');
-            Route::get('/{transaction}', [PaymentController::class, 'transaction'])
-                ->name('admin.payment.transaction');
+            Route::get('/{transaction}', [TransactionController::class, 'show'])
+                ->name('admin.payment.transaction.show');
         });
         Route::resource('methods', PaymentMethodController::class)
             ->names([

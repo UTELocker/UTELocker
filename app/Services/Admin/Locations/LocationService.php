@@ -88,4 +88,15 @@ class LocationService extends BaseService
     public function getLocationsOfClient() {
         return $this->model->where('client_id', user()->client_id)->get();
     }
+
+    public function update(array $all, string $id)
+    {
+        $this->setModel($this->get($id));
+        $this->formatInputData($all);
+        $this->setModelFields($all);
+        DB::transaction(function () {
+            $this->model->save();
+        });
+
+    }
 }

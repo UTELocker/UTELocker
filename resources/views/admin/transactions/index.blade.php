@@ -47,14 +47,44 @@
         <!-- MORE FILTERS START -->
         <x-filters.more-filter-box>
             <div class="more-filter-items">
-                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.location')</label>
+                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('modules.paymentMethod.title')</label>
                 <div class="select-filter mb-4">
                     <div class="select-others">
-                        <select class="form-control select-picker" data-container="body" name="status" id="location-filter">
+                        <select class="form-control select-picker" data-container="body" name="status" id="payment-method-filter">
                             <option value="all">@lang('app.all')</option>
-                            @foreach($locations as $location)
-                                <option value="{{$location->id}}">
-                                    {{ $location->description }}
+                            @foreach($paymentMethods as $paymentMethod)
+                                <option value="{{$paymentMethod->name}}">
+                                    {{ $paymentMethod->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="more-filter-items">
+                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.status')</label>
+                <div class="select-filter mb-4">
+                    <div class="select-others">
+                        <select class="form-control select-picker" data-container="body" name="status" id="status-filter">
+                            <option value="all">@lang('app.all')</option>
+                            @foreach(\App\Enums\TransactionStatus::asArray() as $status)
+                                <option value="{{$status}}">
+                                    {{ \App\Enums\TransactionStatus::getDescription($status) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="more-filter-items">
+                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('modules.paymentMethod.type')</label>
+                <div class="select-filter mb-4">
+                    <div class="select-others">
+                        <select class="form-control select-picker" data-container="body" name="status" id="type-filter">
+                            <option value="all">@lang('app.all')</option>
+                            @foreach(\App\Enums\TransactionType::asArray() as $type)
+                                <option value="{{$type}}">
+                                    {{ \App\Enums\TransactionType::getDescription($type) }}
                                 </option>
                             @endforeach
                         </select>
@@ -68,17 +98,6 @@
 @section('content')
     <div class="content-wrapper">
         <div class="d-grid d-lg-flex d-md-flex action-bar">
-            <div id="table-actions" class="flex-grow-1 align-items-center">
-                @if (user()->isSuperUser())
-                    <x-forms.link-primary
-                        :link="route('admin.lockers.create')"
-                        class="mr-3 openRightModal float-left mb-2 mb-lg-0 mb-md-0" icon="plus"
-                    >
-                        @lang('app.add')
-                        @lang('app.locker')
-                    </x-forms.link-primary>
-                @endif
-            </div>
             <x-datatable.actions>
             </x-datatable.actions>
         </div>
@@ -129,21 +148,39 @@
             $('#search-text-field').on('keyup', function () {
                 const value = $(this).val();
                 table.on('preXhr.dt', function (e, settings, data) {
-                    data.search = value === '' ? null : value;
+                    data.search = value;
                 }).DataTable().ajax.reload();
             });
 
-            $('#location-filter').on('change', function () {
+            $('#payment-method-filter').on('change', function () {
                 const value = $(this).val();
                 table.on('preXhr.dt', function (e, settings, data) {
-                    data.location = value === 'all' ? null : value;
+                    data.payment_method_name = value === 'all' ? null : value;
+                }).DataTable().ajax.reload();
+            });
+
+            $('#status-filter').on('change', function () {
+                const value = $(this).val();
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.status = value === 'all' ? null : value;
+                }).DataTable().ajax.reload();
+            });
+
+            $('#type-filter').on('change', function () {
+                const value = $(this).val();
+                table.on('preXhr.dt', function (e, settings, data) {
+                    data.type = value === 'all' ? null : value;
                 }).DataTable().ajax.reload();
             });
 
             $('#reset-filters-2').on('click', function () {
                 $('#location-filter').val('');
+                $('#status-filter').val('');
+                $('#type-filter').val('');
                 table.on('preXhr.dt', function (e, settings, data) {
-                    data.location = '';
+                    data.payment_method_name = '';
+                    data.status = '';
+                    data.type = '';
                 }).DataTable().ajax.reload();
             });
         })

@@ -32,7 +32,7 @@ class LocationsDataTable extends BaseDataTable
                     . '" onclick="UTELocker.common.dataTableRowCheck(' . $row->id . ')">';
             })
             ->addColumn('action', function ($row) {
-                return view('admin.location-types.actions', compact('row'));
+                return view('admin.locations.actions', compact('row'));
             })
             ->addColumn('code', function ($row) {
                 return ucfirst($row->code) . ' - ' . $row->description;

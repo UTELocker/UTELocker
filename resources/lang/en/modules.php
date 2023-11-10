@@ -81,6 +81,8 @@ return array(
         'notAllowSignup' => 'Disable Allow Signup',
     ],
     'lockers' => [
+        'lockerDetails' => 'Locker Details',
+        'lockerPerformance' => 'Locker Performance',
         'title' => 'Lockers',
         'create' => 'Create Locker',
         'details' => 'Locker Details',
@@ -90,6 +92,7 @@ return array(
         'dateOfManufacture' => 'Date of Manufacture',
         'status' => 'Status',
         'warrantyDuration' => 'Warranty Duration',
+        'totalSlots' => 'Total Slots',
         'placeholders' => [
             'code' => 'e.g. LOCKER001',
             'description' => 'e.g. Locker on 1st floor, near the entrance',
@@ -102,6 +105,8 @@ return array(
             'bulkCreate' => 'Bulk Create Slots',
         ],
         'lockerPicture' => 'Locker Picture',
+        'numBookings' => 'Number of Bookings',
+        'sumEarnings' => 'Sum of Earnings',
     ],
     'locations' => [
         'title' => 'Locations',
@@ -111,6 +116,7 @@ return array(
         'type' => 'Location Type',
         'latitude' => 'Latitude',
         'longitude' => 'Longitude',
+        'address' => 'Address',
         'placeholders' => [
             'code' => 'e.g. LAB001',
             'description' => 'e.g. Laboratory on 1st floor, near the entrance',
@@ -138,5 +144,48 @@ return array(
             'terminal_id' => 'Terminal ID',
             'secret_key' => 'Secret Key',
         ]
+    ],
+    'license' => [
+        'title' => 'License',
+        'create' => 'Create License',
+        'code' => 'License Code',
+        'warrantyDuration' => 'Warranty Duration',
+        'placeholders' => [
+            'code' => 'e.g. LICENSE001',
+        ],
+    ],
+    'bookings' => [
+        'title' => 'Bookings',
+        'create' => 'Request Booking at',
+        'startDate' => 'Start Date',
+        'endDate' => 'End Date',
+        'status' => 'Status',
+    ],
+    'transactions' => [
+        'title' => 'Transactions',
+        'create' => 'Create Transaction',
+        'details' => 'Transaction Details',
+        'code' => 'Transaction Code',
+        'type' => 'Transaction Type',
+        'amount' => 'Amount',
+        'status' => 'Status',
+        'placeholders' => [
+            'code' => 'e.g. TRANSACTION001',
+            'amount' => 'e.g. 100000',
+        ],
+        'user' => 'Creator',
+        'createdAt' => 'Transaction Date',
+        'reference' => 'Transaction Reference',
+        'balance' => 'Balance',
+        'promotion' => 'Promotion',
+        'content' => 'Content',
+        'booking' => 'Number of Bookings',
+    ],
+    'lockerSLots' => [
+        'title' => 'Locker Slots',
+        'code' => 'Locker Slot Code',
+    ],
+    'histories' => [
+        'booking' => 'Line Booking History',
     ]
 );

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin\Locations;
 
 use App\Classes\Reply;
 use App\DataTables\LocationsDataTable;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Locations\StoreLocationRequest;
 use App\Models\Client;
 use App\Models\LocationType;
+use App\Models\User;
 use App\Services\Admin\Locations\LocationService;
 use Illuminate\Http\Request;
 
@@ -78,7 +80,22 @@ class LocationController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $this->editPermission = User::canAccess(UserRole::ADMIN);
+        if (!$this->editPermission) {
+            abort(403);
+        }
+        $this->pageTitle = 'Edit Location';
+        $this->view = 'admin.locations.ajax.edit';
+        $this->location = $this->locationService->get($id);
+        $this->clients = Client::getClientList();
+        $this->locationTypes = LocationType::getLocationTypeList();
+
+        if (request()->ajax()) {
+            $html = view($this->view, $this->data)->render();
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+
+        return view('admin.locations.create', $this->data);
     }
 
     /**
@@ -86,7 +103,15 @@ class LocationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $this->locationService->update($request->all(), $id);
+
+        $redirectUrl = urldecode($request->redirect_url);
+
+        if ($redirectUrl == '') {
+            $redirectUrl = route('admin.location.locations.index');
+        }
+
+        return Reply::successWithData(__('messages.recordSaved'), ['redirectUrl' => $redirectUrl]);
     }
 
     /**

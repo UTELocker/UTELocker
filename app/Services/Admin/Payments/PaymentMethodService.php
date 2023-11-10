@@ -85,4 +85,29 @@ class PaymentMethodService extends BaseService
             ])
             ->get();
     }
+
+    public function getOfClient()
+    {
+        return $this->model
+            ->where('client_id', user()->client_id)
+            ->select([
+                'name',
+            ])
+            ->get();
+    }
+
+    public function getFullDetail($id)
+    {
+        return $this->model
+            ->leftJoin('users', 'users.id', '=', 'transactions.user_id')
+            ->leftJoin('payment_methods', 'payment_methods.id', '=', 'transactions.payment_method_id')
+            ->leftJoin('bookings', 'bookings.transaction_id', '=', 'transactions.id')
+            ->where('users.client_id', user()->client_id)
+            ->select(
+                'transactions.*',
+                'users.name as user_name',
+                'payment_methods.name as payment_method_name'
+            )
+            ->findOrFail($id);
+    }
 }

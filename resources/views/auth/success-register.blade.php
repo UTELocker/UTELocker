@@ -5,7 +5,7 @@
             Your account is now active. You can login using your email and password.
         </p>
         <div class="flex items-center justify-end mt-4">
-            <a href="{{ route('auth.login') }}">
+            <a href="{{ route('login') }}">
                 <button type="button" id="submit-register"
                         class="btn-primary f-w-500 rounded w-100 height-50 f-18 ">
                     {{ __('app.login') }} <i class="fa fa-arrow-right pl-1"></i>

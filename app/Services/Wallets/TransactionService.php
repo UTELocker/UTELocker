@@ -97,7 +97,7 @@ class TransactionService extends BaseService
                 NotificationParentTable::TABLE_TRANSACTIONS,
                 $transaction->id,
             );
-            return true;
+            return $transaction;
         }
         return false;
     }
@@ -126,10 +126,15 @@ class TransactionService extends BaseService
     {
         while (true) {
             $number = rand(1000000000, 9999999999);
-            $reference = $prefix . $number;
+            $reference = $prefix . '-' . $number;
             if ($this->validateUniqueReference($reference)) {
                 return $reference;
             }
         }
+    }
+
+    public function getByReference($reference)
+    {
+        return $this->model->where('reference', $reference)->firstOrFail();
     }
 }

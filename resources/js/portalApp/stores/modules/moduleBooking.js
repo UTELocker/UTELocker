@@ -51,19 +51,20 @@ const actions = {
                 if (data.length === 0) {
                     reject('No available lockers');
                 }
-                const availableLockers = data.map(locker => {
+                const availableLockers = Object.keys(data).map(key => {
                     return {
-                        id: locker.id,
-                        description: locker.description ? locker.description : 'Tủ đồ',
-                        image: locker.image ? locker.image : 'https://via.placeholder.com/150',
-                        address: locker.address,
-                        locker_slots_count: locker.locker_slots_count,
-                        code: locker.code,
+                        id: data[key].id,
+                        description: data[key].description ? data[key].description : 'Tủ đồ',
+                        image: data[key].image ? data[key].image : 'https://via.placeholder.com/150',
+                        address: data[key].address,
+                        locker_slots_count: data[key].locker_slots_count,
+                        code: data[key].code,
                     }
                 });
                 commit('setAvailableLockers', availableLockers);
                 resolve();
             }).catch(error => {
+                console.log(error);
                 reject(error);
             });
         })

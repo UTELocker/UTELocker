@@ -25,3 +25,15 @@ function getLogoDefault($image)
         return asset('images/default/logoDefault.png');
     }
 }
+
+function getThumbnailLockerDefault($image)
+{
+    if ($image) {
+        return Files::getImageUrl(
+            $image, 'locker-thumbnail',
+            Files::CLIENT_UPLOAD_FOLDER
+        );
+    } else {
+        return asset('images/default/lockerDefault.png');
+    }
+}

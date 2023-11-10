@@ -81,7 +81,21 @@ return array(
             'inUse' => 'In Use',
             'underMaintenance' => 'Under Maintenance',
             'broken' => 'Broken',
-        ]
+        ],
+        'bookingStatus' => [
+            'pending' => 'Pending',
+            'approved' => 'Approved',
+            'rejected' => 'Rejected',
+            'cancelled' => 'Cancelled',
+            'expired' => 'Expired',
+            'completed' => 'Completed',
+            'locked' => 'Locked',
+        ],
+        'transactionStatus' => [
+            'pending' => 'Pending',
+            'success' => 'Success',
+            'failed' => 'Failed',
+        ],
     ],
     'language' => 'Language',
     'lockerSlots' => 'Locker Slots',
@@ -101,4 +115,5 @@ return array(
     'register' => 'Register',
     'createTokenRegister' => 'Create Token Register',
     'error' => 'Error',
+    'booking' => 'Booking',
 );

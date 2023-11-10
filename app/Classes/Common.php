@@ -3,6 +3,7 @@
 namespace App\Classes;
 
 use App\Enums\LockerSlotType;
+use App\Models\GlobalSetting;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
@@ -99,5 +100,20 @@ class Common
         }
 
         return $listNameSlots;
+    }
+
+    public static function formatDateBaseOnSetting($date = null, $isSuperAdmin = true): ?string
+    {
+        if (!$date) {
+            return null;
+        }
+
+        if ($isSuperAdmin) {
+            $format = globalSettings()->date_format . ' ' . globalSettings()->time_format;
+        } else {
+            $format = siteGroup()->date_format . ' ' . siteGroup()->time_format;
+        }
+
+        return Carbon::parse($date)->format($format);
     }
 }

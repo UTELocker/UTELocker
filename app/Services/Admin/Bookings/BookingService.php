@@ -178,7 +178,7 @@ class BookingService extends BaseService
                     $booking->image, 'client-locker',
                     Files::CLIENT_UPLOAD_FOLDER
                 ) :
-                asset('images/default/lockerDefault.png'),
+                    asset('images/default/lockerDefault.png'),
                 'lockerId' => $booking->locker_id,
                 'lockerSlotId' => $booking->locker_slot_id,
             ];
@@ -204,25 +204,6 @@ class BookingService extends BaseService
         $booking->status = BookingStatus::CANCELLED;
         $booking->save();
         return $booking;
-    }
-
-    public function getHistoriesBooking(User $user) {
-        return $this->model
-            ->where('bookings.owner_id', $user->id)
-            ->where('bookings.client_id', $user->client_id)
-            ->where('bookings.start_date', '>=', Carbon::now()->subMonths(CommonConstant::LIMIT_MONTH_BOOKING))
-            ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
-            ->leftJoin('lockers', 'locker_slots.locker_id', '=', 'lockers.id')
-            ->leftJoin('locations', 'lockers.location_id', '=', 'locations.id')
-            ->select(
-                'bookings.status', 'bookings.start_date',
-                'bookings.end_date', 'bookings.created_at', 'bookings.id', 'bookings.updated_at',
-                'locker_slots.row', 'locker_slots.column', 'locker_slots.locker_id',
-                'locker_slots.config', 'lockers.image', 'lockers.code as locker_code',
-                'locations.description as address', 'locations.latitude', 'locations.longitude'
-            )
-            ->orderBy('bookings.start_date', 'asc')
-            ->get();
     }
 
     public function extendTime($id, array $data)
@@ -261,17 +242,143 @@ class BookingService extends BaseService
                 $bookings = $this->addListBooking($data);
                 $wallet = user()->wallet;
                 $amount = LockerSlot::caculatePriceBooking($data['list_slots_id'], $data['start_date'], $data['end_date']);
-                if (!$this->transactionService->handlePayment(
+                $transaction =$this->transactionService->handlePayment(
                     $wallet,
                     $amount,
                     'Thanh toán đặt tủ',
-                )) {
+                );
+                if (!$transaction) {
                     throw new \Exception('');
                 }
+
+                $listId = [];
+                foreach ($bookings as $booking) {
+                    $listId[] = $booking->id;
+                }
+                $this->model->whereIn('id', $listId)->update(['transaction_id' => $transaction->id]);
+
                 return $bookings;
             });
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    public function numBooking(Locker $locker)
+    {
+        $data = [];
+        $bookings = $this->model
+            ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->where('locker_slots.locker_id', $locker->id)
+            ->whereIn('bookings.status', [BookingStatus::APPROVED, BookingStatus::PENDING, BookingStatus::COMPLETED])
+            ->select(
+                DB::raw('DATE_FORMAT(bookings.start_date, "%m") as month'),
+            )
+            ->get();
+        $bookings = $bookings->where('month', '<=', Carbon::now()->format('m'));
+        $moths = [];
+        for ($i = 5; $i >= 0 ; $i--) {
+            $moths[] = Carbon::now()->subMonths($i)->format('m');
+        }
+        $data['labels'] = $moths;
+
+        for ($i = 0; $i < 6; $i++) {
+            $data['values'][] = $bookings->where('month', $moths[$i])->count();
+        }
+        $data['colors'] = ['#ff6384'];
+        $data['name'] = __('modules.lockers.sumEarnings');
+        return $data;
+    }
+
+    public function sumEarn(\Illuminate\Database\Eloquent\Model $locker)
+    {
+        $data = [];
+        $bookings = $this->model
+            ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->leftJoin('transactions', 'bookings.transaction_id', '=', 'transactions.id')
+            ->where('locker_slots.locker_id', $locker->id)
+            ->whereIn('bookings.status', [BookingStatus::APPROVED, BookingStatus::PENDING, BookingStatus::COMPLETED])
+            ->select([
+                DB::raw('DATE_FORMAT(bookings.start_date, "%m") as month'),
+                'transactions.amount'
+            ])
+            ->get();
+        $bookings = $bookings->where('month', '<=', Carbon::now()->format('m'));
+        $moths = [];
+        for ($i = 0; $i < 6; $i++) {
+            $moths[] = Carbon::now()->subMonths($i)->format('m');
+        }
+        $data['labels'] = $moths;
+        $data['values'] = $bookings->groupBy('month')->map(function ($item) {
+            return $item->sum('amount');
+        })->values()->toArray();
+        $data['colors'] = ['#36a2eb'];
+        $data['name'] = __('modules.lockers.sumEarnings');
+        return $data;
+    }
+
+    public function getHistoryLine(mixed $booking)
+    {
+        $created = $this->pointHistory(__('modules.bookings.create'), 'created', $booking->created_at);
+        $startDate = $this->pointHistory(__('modules.bookings.startDate'), 'start', $booking->start_date);
+        $endDate = $this->pointHistory(__('modules.bookings.endDate'), 'end', $booking->end_date);
+        $cancelled = false;
+        if ($booking->status == BookingStatus::CANCELLED) {
+            $cancelled = $this->pointHistory(__('modules.bookings.cancelled'), 'cancelled', $booking->updated_at);
+        }
+
+        if ($cancelled) {
+            if ($booking->updated_at->gt($booking->end_date)) {
+                return [$created, $startDate, $endDate, $cancelled];
+            } else {
+                if ($booking->updated_at->gt($booking->start_date)) {
+                    return [$created, $startDate, $cancelled, $endDate];
+                } else {
+                    return [$created, $cancelled, $startDate, $endDate];
+                }
+            }
+        }
+        return [$created, $startDate, $endDate];
+    }
+
+    private function pointHistory($subject, $status, $date)
+    {
+        return [
+            'subject' => $subject,
+            'status' => $status,
+            'date' => Common::formatDateBaseOnSetting($date, user()->isSuperUser())
+        ];
+    }
+
+    public function getSumBookingInTransaction($transactionId)
+    {
+        return $this->model->where('transaction_id', $transactionId)->get()->count();
+    }
+
+    public function getHistoriesBookingClient($bookingId = null)
+    {
+        return $this->model
+            ->fullDetails()
+            ->when($bookingId == null && !user()->isSuperUser(), function ($query) {
+                return $query->where('clients.id', user()->client_id);
+            })
+            ->when($bookingId != null, function ($query) use ($bookingId) {
+                return $query->where('bookings.id', $bookingId);
+            })
+            ->get();
+    }
+
+    public function getHistoriesBooking(User $user, $bookingId = null)
+    {
+        return $this->model
+            ->fullDetails()
+            ->where('bookings.start_date', '>=', Carbon::now()->subMonths(CommonConstant::LIMIT_MONTH_BOOKING))
+            ->when($bookingId == null, function ($query) use ($user) {
+                return $query->where('bookings.owner_id', $user->id);
+            })
+            ->when($bookingId != null, function ($query) use ($bookingId) {
+                return $query->where('bookings.id', $bookingId);
+            })
+            ->get();
     }
 }

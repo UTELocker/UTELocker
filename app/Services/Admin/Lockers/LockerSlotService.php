@@ -199,4 +199,9 @@ class LockerSlotService extends BaseService
 
         return $modules;
     }
+
+    public function getByLockerId($lockerId)
+    {
+        return $this->model->where('locker_id', $lockerId)->get();
+    }
 }

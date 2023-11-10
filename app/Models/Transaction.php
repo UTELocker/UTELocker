@@ -24,4 +24,14 @@ class Transaction extends Model
     {
         return $this->belongsToThrough(Wallet::class, User::class);
     }
+
+    public function booking()
+    {
+        return $this->hasMany(Booking::class, 'transaction_id' , 'id');
+    }
+
+    public function client()
+    {
+        return $this->belongsToThrough(Client::class, User::class);
+    }
 }

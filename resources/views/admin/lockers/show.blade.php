@@ -4,6 +4,10 @@
     @include('sections.datatables_css')
 @endpush
 
+@push('styles')
+    <script src="{{ asset('vendor/jquery/frappe-charts.min.iife.js') }}"></script>
+@endpush
+
 @section('filter-section')
     <div class="d-flex filter-box project-header bg-white">
 
@@ -37,6 +41,7 @@
 @endsection
 
 @push('scripts')
+
     <script>
         $("body").on("click", ".ajax-tab", function(event) {
             event.preventDefault();

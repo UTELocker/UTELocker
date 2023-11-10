@@ -147,13 +147,12 @@ class ClientController extends Controller
 
     public function update(UpdateClientRequest $request, string $id)
     {
-        dd ($request->all());
         $this->editPermission = user()->canAccess(UserRole::ADMIN);
         if (!$this->editPermission) {
             abort(403);
         }
-
-        $this->client = $this->clientService->get($id);
+        $client = $this->clientService->get($id);
+        $this->client = $this->clientService->update($client, $request->all(), ['isPrefix' => true]);
         $form = $request->all();
         $clientData = $this->getDataWithPrefix(ClientService::FORM_PREFIX, $form);
         $this->clientService->update($this->client, $clientData, ['isPrefix' => true]);

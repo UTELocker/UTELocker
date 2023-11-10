@@ -90,13 +90,23 @@ class LockerService extends BaseService
     private function addDefaultSlots()
     {
         foreach ($this->slotDefault as $key => $type) {
-            $this->lockerSlotService->add([
+            $configSlot = [
                 'locker_id' => $this->model->id,
                 'type' => $type,
                 'row' => 1,
                 'column' => $key + 1,
                 'status' => LockerSlotStatus::AVAILABLE
-            ]);
+            ];
+            if ($type == LockerSlotType::CPU) {
+                $configSlot['config'] = json_encode([
+                    "hours" => "0",
+                    "price" => "10000",
+                    "prefix" => "A",
+                    "bufferTime" => "30",
+                    "maxBookings" => "6"
+                ]);
+            }
+            $this->lockerSlotService->add($configSlot);
         }
     }
 
@@ -230,7 +240,7 @@ class LockerService extends BaseService
         if (empty($configLocker)) {
             return true;
         }
-        $limitMinutes = $configLocker['days'] * 24 * 60 + $configLocker['hours'] * 60 + $configLocker['minutes'];
+        $limitMinutes = $configLocker['hours'] * 60;
         $diffMinutes = Carbon::createFromFormat('Y-m-d H:i', $endDate)->diffInMinutes(
                 Carbon::createFromFormat('Y-m-d H:i', $startDate)
             );

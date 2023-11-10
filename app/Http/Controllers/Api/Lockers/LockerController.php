@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Lockers;
 
 use App\Classes\Reply;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Lockers\GetModulesRequest;
 use App\Http\Requests\Api\Lockers\SearchLockersRequest;

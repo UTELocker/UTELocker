@@ -12,8 +12,10 @@ use App\Http\Requests\Admin\Lockers\UpdateLockerRequest;
 use App\Models\Location;
 use App\Models\Locker;
 use App\Models\User;
+use App\Services\Admin\Bookings\BookingService;
 use App\Services\Admin\Locations\LocationService;
 use App\Services\Admin\Lockers\LockerService;
+use App\Services\Wallets\TransactionService;
 use App\Traits\HandleNotification;
 use Illuminate\Http\Request;
 
@@ -21,16 +23,20 @@ class LockerController extends Controller
 {
     private LockerService $lockerService;
     private LocationService $locationService;
+    private BookingService $bookingService;
+    private TransactionService $transactionService;
     use HandleNotification;
 
     public function __construct(
         LockerService $lockerService,
-        LocationService $locationService
+        LocationService $locationService,
+        BookingService $bookingService,
     ){
         parent::__construct();
         $this->pageTitle = __('modules.lockers.title');
         $this->lockerService = $lockerService;
         $this->locationService = $locationService;
+        $this->bookingService = $bookingService;
     }
 
     /**
@@ -94,7 +100,12 @@ class LockerController extends Controller
                 return $this->bulkCreate();
                 break;
             default:
-                $this->view = 'admin.lockers.ajax.show';
+                $this->location = $this->locker->location;
+                $this->license = $this->locker->license;
+                $this->slots = $this->locker->lockerSlotAvailable;
+                $this->numBooking = $this->bookingService->numBooking($this->locker);
+                $this->sumEarn = $this->bookingService->sumEarn($this->locker);
+                $this->view = 'admin.lockers.ajax.details';
                 break;
         }
 

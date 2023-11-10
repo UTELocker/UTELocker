@@ -40,4 +40,15 @@ class LocationTypeSerivce extends BaseService
         Common::assignField($this->model, 'code', $inputs);
         Common::assignField($this->model, 'description', $inputs);
     }
+
+    public function update($locationType, array $form)
+    {
+        $this->setModel($locationType);
+        $this->formatInputData($form);
+        $this->setModelFields($form);
+
+        DB::transaction(function () {
+            $this->model->save();
+        });
+    }
 }

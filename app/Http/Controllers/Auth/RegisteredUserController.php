@@ -58,8 +58,8 @@ public function __construct(UserService $userService)
             'client_id' => 'required|exists:clients,id',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'gender' => 'required|in:' . implode(',', UserGender::getAll()),
+            'mobile' => 'required|numeric|digits_between:10,11',
         ]);
-
         $user = $this->userService->add($request->all(), ['isPrefix' => false]);
 
         return view('auth.success-register', ['user' => $user]);
