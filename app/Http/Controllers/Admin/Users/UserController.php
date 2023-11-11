@@ -225,8 +225,8 @@ class UserController extends Controller
 
     public function qrCode(Request $request)
     {
-        $domain = env('APP_URL');
-        $linkRegister = $domain . '/register?token=' . $request->token;
+        $url = config('app.url');
+        $linkRegister = $url . '/register?token=' . $request->token;
         return view('auth.qr_code', [
             'title' => 'Scan QR Code to Register',
             'qrCode' => $linkRegister

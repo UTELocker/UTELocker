@@ -16,7 +16,6 @@ trait ManageCustomToken
         $token = Str::uuid();
 
         return CustomToken::create([
-            'id' => $token,
             "token" => $token,
             "type" => $type,
             "expired_at" => now()->addHours($expiredAt),
@@ -54,9 +53,9 @@ trait ManageCustomToken
         });
     }
 
-    public function deleteToken($id)
+    public function deleteToken($token)
     {
-        $token = CustomToken::where("id", $id)->firstOrFail();
+        $token = CustomToken::where("token", $token)->firstOrFail();
         $token->delete();
     }
 }

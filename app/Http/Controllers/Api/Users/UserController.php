@@ -96,7 +96,7 @@ class UserController extends Controller
     public function getListClientForGuest(Request $request)
     {
         $token = $request->get('token');
-        if ($token) {
+        if (!empty($token)) {
             $result = $this->verifyToken($token);
             if (!$result) {
                 return Reply::error('Token is invalid');

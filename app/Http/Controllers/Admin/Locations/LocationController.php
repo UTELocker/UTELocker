@@ -90,11 +90,6 @@ class LocationController extends Controller
         $this->clients = Client::getClientList();
         $this->locationTypes = LocationType::getLocationTypeList();
 
-        if (request()->ajax()) {
-            $html = view($this->view, $this->data)->render();
-            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
-        }
-
         return view('admin.locations.create', $this->data);
     }
 

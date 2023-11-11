@@ -103,7 +103,7 @@ class ClientService extends BaseService
     {
         return $this->model
             ->select('id', 'name')
-            ->where('status', ClientStatus::PUBLIC)
+            ->when(empty($id), fn ($query) => $query->where('status', ClientStatus::PUBLIC))
             ->when($id, fn ($query) => $query->where('id', $id))
             ->get();
     }
