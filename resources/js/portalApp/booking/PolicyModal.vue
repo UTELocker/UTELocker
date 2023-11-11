@@ -100,14 +100,25 @@ export default defineComponent({
             return this.$router.push({name: 'booking'});
         },
         submit() {
-            this.postBooking().then(() => {
-                Modal.success({
-                    title: 'Booking success',
-                    content: 'Your booking has been successfully booked',
-                    onOk: () => {
-                        this.$router.push({name: 'portal'});
-                    },
-                });
+            this.postBooking().then((res) => {
+                if (res?.status === 'success') {
+                    Modal.success({
+                        title: 'Booking success',
+                        content: 'Your booking has been successfully created',
+                        onOk: () => {
+                            this.$router.push({name: 'booking'});
+                        },
+                    });
+                } else {
+                    const message = res?.message || 'Something went wrong';
+                    Modal.error({
+                        title: 'Booking error',
+                        content: message,
+                        onOk: () => {
+                            this.$router.push({name: 'booking'});
+                        },
+                    });
+                }
             }).catch((e) => {
                 const message = e?.message || 'Something went wrong';
                 Modal.error({

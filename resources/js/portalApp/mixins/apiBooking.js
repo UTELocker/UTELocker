@@ -26,7 +26,7 @@ export default {
                     if (this.isDontShowAgain) {
                         localStorage.setItem(DONT_SHOW_POLICY_BOOKING, SHOW_POLICY_BOOKING_STATUS.DONT_SHOW);
                     }
-                    resolve();
+                    resolve(res.data);
                 }).catch((err) => {
                     reject(err.response.data);
                 });

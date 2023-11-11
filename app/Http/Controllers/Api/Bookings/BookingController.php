@@ -55,13 +55,13 @@ class BookingController extends Controller
     {
         $data = $request->all();
         $bookings = $this->bookingService->addBooking($data);
-        if ($bookings) {
+        if ($bookings['status'] == 'success') {
             return Reply::successWithData('Create bookings successfully',
                 [
-                    'data' => $bookings
+                    'data' => $bookings['data']
                 ]);
         } else {
-            return Reply::error('Create bookings failed');
+            return Reply::error($bookings['message']);
         }
     }
 

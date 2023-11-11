@@ -248,7 +248,7 @@ class BookingService extends BaseService
                     'Thanh toán đặt tủ',
                 );
                 if (!$transaction) {
-                    throw new \Exception('');
+                    throw new \Exception('Thanh toán thất bại');
                 }
 
                 $listId = [];
@@ -257,10 +257,16 @@ class BookingService extends BaseService
                 }
                 $this->model->whereIn('id', $listId)->update(['transaction_id' => $transaction->id]);
 
-                return $bookings;
+                return [
+                    'status' => 'success',
+                    'data' => $bookings,
+                ];
             });
         } catch (\Exception $e) {
-            return false;
+            return [
+                'message' => $e->getMessage(),
+                'status' => 'error',
+            ];
         }
     }
 

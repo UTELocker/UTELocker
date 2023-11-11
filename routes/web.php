@@ -202,10 +202,4 @@ Route::get('qr-code', [UserController::class, 'qrCode'])->name('qr-code');
 
 Route::get('/event', [LockerController::class, 'event'])->name('event');
 
-Route::get('/clear', function () {
-    \Illuminate\Support\Facades\DB::table('notifications')->delete();
-    \Illuminate\Support\Facades\DB::table('bookings')->delete();
-    \Illuminate\Support\Facades\DB::table('transactions')->delete();
-});
-
 require __DIR__.'/auth.php';
