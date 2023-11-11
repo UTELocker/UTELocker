@@ -237,33 +237,33 @@ class BookingService extends BaseService
 
     public function addBooking($data)
     {
-        // DB begin
+        DB::beginTransaction();
         try {
-            return DB::transaction(function () use ($data) {
-                $bookings = $this->addListBooking($data);
-                $wallet = user()->wallet;
-                $amount = LockerSlot::caculatePriceBooking($data['list_slots_id'], $data['start_date'], $data['end_date']);
-                $transaction =$this->transactionService->handlePayment(
-                    $wallet,
-                    $amount,
-                    'Thanh toán đặt tủ',
-                );
-                if (!$transaction) {
-                    throw new \Exception('Thanh toán thất bại');
-                }
+            $bookings = $this->addListBooking($data);
+            $wallet = auth()->user()->wallet;
+            $amount = LockerSlot::calculatePriceBooking($data['list_slots_id'], $data['start_date'], $data['end_date']);
+            $transaction =$this->transactionService->handlePayment(
+                $wallet,
+                $amount,
+                'Thanh toán đặt tủ',
+            );
+            if (!$transaction) {
+                throw new \Exception('Thanh toán thất bại');
+            }
 
-                $listId = [];
-                foreach ($bookings as $booking) {
-                    $listId[] = $booking->id;
-                }
-                $this->model->whereIn('id', $listId)->update(['transaction_id' => $transaction->id]);
+            $listId = [];
+            foreach ($bookings as $booking) {
+                $listId[] = $booking->id;
+            }
+            $this->model->whereIn('id', $listId)->update(['transaction_id' => $transaction->id]);
 
-                return [
-                    'status' => 'success',
-                    'data' => $bookings,
-                ];
-            });
+            DB::commit();
+            return [
+                'status' => 'success',
+                'data' => $bookings,
+            ];
         } catch (\Exception $e) {
+            DB::rollBack();
             return [
                 'message' => $e->getMessage(),
                 'status' => 'error',

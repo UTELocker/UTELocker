@@ -33,7 +33,7 @@ class LockerSlot extends Model
         return $code;
     }
 
-    public static function caculatePriceBooking($lockerSlotId, $startTime, $endTime)
+    public static function calculatePriceBooking($lockerSlotId, $startTime, $endTime)
     {
         $lockerSlot = self::whereIn('id', $lockerSlotId)
             ->orWhere('id', function ($query) use ($lockerSlotId) {

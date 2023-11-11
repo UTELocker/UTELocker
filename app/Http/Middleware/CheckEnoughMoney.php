@@ -19,7 +19,7 @@ class CheckEnoughMoney
     public function handle(Request $request, Closure $next)
     {
         $wallet = Wallet::find(user()->wallet_id);
-        $amount = LockerSlot::caculatePriceBooking($request['list_slots_id'], $request['start_date'], $request['end_date']);
+        $amount = LockerSlot::calculatePriceBooking($request['list_slots_id'], $request['start_date'], $request['end_date']);
 
         if ($wallet->balance + $wallet->promotion_balance < $amount) {
             return Reply::error('Not enough money');

@@ -23,10 +23,12 @@ trait ManageCustomToken
         ]);
     }
 
-    public function verifyToken($token, $clientId, $type = TokenType::AUTH)
+    public function verifyToken($token, $clientId = null, $type = TokenType::AUTH)
     {
         $customToken = CustomToken::where("token", $token)
-            ->where("client_id", $clientId)
+            ->when($clientId, function ($query) use ($clientId) {
+                return $query->where("client_id", $clientId);
+            })
             ->where("type", $type)
             ->first();
         if (!$customToken) {
