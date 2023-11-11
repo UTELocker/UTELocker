@@ -13,3 +13,13 @@ export const HISTORY_STATUS = Object.freeze({
     COMPLETED: 5,
     LOCKED: 6,
 });
+
+export const HISTORY_STATUS_TEXT = Object.freeze({
+    [HISTORY_STATUS.PENDING]: 'Đang chờ',
+    [HISTORY_STATUS.APPROVED]: 'Đã duyệt',
+    [HISTORY_STATUS.REJECTED]: 'Đã từ chối',
+    [HISTORY_STATUS.CANCELLED]: 'Đã hủy',
+    [HISTORY_STATUS.EXPIRED]: 'Đã hết hạn',
+    [HISTORY_STATUS.COMPLETED]: 'Đã hoàn thành',
+    [HISTORY_STATUS.LOCKED]: 'Đã khóa',
+});

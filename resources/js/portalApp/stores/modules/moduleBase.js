@@ -124,13 +124,16 @@ const actions = {
     },
     deleteBooking({ commit }, payload) {
         const { bookingId } = payload;
-        del(API.DEL_END_BOOKING(bookingId)).then(response => {
-            if (response.data.status === 'success') {
-                const bookingActivities = state.bookingActivities.filter(booking => booking.id !== bookingId);
-                commit('setBookingActivities', bookingActivities);
-            }
-        }).catch(error => {
-            console.log(error);
+        return new Promise((resolve, reject) => {
+            del(API.DEL_END_BOOKING(bookingId)).then(response => {
+                if (response.data.status === 'success') {
+                    const bookingActivities = state.bookingActivities.filter(booking => booking.id !== bookingId);
+                    commit('setBookingActivities', bookingActivities);
+                }
+                resolve();
+            }).catch(error => {
+                reject(error);
+            });
         });
     },
     changePinCode({ commit }, payload) {

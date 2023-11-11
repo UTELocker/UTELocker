@@ -74,7 +74,6 @@ class AppSettingController extends BaseSettingController
      */
     public function update(UpdateSettingRequest $request, string $id)
     {
-        dd ($request->all());
         $this->editPermission = User::hasPermission(UserRole::SUPER_USER);
         if (!$this->editPermission) {
             abort(403);

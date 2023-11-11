@@ -222,8 +222,9 @@ export default defineComponent({
             })
                 .then((res) => {
                     this.loading = false;
-                    notification.success({
-                        message: 'Cập nhật thành công',
+                    notification['success']({
+                        message: 'Thành công',
+                        description: 'Cập nhật thành công',
                     });
                     this.$emit('updateHelpCall', {
                         id : this.helpCallDetail.id,
@@ -232,10 +233,10 @@ export default defineComponent({
                     });
                 })
                 .catch((e) => {
-                    console.log(e);
                     this.loading = false;
-                    notification.error({
-                        message: e.message || 'Cập nhật thất bại',
+                    notification['error']({
+                        message: 'Lỗi',
+                        description: e.message || 'Cập nhật thất bại'
                     });
                 });
         },

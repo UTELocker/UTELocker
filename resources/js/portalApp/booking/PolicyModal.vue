@@ -7,7 +7,7 @@
     >
         <template #title>
             <p style="font-size: 1.5rem; font-weight: 500; margin-bottom: 0;">
-                Policy
+                Điều khoản đặt chỗ
             </p>
         </template>
         <template #footer>
@@ -16,7 +16,7 @@
                     v-model:checked="isConfirmPolicy"
                     style="margin-bottom: 1rem;"
                 >
-                    I have read and agree to the policy
+                    Tôi đã đọc và đồng ý với điều khoản
                 </a-checkbox>
             </a-row>
             <a-row>
@@ -24,14 +24,14 @@
                     v-model:checked="isDontShowAgain"
                     style="margin-bottom: 1rem;"
                 >
-                    Don't show again
+                    Không hiển thị lại
                 </a-checkbox>
             </a-row>
             <a-row>
                 <a-button
                     @click="handleCancel"
                 >
-                    Return page booking
+                    Quay về trang tìm kiếm
                 </a-button>
                 <a-button
                     type="primary"
@@ -39,7 +39,7 @@
                     :loading="isSubmitLoading"
                     :disabled="!isConfirmPolicy"
                 >
-                    Confirm
+                    Đồng ý
                 </a-button>
             </a-row>
         </template>
@@ -47,17 +47,17 @@
             <a-row>
                 <a-col :span="24">
                     <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0;">
-                        1. You can cancel your booking 1 hour before the booking time.
+                        1. Bạn có thể hủy đặt chỗ miễn phí trước 1 giờ so với thời gian đặt chỗ.
                     </p>
                 </a-col>
                 <a-col :span="24">
                     <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0;">
-                        2. If you cancel your booking after 1 hour before the booking time, you will be charged 50% of the total price.
+                        2. Bạn cần xác nhận kết thúc để kết thúc đặt chỗ.
                     </p>
                 </a-col>
                 <a-col :span="24">
                     <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0;">
-                        3. If you do not show up, you will be charged 100% of the total price.
+                        3. Nếu bạn kết thúc trễ, bạn sẽ bị tính phí 50% giá trị đặt chỗ.
                     </p>
                 </a-col>
             </a-row>
@@ -103,16 +103,16 @@ export default defineComponent({
             this.postBooking().then((res) => {
                 if (res?.status === 'success') {
                     Modal.success({
-                        title: 'Booking success',
-                        content: 'Your booking has been successfully created',
+                        title: 'Thành công',
+                        content: 'Đặt chỗ thành công',
                         onOk: () => {
                             this.$router.push({name: 'booking'});
                         },
                     });
                 } else {
-                    const message = res?.message || 'Something went wrong';
+                    const message = res?.message || 'Có lỗi xảy ra';
                     Modal.error({
-                        title: 'Booking error',
+                        title: 'Lỗi đặt chỗ',
                         content: message,
                         onOk: () => {
                             this.$router.push({name: 'booking'});
@@ -120,9 +120,9 @@ export default defineComponent({
                     });
                 }
             }).catch((e) => {
-                const message = e?.message || 'Something went wrong';
+                const message = res?.message || 'Có lỗi xảy ra';
                 Modal.error({
-                    title: 'Booking error',
+                    title: 'Lỗi đặt chỗ',
                     content: message,
                     onOk: () => {
                         this.$router.push({name: 'booking'});

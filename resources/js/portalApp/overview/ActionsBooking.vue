@@ -140,6 +140,7 @@
 import {createVNode, defineComponent} from "vue";
 import MapLocker from "./MapLocker.vue";
 import { Modal } from 'ant-design-vue';
+import { notification } from 'ant-design-vue';
 
 import {
     CopyTwoTone,
@@ -181,7 +182,7 @@ export default defineComponent({
     },
     methods: {
         ...mapActions({
-            changePinCode: 'moduleBase/changePinCode',
+            changePinCode: 'moduleBase/',
             deleteBooking: 'moduleBase/deleteBooking',
         }),
         splitPinCode(booking) {
@@ -191,15 +192,15 @@ export default defineComponent({
         copyPinCode(booking) {
             const pinCode = this.pinCode.join("");
             navigator.clipboard.writeText(pinCode);
-            Modal.success({
-                title: 'Copy pin code',
-                content: `Copy pin code ${pinCode} success`,
+            notification['success']({
+                message: 'Sao chép mã pin',
+                description: `Sao chép mã pin ${pinCode} thành công`,
             });
         },
         handlePinCode(booking) {
             Modal.confirm({
-                title: 'Change pin code',
-                content: 'Do you want to change pin code?',
+                title: 'Thay đổi mã pin',
+                content: 'Bạn có chắc chắn muốn thay đổi mã pin?',
                 okText: 'Yes',
                 cancelText: 'No',
                 onOk: () => {
@@ -212,12 +213,22 @@ export default defineComponent({
         },
         handleEndBooking(booking){
             Modal.confirm({
-                title: () => 'Do you want to end this booking?',
+                title: () => 'Bạn có chắc chắn muốn kết thúc đặt chỗ này?',
                 icon: () => createVNode(ExclamationCircleOutlined),
-                content: () => 'Booking will be ended and you can not use this slot anymore.',
+                content: () => 'Khi kết thúc đặt chỗ, bạn sẽ không thể mở ngăn này nữa',
                 onOk: () => {
                     this.deleteBooking({
                         bookingId: booking.id,
+                    }).then(() => {
+                        notification['success']({
+                            message: 'Thành công',
+                            description: 'Kết thúc đặt chỗ ' + booking.slot_code + ' thành công',
+                        });
+                    }).catch(() => {
+                        notification['error']({
+                            message: 'Thành công',
+                            description: 'Kết thúc đặt chỗ thất bại',
+                        });
                     });
                     this.$emit('closeDrawer');
                 },
@@ -255,7 +266,6 @@ export default defineComponent({
         },
         booking: {
             handler: function (booking) {
-                console.log('booking', booking);
                 this.pinCode = this.splitPinCode(booking);
             },
             deep: true,

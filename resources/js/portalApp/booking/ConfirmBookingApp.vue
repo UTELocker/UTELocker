@@ -1,6 +1,6 @@
 <template>
     <a-page-header
-        sub-title="Confirm your booking"
+        sub-title="Xác nhận đặt chỗ"
         style="border: 1px solid rgb(235, 237, 240); border-radius: 0.5rem;"
         @back="() => $router.push({name: 'booking'})"
     >
@@ -25,10 +25,10 @@
         </template>
         <template #extra>
             <a-button danger @click="() => $router.push({name: 'booking'})">
-                Cancel
+                Huỷ
             </a-button>
             <a-button type="primary" @click="submit()" :loading="isSubmitLoading">
-                Booking
+                Đặt chỗ
             </a-button>
         </template>
     </a-page-header>
@@ -77,12 +77,12 @@ export default defineComponent({
         submit() {
             this.isSubmitLoading = true;
             Modal.confirm({
-                title: 'Are you sure?',
+                title: 'Bạn có chắc chắn muốn đặt chỗ này không?',
                 icon: createVNode(ExclamationCircleOutlined),
-                content: 'You won\'t be able to revert this!',
-                okText: 'Yes',
+                content: 'Nếu huỷ đặt chỗ, bạn sẽ bị tính phí giá trị đặt chỗ',
+                okText: 'Có',
                 okType: 'danger',
-                cancelText: 'No',
+                cancelText: 'Không',
                 onOk: () => {
                     const isDontShowPolicy = localStorage.getItem(DONT_SHOW_POLICY_BOOKING);
                     if (isDontShowPolicy == SHOW_POLICY_BOOKING_STATUS.DONT_SHOW) {
@@ -90,15 +90,15 @@ export default defineComponent({
                             this.isShowPolicyModal = false;
                             if (res.status === 'success') {
                                 Modal.success({
-                                    title: 'Booking success',
-                                    content: 'Your booking has been created successfully',
+                                    title: 'Thành công',
+                                    content: 'Đặt chỗ thành công',
                                     onOk: () => {
                                         this.$router.push({name: 'booking'});
                                     },
                                 });
                             } else {
                                 Modal.error({
-                                    title: 'Booking error',
+                                    title: 'Lỗi đặt chỗ',
                                     content: res.message,
                                     onOk: () => {
                                         this.$router.push({name: 'booking'});
@@ -109,7 +109,7 @@ export default defineComponent({
                             const message = e?.message || e;
                             this.isShowPolicyModal = false;
                             Modal.error({
-                                title: 'Booking error',
+                                title: 'Lỗi đặt chỗ',
                                 content: message,
                                 onOk: () => {
                                     this.$router.push({name: 'booking'});
@@ -139,7 +139,7 @@ export default defineComponent({
         getDataConfirm() {
             return [
                 {
-                    label: "Name",
+                    label: 'Tên người đặt',
                     value: this.user.name,
                 },
                 {
@@ -147,15 +147,15 @@ export default defineComponent({
                     value: this.user.email,
                 },
                 {
-                    label: 'Locker code',
+                    label: 'Mã tủ',
                     value: this.locker.code,
                 },
                 {
-                    label: "Locker address",
+                    label: 'Địa điểm',
                     value: this.locker.location?.address,
                 },
                 {
-                    label: "Time booking",
+                    label: 'Thời gian đặt chỗ',
                     value: this.startDate + ' - ' + this.endDate,
                     options: {
                         stylesValue: {
@@ -169,7 +169,7 @@ export default defineComponent({
                     },
                 },
                 {
-                    label: "Pick your slots",
+                    label: 'Số lượng tủ',
                     value: this.selectedSlots?.map((slot) => slot.number_of_slot).join(', '),
                     options: {
                         stylesValue: {
@@ -179,7 +179,7 @@ export default defineComponent({
                     },
                 },
                 {
-                    label: "Total Price",
+                    label: 'Tổng tiền',
                     value: parseInt(this.totalPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     options: {
                         stylesValue: {
@@ -200,7 +200,6 @@ export default defineComponent({
             ]
         },
         closePolicyModal() {
-            console.log('closePolicyModal');
             this.isShowPolicyModal = false;
         },
     },

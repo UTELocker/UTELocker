@@ -97,10 +97,9 @@
                 <p class="ant-upload-drag-icon">
                 <inbox-outlined></inbox-outlined>
                 </p>
-                <p class="ant-upload-text">Click or drag file to this area to upload</p>
+                <p class="ant-upload-text">Nhấn hoặc kéo thả file vào đây để tải lên</p>
                 <p class="ant-upload-hint">
-                Support for a single or bulk upload. Strictly prohibit from uploading company data or other
-                band files
+                Hỗ trợ tải lên nhiều file cùng lúc
                 </p>
             </a-upload-dragger>
         </a-form-item>
@@ -245,26 +244,23 @@ export default defineComponent({
             ).then((res) => {
                 this.loading = false;
                 if (res.data.status === 'success') {
-                    notification.open({
-                        message: 'Thành công',
+                    notification['success']({
+                        message: 'Thành công tạo yêu cầu hỗ trợ',
                         description: res.data.data,
-                        icon: () => h(SmileOutlined, { style: 'color: #108ee9' }),
                     });
                     this.$router.push({ name: 'help-call' });
                 } else {
                     message.error(res.data.message);
-                    notification.open({
-                        message: 'Lỗi',
+                    notification['error']({
+                        message: 'Lỗi tạo yêu cầu hỗ trợ',
                         description: res.data.message,
-                        icon: () => h(SmileOutlined, { style: 'color: #108ee9' }),
                     });
                 }
             }).catch((err) => {
                 this.loading = false;
-                notification.open({
-                    message: 'Lỗi',
+                notification['error']({
+                    message: 'Lỗi tạo yêu cầu hỗ trợ',
                     description: err.message,
-                    icon: () => h(SmileOutlined, { style: 'color: #108ee9' }),
                 });
             });
         },

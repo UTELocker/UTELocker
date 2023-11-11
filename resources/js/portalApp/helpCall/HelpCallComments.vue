@@ -31,7 +31,7 @@
         </a-form-item>
         <a-form-item>
             <a-button html-type="submit" :loading="submitting" type="primary" @click="handleSubmit">
-            Add Comment
+                Gửi
             </a-button>
         </a-form-item>
         </template>

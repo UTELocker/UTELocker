@@ -50,6 +50,10 @@ class TransactionsDataTable extends BaseDataTable
             return number_format($row->amount);
         });
 
+        $datatables->editColumn('balance', function ($row) {
+            return number_format($row->balance + $row->promotion_balance);
+        });
+
         $datatables->addColumn('client_name', function ($row) {
             return "<a href='" . route('admin.clients.show', $row->client_id) . "'>" . $row->client_name . "</a>";
         });
@@ -64,6 +68,7 @@ class TransactionsDataTable extends BaseDataTable
      */
     public function query(Transaction $model): QueryBuilder
     {
+        $search =  is_array($this->request->get('search')) ? '' : $this->request->get('search');
         $paymentMethodName = $this->request->get('payment_method_name');
         $status = $this->request->get('status');
         $type = $this->request->get('type');
@@ -88,6 +93,10 @@ class TransactionsDataTable extends BaseDataTable
             })
             ->when($type !== null, function ($query) use ($type) {
                 return $query->where('transactions.type', $type);
+            })
+            ->when($search != '', function ($query) use ($search) {
+                $query->where('payment_methods.name', 'like', '%' . $search . '%')
+                    ->orWhere('transactions.reference', 'like', '%' . $search . '%');
             });
     }
 
@@ -121,9 +130,11 @@ class TransactionsDataTable extends BaseDataTable
             ],
             __('modules.transactions.user') => ['data' => 'user_name', 'name' => 'user_name', 'title' => __('modules.transactions.user')],
             __('modules.paymentMethod.name') => ['data' => 'payment_method_name', 'name' => 'payment_method_name', 'title' => __('modules.paymentMethod.name')],
+            __('modules.transactions.reference') => ['data' => 'reference', 'name' => 'reference', 'title' => __('modules.transactions.reference')],
             __('app.status') => ['data' => 'status', 'name' => 'status', 'title' => __('app.status')],
             __('modules.transactions.type') => ['data' => 'type', 'name' => 'type', 'title' => __('modules.transactions.type')],
             __('modules.transactions.amount') => ['data' => 'amount', 'name' => 'amount', 'title' => __('modules.transactions.amount')],
+            __('modules.transactions.balance') => ['data' => 'balance', 'name' => 'balance', 'title' => __('modules.transactions.balance')],
             __('modules.transactions.createdAt') => ['data' => 'time', 'name' => 'time', 'title' => __('modules.transactions.createdAt')],
         ];
 

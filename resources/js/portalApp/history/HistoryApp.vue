@@ -20,7 +20,7 @@
                       type="primary"
                       @click="handleShowDetail(record)"
                 >
-                    Detail
+                    Chi tiết
                 </a-button>
                 </span>
             </template>
@@ -32,11 +32,11 @@
         @cancel="handleCancel"
     >
         <template #title>
-            <p>Detail</p>
+            <p>Chi tiết</p>
         </template>
         <p
             style="margin-bottom: 10px;"
-        >Time Line:</p>
+        >Lịch sử hoạt động:</p>
         <a-timeline>
             <a-timeline-item
                 v-for="item in handleTimeLine(historyChoosed)"
@@ -46,14 +46,23 @@
                 <p>{{item.content}}</p>
             </a-timeline-item>
         </a-timeline>
-        <p>Locker Code: {{historyChoosed?.locker_code}}</p>
-        <p>Status: {{handleStatus(historyChoosed?.status)}}</p>
-        <p>Address: {{historyChoosed?.address}}</p>
-        <p>Price: {{historyChoosed?.total_price}}</p>
+        <p>Mã Tủ: {{historyChoosed?.locker_code}}</p>
+        <p>Trạng thái: {{handleStatus(historyChoosed?.status)}}</p>
+        <p>Địa điểm: {{historyChoosed?.address}}</p>
+        <p>Tổng tiền: {{historyChoosed?.total_price}}</p>
+        <p>Mã giao dịch: {{historyChoosed?.transaction_reference}}</p>
     </a-modal>
 </template>
 <script>
 import {mapActions, mapState} from "vuex";
+import {HISTORY_STATUS, HISTORY_STATUS_TEXT} from "../constants/historyConstant";
+
+const filterStatus = Object.values(HISTORY_STATUS).map((status) => {
+    return {
+        text: HISTORY_STATUS_TEXT[status],
+        value: status,
+    };
+});
 
 const columns = [
     {
@@ -64,19 +73,21 @@ const columns = [
         onFilter: (value, record) => record.locker_code.indexOf(value) === 0,
     },
     {
-        title: 'Status',
+        title: 'Trạng thái',
         dataIndex: 'status',
-        defaultSortOrder: 'descend',
-        sorter: (a, b) => a.status - b.status,
+        filters: filterStatus,
+        onFilter: (value, record) => {
+            return record.status === value;
+        },
     },
     {
-        title: 'Address',
+        title: 'Địa điểm',
         dataIndex: 'address',
         sorter: (a, b) => a.address.length - b.address.length,
         sortDirections: ['descend', 'ascend'],
     },
     {
-        title: 'Start Date',
+        title: 'Thời gian bắt đầu',
         dataIndex: 'start_date',
         defaultSortOrder: 'descend',
         sorter: (a, b) => {
@@ -87,7 +98,7 @@ const columns = [
         sortDirections: ['descend', 'ascend'],
     },
     {
-        title: 'End Date',
+        title: 'Thời gian kết thúc',
         dataIndex: 'end_date',
         defaultSortOrder: 'descend',
         sorter: (a, b) => {
@@ -98,21 +109,20 @@ const columns = [
         sortDirections: ['descend', 'ascend'],
     },
     {
-        title: 'Price',
+        title: 'Tổng tiền',
         dataIndex: 'total_price',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.total_price - b.total_price,
         sortDirections: ['descend', 'ascend'],
     },
     {
-        title: 'Action',
+        title: 'Thao tác',
         dataIndex: 'action',
         scopedSlots: {customRender: 'action'},
     },
 ];
 
 import { defineComponent} from "vue";
-import {HISTORY_STATUS} from "../constants/historyConstant";
 
 export default defineComponent({
     name: "HistoryApp",
@@ -122,6 +132,7 @@ export default defineComponent({
             isLoaded: false,
             isModalVisible: false,
             historyChoosed: null,
+            filterStatus: [],
         };
     },
     methods: {
@@ -145,20 +156,8 @@ export default defineComponent({
             }
         },
         handleStatus(status) {
-            switch (status) {
-                case HISTORY_STATUS.PENDING:
-                    return 'Pending';
-                case HISTORY_STATUS.APPROVED:
-                    return 'Approved';
-                case HISTORY_STATUS.CANCELLED:
-                    return 'Canceled';
-                case HISTORY_STATUS.EXPIRED:
-                    return 'Expired';
-                case HISTORY_STATUS.REJECTED:
-                    return 'Rejected';
-                default:
-                    return 'default';
-            }
+            console.log(status);
+            return HISTORY_STATUS_TEXT[status];
         },
         handleShowDetail(record) {
             this.historyChoosed = record;

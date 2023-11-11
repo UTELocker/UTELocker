@@ -116,4 +116,5 @@ return array(
     'createTokenRegister' => 'Create Token Register',
     'error' => 'Error',
     'booking' => 'Booking',
+    'portal' => 'Go to Portal',
 );

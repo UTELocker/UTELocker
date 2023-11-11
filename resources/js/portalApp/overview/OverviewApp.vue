@@ -58,7 +58,7 @@
                                             />
                                         </div>
                                     </a-col>
-                                    <a-col :span="10">
+                                    <a-col :span="12">
                                         <a-row>
                                             <a-col :span="24">
                                                 <h3>{{item.title}}</h3>
@@ -71,11 +71,10 @@
                                             </a-col>
                                         </a-row>
                                     </a-col>
-                                    <a-col :span="8"
+                                    <a-col :span="6"
                                         :style="{
                                             display: 'flex',
                                             flexDirection: 'column',
-                                            justifyContent: 'center',
                                             alignItems: 'center',
                                         }"
                                     >
@@ -83,7 +82,7 @@
                                             <a-button
                                                 type="primary"
                                                 shape="round"
-                                                size="large"
+                                                size="medium"
                                                 @click="handleClickShowButton(item)"
                                                 :disabled="!isActive(item)"
                                             >
@@ -167,6 +166,7 @@ import ExtendDateBookingModal from "./ExtendDateBookingModal.vue";
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal } from 'ant-design-vue';
 import {GLOBAL_CONFIG} from "../SymbolKey.js";
+import { notification } from 'ant-design-vue';
 
 export default defineComponent({
     name: "OverviewApp",
@@ -248,6 +248,17 @@ export default defineComponent({
                 onOk: () => {
                     this.deleteBooking({
                         bookingId: booking.id,
+                    }).then(() => {
+                        notification['success']({
+                            message: 'Thành công',
+                            description: `Kết thúc đặt tủ ${booking.slot_code} thành công`
+                        });
+                    }).catch((e) => {
+                        const message = e?.response?.data?.message || e || 'Lỗi kết thúc đặt tủ'
+                        notification['error']({
+                            message: 'Lỗi kết thúc đặt tủ',
+                            description: message
+                        });
                     });
                 },
                 okText: 'Đồng ý',

@@ -61,9 +61,9 @@
                 </a-card>
             </a-row>
         </a-page-header>
-        <a-card title="Number of slot can booking" :bordered="true">
-            <p>- Max booking slots of a user is {{ configNumberSlot.max }} slots</p>
-            <p>- Current booking slots of a user is <span
+        <a-card title="Số lượng ngăn tủ có thể đặt" :bordered="true">
+            <p>- Số ngăn tủ tối đa người dùng có thể sử dụng tại locker này {{ configNumberSlot.max }}</p>
+            <p>- Số ngăn tủ người dùng đã sử dụng tại locker này <span
                 :style="{
                     color: configNumberSlot.used + this.selectedSlots?.length == configNumberSlot.max
                         ? 'var(--error-color)'
@@ -72,7 +72,7 @@
                 }"
                 >
                 {{ configNumberSlot.used + this.selectedSlots?.length }}
-            </span> slots</p>
+            </span></p>
         </a-card>
         <a-page-header
             title="Thông tin đặt chỗ"

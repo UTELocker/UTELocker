@@ -5,8 +5,8 @@
         :style="{width: '100%'}"
     >
         <a-page-header
-            title="Overview"
-            sub-title="List of all locations"
+            title="Địa điểm"
+            sub-title="danh sách địa điểm đang hoạt động"
             style="border: 1px solid rgb(235, 237, 240); border-radius: 0.5rem;"
             :back-icon="false"
         >
@@ -19,7 +19,7 @@
                             <a-select
                                 v-model:value="value"
                                 show-search
-                                placeholder="Select a location"
+                                placeholder="Chọn địa điểm"
                                 :options="locations"
                                 :filter-option="filterOption"
                                 style="width: 100%"
@@ -35,7 +35,7 @@
                                 style="width: 100%"
                                 @click="this.selectedLocation()"
                             >
-                                Go to
+                                Đi đến
                             </a-button>
                         </a-col>
                     </a-row>
