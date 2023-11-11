@@ -193,13 +193,4 @@ class LockerController extends Controller
     {
         //
     }
-
-    public function event() {
-        $this->sendNotifcaion(
-            \App\Enums\NotificationType::REPORT,
-            'test Report',
-            2,
-            1,
-        );
-    }
 }
