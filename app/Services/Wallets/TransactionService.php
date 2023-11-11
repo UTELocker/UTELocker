@@ -114,8 +114,8 @@ class TransactionService extends BaseService
             }
         }
         $result = [
-            'balance' => $wallet->getOriginal('balance') - $wallet->balance,
-            'promotion_balance' => $wallet->getOriginal('promotion_balance') - $wallet->promotion_balance,
+            'balance' => $wallet->balance,
+            'promotion_balance' => $wallet->promotion_balance,
         ];
         $wallet->save();
 

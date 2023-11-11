@@ -4,19 +4,6 @@
         direction="vertical"
         style="width: 100%;"
     >
-        <a-card title="Number of slot can booking" :bordered="true">
-            <p>- Max booking slots of a user is {{ configNumberSlot.max }} slots</p>
-            <p>- Current booking slots of a user is <span
-                :style="{
-                    color: configNumberSlot.used + this.selectedSlots?.length === configNumberSlot.max
-                        ? 'var(--error-color)'
-                        : 'var(--green-6)',
-                    fontWeight: 'bold',
-                }"
-                >
-                {{ configNumberSlot.used + this.selectedSlots?.length }}
-            </span> slots</p>
-        </a-card>
         <a-page-header
             title="Chọn ngăn tủ"
             sub-title="Chọn ngăn tủ phù hợp với bạn"
@@ -74,6 +61,19 @@
                 </a-card>
             </a-row>
         </a-page-header>
+        <a-card title="Number of slot can booking" :bordered="true">
+            <p>- Max booking slots of a user is {{ configNumberSlot.max }} slots</p>
+            <p>- Current booking slots of a user is <span
+                :style="{
+                    color: configNumberSlot.used + this.selectedSlots?.length == configNumberSlot.max
+                        ? 'var(--error-color)'
+                        : 'var(--green-6)',
+                    fontWeight: 'bold',
+                }"
+                >
+                {{ configNumberSlot.used + this.selectedSlots?.length }}
+            </span> slots</p>
+        </a-card>
         <a-page-header
             title="Thông tin đặt chỗ"
             style="border: 1px solid rgb(235, 237, 240); border-radius: 0.5rem;"

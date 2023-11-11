@@ -27,7 +27,7 @@
             <a-button danger @click="() => $router.push({name: 'booking'})">
                 Cancel
             </a-button>
-            <a-button type="primary" @click="submit()">
+            <a-button type="primary" @click="submit()" :loading="isSubmitLoading">
                 Booking
             </a-button>
         </template>
@@ -75,6 +75,7 @@ export default defineComponent({
             });
         },
         submit() {
+            this.isSubmitLoading = true;
             Modal.confirm({
                 title: 'Are you sure?',
                 icon: createVNode(ExclamationCircleOutlined),
@@ -182,7 +183,7 @@ export default defineComponent({
                     value: parseInt(this.totalPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     options: {
                         stylesValue: {
-                            color: 'var(--primary-color)',
+                            color: 'var(--green-6)',
                             fontWeight: 'bold',
                             fontSize: '1.2rem',
                         },

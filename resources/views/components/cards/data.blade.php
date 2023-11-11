@@ -4,20 +4,20 @@
             {!! $title !!}
 
             <x-slot name="action">
-                {!! $action !!}
+                {!! $action ?? '' !!}
             </x-slot>
 
         </x-cards.card-header>
     @endif
 
-    @if ($padding === 'false')
-        <div class="card-body p-0 {{ $otherClasses }}">
+    @if (($padding ?? true) == 'false')
+        <div class="card-body p-0 {{ $otherClasses ?? '' }}">
             {{ $slot }}
         </div>
     @else
         <div @class([
             'card-body', 'pt-2' => ($title),
-            $otherClasses
+            $otherClasses ?? ''
         ])>
             {{ $slot }}
         </div>
