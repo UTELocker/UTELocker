@@ -237,6 +237,7 @@ class BookingService extends BaseService
 
     public function addBooking($data)
     {
+        // DB begin
         try {
             return DB::transaction(function () use ($data) {
                 $bookings = $this->addListBooking($data);

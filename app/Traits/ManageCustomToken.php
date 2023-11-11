@@ -23,9 +23,10 @@ trait ManageCustomToken
         ]);
     }
 
-    public function verifyToken($token, $type = TokenType::AUTH)
+    public function verifyToken($token, $clientId, $type = TokenType::AUTH)
     {
         $customToken = CustomToken::where("token", $token)
+            ->where("client_id", $clientId)
             ->where("type", $type)
             ->first();
         if (!$customToken) {

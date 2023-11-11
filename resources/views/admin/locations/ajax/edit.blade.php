@@ -9,6 +9,7 @@
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
                     Location Details
                 </h4>
+                <input type="hidden" name="id" value="{{ $location->id }}">
                 <div class="row p-20">
                     <div class="col-lg-12">
                         <div class="row">

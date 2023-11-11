@@ -96,7 +96,7 @@ class LocationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreLocationRequest $request, string $id)
     {
         $this->locationService->update($request->all(), $id);
 

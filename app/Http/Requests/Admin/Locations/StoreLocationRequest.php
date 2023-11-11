@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Locations;
 
+use App\Models\Location;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreLocationRequest extends FormRequest
@@ -22,7 +23,22 @@ class StoreLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => 'required|unique:locations,code',
+            'code' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if (Location::where('code', $value)
+                        ->where('client_id', $this->get('client_id'))
+                        ->when(!empty($this->get('id')), function ($query, $location) {
+                            $query->whereNotIn('id', [$this->get('id')]);
+                        })
+                        ->exists()
+                    ) {
+                        $fail(__('validation.unique', ['attribute' => $attribute]));
+                    }
+                },
+            ],
             'description' => 'nullable',
             'client_id' => 'required',
             'location_type_id' => 'required',

@@ -186,13 +186,13 @@
         }
 
 
-        function deleteTokenRes(id) {
+        function deleteTokenRes(token) {
             $.easyAjax({
-                url: "{{ route('portal.user.token-register.delete', '') }}" + '/' + id,
+                url: "{{ route('portal.user.token-register.delete', '') }}" + '/' + token,
                 type: "GET",
                 success: function(response) {
                     if (response.status == "success") {
-                        listToken = listToken.filter(item => item.id !== id);
+                        listToken = listToken.filter(item => item.token !== token);
                         renderListToken();
                     }
                 }

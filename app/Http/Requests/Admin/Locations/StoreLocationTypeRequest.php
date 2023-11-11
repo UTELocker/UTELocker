@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Locations;
 
+use App\Models\LocationType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreLocationTypeRequest extends FormRequest
@@ -23,7 +24,22 @@ class StoreLocationTypeRequest extends FormRequest
     {
         return [
             'client_id' => 'required|exists:clients,id',
-            'code' => 'required|unique:location_types,code,' . $this->id . ',id,client_id,' . $this->client_id,
+            'code' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if (LocationType::where('code', $value)
+                        ->where('client_id', $this->get('client_id'))
+                        ->when(!empty($this->get('id')), function ($query, $locationType) {
+                            $query->whereNotIn('id', [$this->get('id')]);
+                        })
+                        ->exists()
+                    ) {
+                        $fail(__('validation.unique', ['attribute' => $attribute]));
+                    }
+                },
+            ],
             'description' => 'nullable|string|max:255',
         ];
     }

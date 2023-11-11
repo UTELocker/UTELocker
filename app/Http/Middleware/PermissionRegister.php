@@ -22,7 +22,8 @@ class PermissionRegister
     public function handle(Request $request, Closure $next): Response
     {
         $tokenAccess = $request->get('token_access');
-        if ($tokenAccess && $this->verifyToken($tokenAccess)) {
+        $client = $request->get('client_id');
+        if ($tokenAccess && $this->verifyToken($tokenAccess,$client)) {
             return $next($request);
         }
 

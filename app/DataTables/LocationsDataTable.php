@@ -67,6 +67,9 @@ class LocationsDataTable extends BaseDataTable
             ->newQuery()
             ->leftJoin('clients', 'clients.id', '=', 'locations.client_id')
             ->leftJoin('location_types', 'locations.location_type_id', 'location_types.id')
+            ->when(!user()->isSuperUser(), function ($query) {
+                return $query->where('location_types.client_id', '=', user()->client_id);
+            })
             ->select([
                 'locations.id',
                 'locations.code',

@@ -1,6 +1,7 @@
 <x-auth>
     <form id="register-form"  method="POST" action="{{ route('register') }}">
         @csrf
+        <input type="hidden" name="token_access" value="" id="token-register">
 
         <div class="form-group text-left" id="client-section">
             <label for="client_id">{{ __('app.listSiteGroups') }}</label>
@@ -135,6 +136,7 @@
                 const token = urlParams.get('token');
                 if (token) {
                     data.token = token;
+                    $('#token-register').val(token);
                 }
                 $.ajax({
                     url: '{{ route('api.user.listClientGuest') }}',

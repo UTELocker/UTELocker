@@ -7,6 +7,7 @@
                     {{ __('modules.paymentMethod.details') }}
                 </h4>
             <x-form id="locationTypeForm" method="POST" class="ajax-form">
+                <input type="hidden" name="id" value="{{ $locationType->id }}">
                 <div class="form-body">
                     <div class="row p-20">
                         <div class="col-md-6">
