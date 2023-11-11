@@ -85,15 +85,25 @@ export default defineComponent({
                 onOk: () => {
                     const isDontShowPolicy = localStorage.getItem(DONT_SHOW_POLICY_BOOKING);
                     if (isDontShowPolicy == SHOW_POLICY_BOOKING_STATUS.DONT_SHOW) {
-                        this.postBooking().then(() => {
+                        this.postBooking().then((res) => {
                             this.isShowPolicyModal = false;
-                            Modal.success({
-                                title: 'Booking success',
-                                content: 'Your booking has been successfully booked',
-                                onOk: () => {
-                                    this.$router.push({name: 'portal'});
-                                },
-                            });
+                            if (res.status === 'success') {
+                                Modal.success({
+                                    title: 'Booking success',
+                                    content: 'Your booking has been created successfully',
+                                    onOk: () => {
+                                        this.$router.push({name: 'booking'});
+                                    },
+                                });
+                            } else {
+                                Modal.error({
+                                    title: 'Booking error',
+                                    content: res.message,
+                                    onOk: () => {
+                                        this.$router.push({name: 'booking'});
+                                    },
+                                });
+                            }
                         }).catch((e) => {
                             const message = e?.message || e;
                             this.isShowPolicyModal = false;
