@@ -91,8 +91,13 @@ class PaymentController extends Controller
     public function getTransactions(TransactionsDataTable $dataTable, Request $request)
     {
         $user = $request->user();
-        $transactions = $this->walletService->getTransactionsByUserId($user, $request->all());
-        return new TransactionCollection($transactions);
+        $transactions = $this->walletService->getTransactionsByUserId($user);
+        return Reply::successWithData(
+            'Get transactions successfully',
+            [
+                'data' => $transactions,
+            ]
+        );
     }
 
     public function auth(Request $request)

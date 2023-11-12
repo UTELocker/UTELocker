@@ -121,11 +121,9 @@ class WalletService extends BaseService
         return $transaction;
     }
 
-    public function getTransactionsByUserId(User $user, array $request)
+    public function getTransactionsByUserId(User $user)
     {
-        return Transaction::where('user_id', $user->id)
-            ->orderBy(Arr::get($request, 'orderBy', 'created_at'), Arr::get($request, 'order', 'desc'))
-            ->paginate($request['perPage'] ?? 10);
+        return Transaction::where('user_id', $user->id)->get();
     }
 
     public function auth($auth)

@@ -14,6 +14,7 @@ use App\Models\Transaction;
 use App\Models\Wallet;
 use App\Services\BaseService;
 use App\Traits\HandleNotification;
+use App\Models\User;
 
 class TransactionService extends BaseService
 {

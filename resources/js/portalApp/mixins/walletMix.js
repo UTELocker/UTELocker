@@ -22,25 +22,12 @@ export default {
         getWalletPoints: function () {
             return this.isVisibleBalance ? this.formatCurrency(this.wallet.promotion_balance) : '***';
         },
-        getTransactions: function (
-            page = 1,
-            perPage = 10,
-            orderBy = 'created_at',
-            order = 'desc',
-        ) {
+        getTransactions: function () {
             this.loading = true;
-            get(WALLET_API.GET_TRANSACTIONS({
-                page,
-                perPage,
-                orderBy,
-                order,
-            }))
+            get(WALLET_API.GET_TRANSACTIONS())
                 .then(response => {
                     this.transactions = response.data.data;
-                    this.pagination = {
-                        ...this.pagination,
-                        ...response.data.meta,
-                    }
+                    console.log(this.transactions);
                     this.loading = false;
                 })
                 .catch(error => {
