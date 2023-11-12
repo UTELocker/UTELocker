@@ -61,7 +61,11 @@ return array(
             'pusher' => [
                 'menu' => 'Pusher Settings',
                 'pusher' => 'Pusher'
-            ]
+            ],
+            'firebase' => [
+                'menu' => 'Firebase Settings',
+                'firebase' => 'Firebase'
+            ],
         ],
         'dateFormat' => 'Date Format',
         'timeFormat' => 'Time Format',
@@ -79,6 +83,13 @@ return array(
         'private' => 'Private',
         'allowSignup' => 'Allow Signup',
         'notAllowSignup' => 'Disable Allow Signup',
+        'firebase_api_key' => 'Firebase API Key',
+        'firebase_auth_domain' => 'Firebase Auth Domain',
+        'firebase_project_id' => 'Firebase Project ID',
+        'firebase_storage_bucket' => 'Firebase Storage Bucket',
+        'firebase_messaging_sender_id' => 'Firebase Messaging Sender ID',
+        'firebase_app_id' => 'Firebase App ID',
+        'firebase_measurement_id' => 'Firebase Measurement ID',
     ],
     'lockers' => [
         'lockerDetails' => 'Locker Details',

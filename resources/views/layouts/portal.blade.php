@@ -16,6 +16,7 @@
     <script>
         window.user = {!! json_encode(user()) !!};
         window.settings = {!! json_encode($siteGroupSettings) !!};
+        window.configFireBase = {!! json_encode($configFireBase) !!};
     </script>
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script type="module" src="{{mix('js/portalMain.js')}}"></script>

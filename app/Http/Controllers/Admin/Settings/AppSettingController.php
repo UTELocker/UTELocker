@@ -56,7 +56,8 @@ class AppSettingController extends BaseSettingController
         }
         $this->view = match ($this->activeTab) {
             'general' => 'admin.settings.app.ajax.general',
-            'pusher' => 'admin.settings.app.ajax.pusher'
+            'pusher' => 'admin.settings.app.ajax.pusher',
+            'firebase' => 'admin.settings.app.ajax.firebase'
         };
         return view('admin.settings.app.index', $this->data);
     }

@@ -62,13 +62,13 @@
         <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
         <script>
             const firebaseConfig = {
-                apiKey: "{{ env('MIX_FIREBASE_API_KEY') }}",
-                authDomain: "{{ env('MIX_FIREBASE_AUTH_DOMAIN') }}",
-                projectId: "{{ env('MIX_FIREBASE_PROJECT_ID') }}",
-                storageBucket: "{{ env('MIX_FIREBASE_STORAGE_BUCKET') }}",
-                messagingSenderId: "{{ env('MIX_FIREBASE_MESSAGING_SENDER_ID') }}",
-                appId: "{{ env('MIX_FIREBASE_APP_ID') }}",
-                measurementId: "{{ env('MIX_FIREBASE_MEASUREMENT_ID') }}"
+                apiKey: "{{ globalSettings()->firebase_api_key }}",
+                authDomain: "{{ globalSettings()->firebase_auth_domain }}",
+                projectId: "{{ globalSettings()->firebase_project_id }}",
+                storageBucket: "{{ globalSettings()->firebase_storage_bucket }}",
+                messagingSenderId: "{{ globalSettings()->firebase_messaging_sender_id }}",
+                appId: "{{ globalSettings()->firebase_app_id }}",
+                measurementId: "{{ globalSettings()->firebase_measurement_id }}"
             };
             firebase.initializeApp(firebaseConfig);
         </script>

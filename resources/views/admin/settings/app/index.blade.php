@@ -15,6 +15,10 @@
                            href="{{ route('admin.settings.index') }}?tab=pusher" role="tab" aria-controls="nav-ticketTypes"
                            aria-selected="true">{{ __('modules.settings.menu.pusher.menu') }}
                         </a>
+                        <a class="nav-item nav-link f-15 firebase"
+                           href="{{ route('admin.settings.index') }}?tab=firebase" role="tab" aria-controls="nav-ticketTypes"
+                           aria-selected="true">{{ __('modules.settings.menu.firebase.menu') }}
+                        </a>
                     </div>
                 </nav>
             </div>

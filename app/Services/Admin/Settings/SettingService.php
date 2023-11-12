@@ -31,8 +31,13 @@ class SettingService extends BaseService
         $inputs['pusher_app_key'] = $inputs['pusher_app_key'] ?? $this->model->pusher_app_key;
         $inputs['pusher_app_secret'] = $inputs['pusher_app_secret'] ?? $this->model->pusher_app_secret;
         $inputs['pusher_app_cluster'] = $inputs['pusher_app_cluster'] ?? $this->model->pusher_app_cluster;
-        $inputs['status'] = $inputs['status'] ?? $this->model->status;
-        $inputs['allow_signup'] = $inputs['allow_signup'] ?? $this->model->allow_signup;
+        $inputs['firebase_api_key'] = $inputs['firebase_api_key'] ?? $this->model->firebase_api_key;
+        $inputs['firebase_auth_domain'] = $inputs['firebase_auth_domain'] ?? $this->model->firebase_auth_domain;
+        $inputs['firebase_project_id'] = $inputs['firebase_project_id'] ?? $this->model->firebase_project_id;
+        $inputs['firebase_storage_bucket'] = $inputs['firebase_storage_bucket'] ?? $this->model->firebase_storage_bucket;
+        $inputs['firebase_messaging_sender_id'] = $inputs['firebase_messaging_sender_id'] ?? $this->model->firebase_messaging_sender_id;
+        $inputs['firebase_app_id'] = $inputs['firebase_app_id'] ?? $this->model->firebase_app_id;
+        $inputs['firebase_measurement_id'] = $inputs['firebase_measurement_id'] ?? $this->model->firebase_measurement_id;
     }
 
     protected function setModelFields($inputs): void
@@ -40,12 +45,18 @@ class SettingService extends BaseService
         Common::assignField($this->model, 'locale', $inputs);
         Common::assignField($this->model, 'date_format', $inputs);
         Common::assignField($this->model, 'time_format', $inputs);
-        Common::assignField($this->model, 'timezone', $inputs);  Common::assignField($this->model, 'pusher_app_id', $inputs);
+        Common::assignField($this->model, 'timezone', $inputs);
+        Common::assignField($this->model, 'pusher_app_id', $inputs);
         Common::assignField($this->model, 'pusher_app_key', $inputs);
         Common::assignField($this->model, 'pusher_app_secret', $inputs);
         Common::assignField($this->model, 'pusher_app_cluster', $inputs);
-        Common::assignField($this->model, 'status', $inputs);
-        Common::assignField($this->model, 'allow_signup', $inputs);
+        Common::assignField($this->model, 'firebase_api_key', $inputs);
+        Common::assignField($this->model, 'firebase_auth_domain', $inputs);
+        Common::assignField($this->model, 'firebase_project_id', $inputs);
+        Common::assignField($this->model, 'firebase_storage_bucket', $inputs);
+        Common::assignField($this->model, 'firebase_messaging_sender_id', $inputs);
+        Common::assignField($this->model, 'firebase_app_id', $inputs);
+        Common::assignField($this->model, 'firebase_measurement_id', $inputs);
     }
 
     public function get($id)

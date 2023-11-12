@@ -44,7 +44,11 @@ class AuthenticatedSessionController extends Controller
         if (user()->is2FA == CommonConstant::DATABASE_YES)
         {
             $urlIntended = redirect()->intended()->getTargetUrl();
-            return redirect()->route('verify-phone', ['url' => $urlIntended]);
+            $configFirebase = config('firebase.firebase');
+            return redirect()->route('verify-phone', [
+                'url' => $urlIntended,
+                'configFirebase' => $configFirebase,
+            ]);
         }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
