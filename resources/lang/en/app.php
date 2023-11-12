@@ -31,6 +31,7 @@ return array(
         'profileSetting' => 'Profile Settings',
         'booking' => 'Booking',
         'bookings' => 'Bookings',
+        'code' => 'Code',
     ],
     'datatable' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/English.json',
     'exportExcel' => 'Export Excel',

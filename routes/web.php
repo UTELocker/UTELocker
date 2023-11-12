@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\Users\UserController;
 use App\Http\Controllers\PortalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Payments\TransactionController;
+use App\Http\Controllers\Admin\BlockerCodeEdit\BlockCodeEditController;
 
 /*
 |--------------------------------------------------------------------------
@@ -183,6 +184,12 @@ Route::group(['middleware' => ['auth', 'auth.verify', 'permissionAdmin']], funct
             ]);
     });
 
+    Route::resource('block-code-edit', BlockCodeEditController::class)
+        ->only(['index', 'store'])
+        ->names([
+            'index' => 'admin.block-code-edit.index',
+            'store' => 'admin.block-code-edit.store',
+        ]);
 });
 
 Route::group(['middleware' => ['auth']], function () {

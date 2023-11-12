@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@ant-design/icons-vue": "^7.0.1",
+        "@codemirror/lang-sql": "^6.5.4",
         "@ctrl/tinycolor": "^4.0.2",
         "@vue-leaflet/vue-leaflet": "^0.10.1",
         "@vueuse/core": "^10.5.0",
@@ -32,6 +33,7 @@
         "bootstrap": "^4.3.1",
         "bootstrap-icons": "^1.5.0",
         "bootstrap-select": "^1.13.18",
+        "codemirror": "^6.0.1",
         "dayjs": "^1.11.10",
         "dropify": "^0.2.2",
         "firebase": "^10.5.2",

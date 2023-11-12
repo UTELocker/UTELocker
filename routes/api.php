@@ -105,10 +105,4 @@ Route::middleware('auth:sanctum')->group(function () {
                 ->name('portal.help-call.comment');
         });
     });
-
-    Route::get('test', function () {
-        $sumEarn = new \App\Services\Admin\Bookings\BookingService(new \App\Models\Booking(), new \App\Services\Wallets\TransactionService(new \App\Models\Transaction()));
-        $locker = \App\Models\Locker::find(1);
-        dd ($sumEarn->numBooking($locker));
-    });
 });

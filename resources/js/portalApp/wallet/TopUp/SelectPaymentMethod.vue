@@ -12,6 +12,7 @@
             }"
                 :hoverable="true"
                 @click="selectPaymentMethod(paymentMethod)"
+                v-if="paymentMethod.type !== 'utepay'"
             >
                 <img :src="getPaymentMethodImage(paymentMethod.type)" :alt="paymentMethod.name" :style="{
                     width: '20%',

@@ -89,6 +89,13 @@
                     button.html(text);
                 });
 
+                $('#email').on('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        $('#submit-email').trigger('click');
+                    }
+                });
+
                 $("#submit-email").on('click', function () {
                     const email = $('#email').val();
 
