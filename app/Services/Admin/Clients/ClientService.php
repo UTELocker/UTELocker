@@ -59,6 +59,8 @@ class ClientService extends BaseService
         $inputs['timezone'] = $inputs['timezone'] ?? $this->model->timezone;
         $inputs['status'] = $inputs['status'] ?? $this->model->status;
         $inputs['allow_signup'] = $inputs['allow_signup'] ?? $this->model->allow_signup;
+        $inputs['config_policy'] = $inputs['config_policy'] ?? $this->model->config_policy;
+        $inputs['refund_soon_cancel_booking'] = $inputs['refund_soon_cancel_booking'] ?? $this->model->refund_soon_cancel_booking;
     }
 
     protected function setModelFields($inputs): void
@@ -76,6 +78,8 @@ class ClientService extends BaseService
         Common::assignField($this->model, 'locale', $inputs);
         Common::assignField($this->model, 'status', $inputs);
         Common::assignField($this->model, 'allow_signup', $inputs);
+        Common::assignField($this->model, 'config_policy', $inputs);
+        Common::assignField($this->model, 'refund_soon_cancel_booking', $inputs);
     }
 
     public function get($id)

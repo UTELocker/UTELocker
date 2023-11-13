@@ -7,9 +7,13 @@
                 <div class="s-b-n-header" id="tabs">
                     <nav class="tabs px-4 border-bottom-grey">
                         <div class="nav" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link f-15 active profile"
-                               href="#" role="tab" aria-controls="nav-ticketAgents"
-                               aria-selected="true">{{ __('modules.settings.menu.site-group.site-group') }}
+                            <a class="nav-item nav-link f-15 active siteGroupSettings"
+                                href="{{ route('admin.siteGroupSettings.index') }}?tab=siteGroupSettings" role="tab" aria-controls="nav-ticketAgents"
+                                aria-selected="true">{{ __('modules.settings.menu.site-group.site-group') }}
+                            </a>
+                            <a class="nav-item nav-link f-15 active policy"
+                                href="{{ route('admin.siteGroupSettings.index') }}?tab=policy" role="tab" aria-controls="nav-ticketAgents"
+                                aria-selected="true">{{ __('modules.settings.menu.site-group.policy') }}
                             </a>
                         </div>
                     </nav>
@@ -21,7 +25,13 @@
 @endsection
 @push('scripts')
     <script>
+        const tab = new URLSearchParams(window.location.search).get('tab');
+
         $('#save-app-settings-site-group-form').click(function () {
+            if (tab == 'policy') {
+                const value = document.getElementById('description').children[0].innerHTML;
+                document.getElementById('description-text').value = value;
+            }
             const url = "{{ route('admin.siteGroupSettings.update', siteGroup()->id) }}";
             $.easyAjax({
                 url: url,
@@ -33,5 +43,9 @@
                 data: $('#editSettings').serialize(),
             })
         });
+        if (tab == 'policy') {
+            quillImageLoad('#description');
+        }
+
     </script>
 @endpush

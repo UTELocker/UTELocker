@@ -56,7 +56,8 @@ return array(
             ],
             'site-group' => [
                 'menu' => 'Site Group',
-                'site-group' => 'Site Group'
+                'site-group' => 'Site Group',
+                'policy' => 'Policy',
             ],
             'pusher' => [
                 'menu' => 'Pusher Settings',
@@ -90,6 +91,7 @@ return array(
         'firebase_messaging_sender_id' => 'Firebase Messaging Sender ID',
         'firebase_app_id' => 'Firebase App ID',
         'firebase_measurement_id' => 'Firebase Measurement ID',
+        'refund_soon_cancel_booking' => '% Refund Soon Cancel Booking',
     ],
     'lockers' => [
         'lockerDetails' => 'Locker Details',

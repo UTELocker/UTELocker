@@ -17,13 +17,15 @@
     <!-- NAVBAR RIGHT(SEARCH, ADD, NOTIFICATION, LOGOUT) START-->
     <div class="page-header-right float-right d-flex align-items-center justify-content-end">
         <ul>
-            <li data-toggle="tooltip" data-placement="top" title="{{__('app.portal')}}" class="mr-2">
-                <div class="logout_box">
-                    <a class="d-block header-icon-box" href="/portal" id="back-to-top">
-                        <i class="fa fa-globe f-16"></i>
-                    </a>
-                </div>
-            </li>
+            @if (!user()->isSuperUser())
+                <li data-toggle="tooltip" data-placement="top" title="{{__('app.portal')}}" class="mr-2">
+                    <div class="logout_box">
+                        <a class="d-block header-icon-box" href="/portal" id="back-to-top">
+                            <i class="fa fa-globe f-16"></i>
+                        </a>
+                    </div>
+                </li>
+            @endif
             <!-- LOGOUT START -->
             <li data-toggle="tooltip" data-placement="top" title="{{__('app.logout')}}">
                 <div class="logout_box">

@@ -1,6 +1,6 @@
 <div class="row mt-4">
     <div class="col-xl-7 col-lg-12 col-md-12 mb-4 mb-xl-0 mb-lg-4">
-        <x-cards.data :title="__('modules.lockers.lockerDetails')">
+        <x-cards.data :title="__('modules.lockers.lockerDetails')" :otherClasses="'p-4'">
             <x-cards.data-row :label="__('modules.lockers.code')" :value="$locker->code ?? '--'" />
 
             <x-cards.data-row :label="__('modules.lockers.description')" :value="$locker->description ?? '--'" />
@@ -39,7 +39,7 @@
         </x-cards.data>
     </div>
     <div class="col-xl-5 col-lg-12 col-md-12">
-        <x-cards.data :title="__('modules.lockers.lockerPerformance')">
+        <x-cards.data :title="__('modules.lockers.lockerPerformance')" :otherClasses="'p-4'">
             <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
                 @lang('modules.lockers.numBookings')</p>
             <x-bar-chart id="task-chart2" :chartData="$numBooking" height="300"  :spaceRatio="0.5" prefix="Month"></x-bar-chart>

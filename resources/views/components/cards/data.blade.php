@@ -10,7 +10,7 @@
         </x-cards.card-header>
     @endif
 
-    @if (($padding ?? true) == 'false')
+    @if (($padding ?? "true") == 'false')
         <div class="card-body p-0 {{ $otherClasses ?? '' }}">
             {{ $slot }}
         </div>

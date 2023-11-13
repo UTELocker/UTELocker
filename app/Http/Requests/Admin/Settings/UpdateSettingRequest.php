@@ -31,7 +31,8 @@ class UpdateSettingRequest extends FormRequest
             'pusher_app_id' => 'required|sometimes',
             'pusher_app_key' => 'required|sometimes',
             'pusher_app_secret' => 'required|sometimes',
-            'pusher_app_cluster' => 'required|sometimes'
+            'pusher_app_cluster' => 'required|sometimes',
+            'refund_soon_cancel_booking' => 'required|sometimes|numeric|min:0|max:100'
         ];
     }
 }

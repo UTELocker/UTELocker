@@ -122,6 +122,188 @@
             overlayPlaceholder: "@lang('app.enterYear')",
         };
     </script>
+    <script>
+        let quillArray = {};
+
+        function quillImageLoad(ID) {
+            const quillContainer = document.querySelector(ID);
+            quillArray[ID] = new Quill(ID, {
+                modules: {
+                    toolbar: [
+                        [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
+                        [{
+                            header: [1, 2, 3, 4, 5, false]
+                        }],
+                        [{
+                            'list': 'ordered'
+                        }, {
+                            'list': 'bullet'
+                        }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        // ['image', 'code-block', 'link','video'],
+                        // [{
+                        //     'direction': 'rtl'
+                        // }],
+                        // ['clean']
+                    ],
+                    clipboard: {
+                        matchVisual: false
+                    },
+                    "emoji-toolbar": true,
+                    "emoji-textarea": true,
+                    "emoji-shortname": true,
+                },
+                theme: 'snow',
+                bounds: quillContainer
+            });
+            $.each(quillArray, function (key, quill) {
+                quill.getModule('toolbar').addHandler('image', selectLocalImage);
+            });
+
+
+        }
+            function destory_editor(selector){
+                if($(selector)[0])
+                {
+                    var content = $(selector).find('.ql-editor').html();
+                    $(selector).html(content);
+
+                    $(selector).siblings('.ql-toolbar').remove();
+                    $(selector + " *[class*='ql-']").removeClass (function (index, class_name) {
+                    return (class_name.match (/(^|\s)ql-\S+/g) || []).join(' ');
+                    });
+
+                    $(selector + "[class*='ql-']").removeClass (function (index, class_name) {
+                    return (class_name.match (/(^|\s)ql-\S+/g) || []).join(' ');
+                    });
+                }
+                else
+                {
+                    console.error('editor not exists');
+                }
+            }
+        function quillMention(atValues,ID) {
+            const mentionItemTemplate = '<div class="mention-item"> <img src="{image}" class="align-self-start mr-3 taskEmployeeImg rounded">{name}</div>';
+
+            const customRenderItem = function(item, searchTerm) {
+                const html = mentionItemTemplate.replace('{image}', item.image).replace('{name}', item.value);
+                return html;
+            }
+            let placeholder;
+            if (ID === '#submitTexts') {
+                placeholder = "@lang('placeholders.message')";
+            } else {
+                placeholder = '';
+            }
+
+            var quillEditor = new Quill(ID, {
+                placeholder: placeholder,
+                modules: {
+                    magicUrl: {
+                        urlRegularExpression: /(https?:\/\/[\S]+)|(www.[\S]+)|(tel:[\S]+)/g,
+                        globalRegularExpression: /(https?:\/\/|www\.|tel:)[\S]+/g,
+                    },
+                    toolbar: [
+                        [{
+                            header: [1, 2, 3, 4, 5, false]
+                        }],
+                        [{
+                            'list': 'ordered'
+                        }, {
+                            'list': 'bullet'
+                        }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['image', 'code-block', 'link','video'],
+                        [{
+                            'direction': 'rtl'
+                        }],
+                        ['clean']
+                    ],
+                    mention: {
+                        allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
+                        mentionDenotationChars: ["@", "#"],
+                        source: function(searchTerm, renderList, mentionChar) {
+                        let values;
+                        if (mentionChar === "@") {
+                            values = atValues;
+                        } else {
+                            values = hashValues;
+                        }
+
+                        if (searchTerm.length === 0) {
+                            renderList(values, searchTerm);
+
+                        } else {
+                            const matches = [];
+                            for (i = 0; i < values.length; i++)
+                            if (
+                                ~values[i].value
+                                .toLowerCase()
+                                .indexOf(searchTerm.toLowerCase())
+                            )
+                                matches.push(values[i]);
+                            renderList(matches, searchTerm);
+                        }
+                        },
+                        renderItem: customRenderItem,
+
+                    },
+
+                },
+                theme: 'snow'
+            });
+        }
+         /**
+         * click to open user profile
+         *
+         */
+        window.addEventListener('mention-clicked', function ({ value }) {
+        if (value?.link) {
+            window.open(value.link, value?.target ?? '_blank');
+        }
+        });
+        /**
+         * Step1. select local image
+         *
+         */
+        function selectLocalImage() {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.click();
+
+            // Listen upload local image and save to server
+            input.onchange = () => {
+                const file = input.files[0];
+
+                // file type is only image.
+                if (/^image\//.test(file.type)) {
+                    saveToServer(file);
+                } else {
+                    console.warn('You could only upload images.');
+                }
+            };
+        }
+
+        /**
+         * Step2. save to server
+         *
+         * @param {File} file
+         */
+        function saveToServer(file) {
+
+        }
+
+        function insertToEditor(url) {
+            // push image url to rich editor.
+            $.each(quillArray, function (key, quill) {
+                try {
+                    let range = quill.getSelection();
+                    quill.insertEmbed(range.index, 'image', url);
+                } catch (err) {
+                }
+            });
+        }
+    </script>
     @stack('scripts')
     <script>
         $(window).on('load', function () {

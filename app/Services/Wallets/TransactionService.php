@@ -15,6 +15,7 @@ use App\Models\Wallet;
 use App\Services\BaseService;
 use App\Traits\HandleNotification;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class TransactionService extends BaseService
 {
@@ -137,5 +138,59 @@ class TransactionService extends BaseService
     public function getByReference($reference)
     {
         return $this->model->where('reference', $reference)->firstOrFail();
+    }
+
+    public function getTransactionsWithNumBookings(User $user)
+    {
+        return$this->model->where('user_id', $user->id)
+            ->leftJoin('bookings', 'transactions.id', '=', 'bookings.transaction_id')
+            ->groupBy('transactions.id')
+            ->selectRaw('transactions.reference, count(bookings.id) as num_bookings')
+            ->get();
+    }
+
+    public function refund($transactionId, $percentage)
+    {
+        DB::beginTransaction();
+        try {
+            $transaction = $this->model->where('id', $transactionId)->firstOrFail();
+            $amount = $transaction->amount * $percentage / 100;
+            $wallet =  Wallet::where('user_id',  $transaction->user_id)->first();
+            $wallet->balance += $amount;
+            $wallet->save();
+            $reference = $this->genderReference('UTEPAY');
+            $paymentMethod = PaymentMethod::where('client_id', user()->client_id)
+                ->where('type', PaymentMethodType::UTEPAY)
+                ->first();
+            $inputs = [
+                'user_id' => $wallet->user_id,
+                'payment_method_id' =>  $paymentMethod->id,
+                'amount' => $amount,
+                'status' =>  TransactionStatus::SUCCESS,
+                'type' =>  TransactionType::REFUND,
+                'reference' =>  $reference,
+                'reference_transaction_id' =>  $reference,
+                'balance' =>  $wallet->balance,
+                'promotion_balance' =>  $wallet->promotion_balance,
+                'time' =>  now(),
+                'content' => 'Hoàn tiền mã đơn ' .  $transaction->reference,
+            ];
+            $newTransaction = $this->add($inputs);
+            $user = User::where('id', $wallet->user_id)->select('client_id')->first();
+            $this->sendNotification(
+                NotificationType::PAYMENT,
+                'Hoàn tiền mã đơn ' .  $transaction->reference,
+                $wallet->user_id,
+                $user->client_id,
+                NotificationParentTable::TABLE_TRANSACTIONS,
+                $newTransaction->id,
+            );
+            DB::commit();
+            return $transaction;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd ($e);
+            return false;
+        }
     }
 }

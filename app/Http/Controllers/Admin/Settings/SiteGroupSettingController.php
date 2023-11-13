@@ -52,6 +52,11 @@ class SiteGroupSettingController extends BaseSettingController
             ]);
         }
 
+        $this->view = match ($this->activeTab) {
+            'siteGroupSettings' => 'admin.settings.siteGroup.ajax.siteGroupSettings',
+            'policy' => 'admin.settings.siteGroup.ajax.policy',
+        };
+
         return view('admin.settings.siteGroup.index', $this->data);
     }
 
@@ -62,7 +67,16 @@ class SiteGroupSettingController extends BaseSettingController
             abort(403);
         }
         $this->client = $this->clientService->get($id);
-        $form = $request->only(['date_format', 'locale', 'time_format', 'timezone', 'status', 'allow_signup']);
+        $form = $request->only([
+            'date_format',
+            'locale',
+            'time_format',
+            'timezone',
+            'status',
+            'allow_signup',
+            'config_policy',
+            'refund_soon_cancel_booking'
+        ]);
         $this->clientService->update($this->client, $form, ['isPrefix' => false]);
 
         $redirectUrl = urldecode($request->redirect_url);

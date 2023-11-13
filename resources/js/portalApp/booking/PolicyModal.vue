@@ -44,23 +44,7 @@
             </a-row>
         </template>
         <template #default>
-            <a-row>
-                <a-col :span="24">
-                    <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0;">
-                        1. Bạn có thể hủy đặt chỗ miễn phí trước 1 giờ so với thời gian đặt chỗ.
-                    </p>
-                </a-col>
-                <a-col :span="24">
-                    <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0;">
-                        2. Bạn cần xác nhận kết thúc để kết thúc đặt chỗ.
-                    </p>
-                </a-col>
-                <a-col :span="24">
-                    <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0;">
-                        3. Nếu bạn kết thúc trễ, bạn sẽ bị tính phí 50% giá trị đặt chỗ.
-                    </p>
-                </a-col>
-            </a-row>
+            <div v-html="this.settings.config_policy"></div>
         </template>
     </a-modal>
 </template>
@@ -93,6 +77,7 @@ export default defineComponent({
     computed: {
         ...mapState({
             selectedSlots: (state) => state.moduleBooking.selectedSlots,
+            settings: (state) => state.moduleBase.settings,
         }),
     },
     methods: {
@@ -120,7 +105,7 @@ export default defineComponent({
                     });
                 }
             }).catch((e) => {
-                const message = res?.message || 'Có lỗi xảy ra';
+                const message = e?.message || 'Có lỗi xảy ra';
                 Modal.error({
                     title: 'Lỗi đặt chỗ',
                     content: message,
@@ -137,3 +122,8 @@ export default defineComponent({
     },
 });
 </script>
+<style scoped>
+ol {
+   list-style-type: decimal;
+}
+</style>

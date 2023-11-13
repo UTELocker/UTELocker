@@ -173,7 +173,6 @@
                     });
             }
             function verifyCode() {
-                console.log('verifyCode');
                 const code = $("#verification").val();
                 coderesult.confirm(code).then(function (result) {
                     const user = result.user;
@@ -195,7 +194,6 @@
                         }
                     });
                 }).catch(function (error) {
-                    console.log('error', error.message);
                     addValidation(error.message);
                 });
             }

@@ -50,7 +50,7 @@
                 </a-button>
             </div>
             </template>
-            <template #bodyCell="{ column, text }">
+            <template #bodyCell="{ column, text, record }">
                 <template v-if="column.key === 'amount' || column.key === 'balance' || column.key === 'promotion_balance'">
                     {{ formatCurrency(text) }}
                 </template>
@@ -87,9 +87,154 @@
                         {{ handleStatusLabel(text) }}
                     </a-tag>
                 </template>
+                <template v-else-if="column.key == 'action'"
+                >
+                    <a-button
+                        type="primary"
+                        @click="() => {
+                            console.log(record);
+                            transactionSelected = record;
+                            visible = true;
+                        }"
+
+                    >
+                        Chi tiết
+                    </a-button>
+                </template>
             </template>
         </a-table>
     </a-space>
+    <a-modal
+        :visible="visible"
+        :onCancel="() => visible = false"
+    >
+        <h3>Chi tiết giao dịch</h3>
+        <a-space
+            :size="20"
+            direction="vertical"
+            :style="{width: '100%'}"
+        >
+            <a-row
+                :style="{width: '100%'}"
+            >
+                <a-col
+                    :span="12"
+                >
+                    <p>Thời gian</p>
+                </a-col>
+                <a-col
+                    :span="12"
+                >
+                    <p>{{ formatDateTime(transactionSelected.time) }}</p>
+                </a-col>
+            </a-row>
+            <a-row
+                :style="{width: '100%'}"
+            >
+                <a-col
+                    :span="12"
+                >
+                    <p>Loại giao dịch</p>
+                </a-col>
+                <a-col
+                    :span="12"
+                >
+                    <p>
+                        <a-tag
+                            :color="handleTypeColor(transactionSelected.type)"
+                        >
+                            {{ handleTypeLabel(transactionSelected.type) }}
+                        </a-tag>
+                    </p>
+                </a-col>
+            </a-row>
+            <a-row
+                :style="{width: '100%'}"
+            >
+                <a-col
+                    :span="12"
+                >
+                    <p>Mã giao dịch</p>
+                </a-col>
+                <a-col
+                    :span="12"
+                >
+                    <p>
+                        <a-tag
+                            :color="handleStatusColor(transactionSelected.status)"
+                        >
+                            {{ handleStatusLabel(transactionSelected.status) }}
+                        </a-tag>
+                    </p>
+                </a-col>
+            </a-row>
+            <a-row
+                :style="{width: '100%'}"
+            >
+                <a-col
+                    :span="12"
+                >
+                    <p>Nội dung</p>
+                </a-col>
+                <a-col
+                    :span="12"
+                >
+                    <p>{{ transactionSelected.content }}</p>
+                </a-col>
+            </a-row>
+            <a-row
+                :style="{width: '100%'}"
+            >
+                <a-col
+                    :span="12"
+                >
+                    <p>Số tiền</p>
+                </a-col>
+                <a-col
+                    :span="12"
+                >
+                    <p>{{ formatCurrency(transactionSelected.amount) }}</p>
+                </a-col>
+            </a-row>
+            <a-row
+                :style="{width: '100%'}"
+            >
+                <a-col
+                    :span="12"
+                >
+                    <p>Số dư</p>
+                </a-col>
+                <a-col
+                    :span="12"
+                >
+                    <p>{{ formatCurrency(transactionSelected.balance) }}</p>
+                </a-col>
+            </a-row>
+            <a-row
+                :style="{width: '100%'}"
+            >
+                <a-col
+                    :span="12"
+                >
+                    <p>Ví điểm thưởng</p>
+                </a-col>
+                <a-col
+                    :span="12"
+                >
+                    <p>{{ formatCurrency(transactionSelected.promotion_balance) }}</p>
+                </a-col>
+            </a-row>
+        </a-space>
+        <template #footer>
+            <a-button
+                key="back"
+                @click="() => visible = false"
+            >
+                Đóng
+            </a-button>
+        </template>
+    </a-modal>
+
 </template>
 <script>
 import { defineComponent } from 'vue'
@@ -112,6 +257,8 @@ export default defineComponent({
         return {
             loading: false,
             transactions: [],
+            visible: false,
+            transactionSelected: null,
         }
     },
     setup() {
@@ -133,6 +280,7 @@ export default defineComponent({
                         const dateB = new Date(b.time);
                         return dateA - dateB;
                     },
+                    defaultSortOrder: 'descend',
                 },
                 {
                     title: 'Loại giao dịch',
@@ -228,6 +376,10 @@ export default defineComponent({
                     sorter: (a, b) => {
                         return a.promotion_balance - b.promotion_balance
                     },
+                },
+                {
+                    title: 'Hành động',
+                    key: 'action',
                 }
             ],
             searchInput,
@@ -256,9 +408,37 @@ export default defineComponent({
         handleTypeLabel(type) {
             return TRANSACTION_TYPES_LABELS[type];
         },
+        formatCurrency(value) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+        },
+        formatDateTime(value) {
+            return new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', timeStyle: 'medium' }).format(new Date(value));
+        },
     },
     created() {
         this.getTransactions();
+    },
+    mounted(){
+        this.$watch( () => this.$route.path,(to, from)=> {
+            const id = this.$route.params.id;
+            if (id) {
+                this.transactionSelected = this.transactions.find(transaction => transaction.id === parseInt(id));
+                console.log(this.transactionSelected);
+                this.visible = true;
+            }
+        });
+    },
+    watch: {
+        loading(val) {
+            if (!val) {
+                const id = this.$route.params.id;
+                if (id) {
+                    this.transactionSelected = this.transactions.find(transaction => transaction.id === parseInt(id));
+                    console.log(this.transactionSelected);
+                    this.visible = true;
+                }
+            }
+        }
     }
 })
 </script>

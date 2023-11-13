@@ -233,7 +233,6 @@
         $(document).ready(function () {
             $('#datatableRange').on('click', function() {
                 var dateRangePicker = $('#datatableRange').data('daterangepicker');
-                console.log(dateRangePicker);
             });
             $('#datatableRange').on('apply.daterangepicker', (event, picker) => {
                 cb(picker.startDate, picker.endDate);
