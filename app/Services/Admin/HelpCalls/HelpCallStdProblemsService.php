@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Admin\helpCall;
+namespace App\Services\Admin\HelpCalls;
 
 use App\Classes\Common;
 use App\Models\HelpCallStdProblems;

@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Admin\HelpCalls\HelpCallService;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\HelpCall\StoreHelpCallRequest;
-use App\Services\Admin\HelpCall\HelpCallCommentService;
+use App\Services\Admin\HelpCalls\HelpCallCommentService;
 use App\Http\Requests\Api\HelpCall\StoreHelpCallCommentRequest;
 use App\Http\Requests\Api\HelpCall\UpdateHelpCallRequest;
 

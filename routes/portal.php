@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Locations\LocationsController;
 use App\Http\Controllers\Api\Notifications\NotificationController;
 use App\Http\Controllers\Api\Users\UserController;
-use App\Http\Controllers\Api\HelpCall\HelpCallController;
-use App\Http\Controllers\Api\HelpCall\HelpCallStdProblemController;
+use App\Http\Controllers\Api\HelpCalls\HelpCallController;
+use App\Http\Controllers\Api\HelpCalls\HelpCallStdProblemController;
 
 Route::prefix('api-portal')->group(function () {
     Route::prefix('locations')->group(function () {

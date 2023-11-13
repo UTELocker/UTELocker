@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Admin\helpCall;
+namespace App\Services\Admin\HelpCalls;
 
 use App\Classes\Common;
 use App\Models\HelpCall;
@@ -55,8 +55,8 @@ class HelpCallService extends BaseService {
         }
 
         $inputs['client_id'] = user()->client_id;
-        $inputs['log_created_at'] = $inputs['log_created_at'] ?? now();
-        $inputs['owner_id'] = $inputs['owner_id'] ?? user()->id;
+        $inputs['log_created_at'] = $this->model->log_created_at ?? now();
+        $inputs['owner_id'] = $this->model->owner_id ?? user()->id;
         $inputs['status'] = $inputs['status'] ?? HelpCallStatus::PENDING;
 
         if(isset($inputs['type'])) {
@@ -82,7 +82,7 @@ class HelpCallService extends BaseService {
             $inputs['src_id'] = $this->model->src_id;
         }
 
-        if ($inputs['helpCallstdProblemId']) {
+        if (isset($inputs['helpCallstdProblemId'])) {
             $inputs['help_call_std_problems_id'] = $inputs['helpCallstdProblemId'] == -1 ?
                 null :
                 $inputs['helpCallstdProblemId'];
