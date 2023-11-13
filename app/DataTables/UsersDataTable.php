@@ -186,12 +186,50 @@ class UsersDataTable extends BaseDataTable
                 'searchable' => false,
                 'title' => '#'
             ],
-            __('app.name') => ['data' => 'name', 'name' => 'name', 'exportable' => true, 'title' => __('app.name')],
-            __('app.client') => ['data' => 'client', 'name' => 'users.client_id', 'title' => __('app.client')],
-            __('app.type') => ['data' => 'type', 'name' => 'type', 'exportable' => true, 'title' => __('app.type')],
-            __('app.email') => ['data' => 'email', 'name' => 'email', 'exportable' => true, 'title' => __('app.email')],
-            __('app.gender') => ['data' => 'gender', 'name' => 'gender', 'exportable' => true, 'title' => __('app.gender')],
-            __('app.status') => ['data' => 'status', 'name' => 'active', 'title' => __('app.status')],
+            __('app.name') => [
+                'data' => 'name',
+                'name' => 'name',
+                'exportable' => true,
+                'title' => __('app.name')
+            ],
+            __('app.client') => [
+                'data' => 'client',
+                'name' => 'users.client_id',
+                'title' => __('app.client'),
+                'orderable' => false,
+                'searchable' => false
+            ],
+            __('app.type') => [
+                'data' => 'type',
+                'name' => 'type',
+                'exportable' => true,
+                'title' => __('app.type'),
+                'orderable' => false,
+                'searchable' => false
+            ],
+            __('app.email') => [
+                'data' => 'email',
+                'name' => 'email',
+                'exportable' => true,
+                'title' => __('app.email'),
+                'orderable' => false,
+                'searchable' => false
+            ],
+            __('app.gender') => [
+                'data' => 'gender',
+                'name' => 'gender',
+                'exportable' => true,
+                'title' => __('app.gender'),
+                'orderable' => false,
+                'searchable' => false
+            ],
+            __('app.status') => [
+                'data' => 'status',
+                'name' => 'active',
+                'title' => __('app.status'),
+                'orderable' => false,
+                'searchable' => false
+            ],
         ];
 
         $action = [

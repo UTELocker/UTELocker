@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api\HelpCall;
+namespace App\Http\Controllers\Api\HelpCalls;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Classes\Reply;
-use App\Services\Admin\HelpCall\HelpCallStdProblemsService;
+use App\Services\Admin\HelpCalls\HelpCallStdProblemsService;
 use App\Http\Requests\Api\HelpCallStd\StoreHelpCallStdProblemRequest;
 
 class HelpCallStdProblemController extends Controller

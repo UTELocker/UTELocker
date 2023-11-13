@@ -128,14 +128,54 @@ class TransactionsDataTable extends BaseDataTable
                 'searchable' => false,
                 'title' => '#'
             ],
-            __('modules.transactions.user') => ['data' => 'user_name', 'name' => 'user_name', 'title' => __('modules.transactions.user')],
-            __('modules.paymentMethod.name') => ['data' => 'payment_method_name', 'name' => 'payment_method_name', 'title' => __('modules.paymentMethod.name')],
-            __('modules.transactions.reference') => ['data' => 'reference', 'name' => 'reference', 'title' => __('modules.transactions.reference')],
-            __('app.status') => ['data' => 'status', 'name' => 'status', 'title' => __('app.status')],
-            __('modules.transactions.type') => ['data' => 'type', 'name' => 'type', 'title' => __('modules.transactions.type')],
-            __('modules.transactions.amount') => ['data' => 'amount', 'name' => 'amount', 'title' => __('modules.transactions.amount')],
-            __('modules.transactions.balance') => ['data' => 'balance', 'name' => 'balance', 'title' => __('modules.transactions.balance')],
-            __('modules.transactions.createdAt') => ['data' => 'time', 'name' => 'time', 'title' => __('modules.transactions.createdAt')],
+            __('modules.transactions.user') => [
+                'data' => 'user_name',
+                'name' => 'user_name',
+                'title' => __('modules.transactions.user')
+            ],
+            __('modules.paymentMethod.name') => [
+                'data' => 'payment_method_name',
+                'name' => 'payment_method_name',
+                'title' => __('modules.paymentMethod.name'),
+                'orderable' => false,
+                'searchable' => false
+            ],
+            __('modules.transactions.reference') => [
+                'data' => 'reference',
+                'name' => 'reference',
+                'title' => __('modules.transactions.reference'),
+                'orderable' => false,
+                'searchable' => false
+            ],
+            __('app.status') => [
+                'data' => 'status',
+                'name' => 'status',
+                'title' => __('app.status'),
+                'orderable' => false,
+                'searchable' => false
+            ],
+            __('modules.transactions.type') => [
+                'data' => 'type',
+                'name' => 'type',
+                'title' => __('modules.transactions.type'),
+                'orderable' => false,
+                'searchable' => false
+            ],
+            __('modules.transactions.amount') => [
+                'data' => 'amount',
+                'name' => 'amount',
+                'title' => __('modules.transactions.amount')
+            ],
+            __('modules.transactions.balance') => [
+                'data' => 'balance',
+                'name' => 'balance',
+                'title' => __('modules.transactions.balance')
+            ],
+            __('modules.transactions.createdAt') => [
+                'data' => 'time',
+                'name' => 'time',
+                'title' => __('modules.transactions.createdAt')
+            ],
         ];
 
         if (user()->isSuperUser()) {

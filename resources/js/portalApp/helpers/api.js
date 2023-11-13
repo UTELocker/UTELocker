@@ -5,6 +5,7 @@ export function get(url, { commit, actionInfo } = {}) {
 }
 
 export function post(url, payload, options) {
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = window.csrfToken;
     return axios({
         method: 'POST',
         url: url,

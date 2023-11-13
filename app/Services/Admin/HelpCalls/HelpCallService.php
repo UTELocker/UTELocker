@@ -120,6 +120,7 @@ class HelpCallService extends BaseService {
             ->leftJoin('help_call_std_problems as std_problem',
                 'std_problem.id', '=', 'help_calls.help_call_std_problems_id')
             ->where('help_calls.client_id', user()->client_id)
+            ->where('help_calls.owner_id', user()->id)
             ->select (
                 'help_calls.id',
                 'help_calls.type',

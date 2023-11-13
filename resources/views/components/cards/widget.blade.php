@@ -1,9 +1,18 @@
 <div
-    {{ $attributes->merge(['class' => 'bg-white p-20 rounded b-shadow-4 d-flex justify-content-between align-items-center h-100']) }}>
+    {{ $attributes->merge([
+        'class' => 'bg-white p-20 rounded b-shadow-4 d-flex justify-content-between align-items-center h-100'
+        ]) }}>
     <div class="d-block text-capitalize">
         <h5 class="f-15 f-w-500 mb-20 text-darkest-grey">{{ $title }}
             @if (!empty($info))
-                <i class="fa fa-question-circle" data-toggle="popover" data-placement="top" data-content="{{ $info }}" data-html="true" data-trigger="hover"></i>
+                <i
+                    class="fa fa-question-circle"
+                    data-toggle="popover"
+                    data-placement="top"
+                    data-content="{{ $info }}"
+                    data-html="true"
+                    data-trigger="hover">
+                </i>
             @endif
         </h5>
         <div class="d-flex">

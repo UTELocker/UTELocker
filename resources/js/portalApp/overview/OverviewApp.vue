@@ -213,11 +213,11 @@ export default defineComponent({
         handleStatusText(status) {
             switch(status) {
                 case BOOKING_ACTIVITY_STATUS.ACTIVE:
-                    return "Active";
+                    return "Đang hoạt động";
                 case BOOKING_ACTIVITY_STATUS.NOT_YET:
-                    return "Not yet";
+                    return "Chưa bắt đầu";
                 case BOOKING_ACTIVITY_STATUS.EXPIRED:
-                    return "Expired";
+                    return "Hết hạn";
                 default:
                     return "Unknown";
             }

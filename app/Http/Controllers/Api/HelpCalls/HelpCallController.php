@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\HelpCall;
+namespace App\Http\Controllers\Api\HelpCalls;
 
 use App\Classes\Reply;
 use App\Http\Controllers\Controller;
-use App\Services\Admin\HelpCall\HelpCallService;
+use App\Services\Admin\HelpCalls\HelpCallService;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\HelpCall\StoreHelpCallRequest;
 use App\Services\Admin\HelpCall\HelpCallCommentService;
