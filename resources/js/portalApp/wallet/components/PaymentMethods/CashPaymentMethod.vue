@@ -26,7 +26,6 @@ export default defineComponent({
     },
     created() {
         this.getPaymentMethod(this.paymentMethodId);
-        console.log(this.paymentMethod, this.paymentMethodConfig);
     }
 });
 </script>

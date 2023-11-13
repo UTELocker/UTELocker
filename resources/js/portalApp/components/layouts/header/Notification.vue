@@ -68,7 +68,10 @@
             @click="visible = !visible"
             :class="isMobile ? 'nav-phone-badge' : ''"
         >
-            <a-avatar shape="square" size="large" >
+            <a-avatar shape="square" size="large" :style="{
+                backgroundColor: '#CCCC00',
+                cursor: 'pointer',
+            }">
                 <bell-outlined />
             </a-avatar>
         </a-badge>
@@ -215,6 +218,16 @@ export default defineComponent({
         handleClick(notification) {
             switch (notification.type) {
                 case NOTIFICATION_TYPE.PAYMENT:
+                    this.visible = false;
+                    this.markNotificationAsRead({
+                        notificationChoose: notification,
+                    })
+                    this.$router.push({
+                        name: 'wallet.transactions.detail',
+                        params: {
+                            id: notification.parent_id,
+                        },
+                    });
                     return false;
                 case NOTIFICATION_TYPE.BOOKING:
                     this.visible = false;

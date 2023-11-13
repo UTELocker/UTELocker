@@ -12,6 +12,7 @@ use App\Services\Admin\Bookings\BookingService;
 use App\Services\Wallets\TransactionService;
 use App\Services\Wallets\WalletService;
 use Illuminate\Http\Request;
+use App\Enums\BookingStatus;
 
 class BookingController extends Controller
 {
@@ -79,7 +80,13 @@ class BookingController extends Controller
 
     public function destroy($id)
     {
-        $this->bookingService->delete($id);
+        $booking = $this->bookingService->get($id);
+        $status = $booking->status;
+        $this->bookingService->delete($booking);
+        $percentage = siteGroup()->refund_soon_cancel_booking;
+        if ($status == BookingStatus::PENDING && $percentage > 0) {
+            $this->transactionService->refund($booking->transaction_id, $percentage);
+        }
         return Reply::success('Delete bookings successfully');
     }
 
@@ -101,9 +108,13 @@ class BookingController extends Controller
     public function getHistoriesBooking()
     {
         $bookings = $this->bookingService->getHistoriesBooking(user());
+        $transactions = $this->transactionService->getTransactionsWithNumBookings(user());
         return Reply::successWithData('Get histories booking successfully',
             [
-                'data' => $bookings
+                'data' => [
+                    'bookings' => $bookings,
+                    'transactions' => $transactions
+                ]
             ]
         );
     }

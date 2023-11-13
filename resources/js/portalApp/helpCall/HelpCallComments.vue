@@ -93,12 +93,10 @@ export default defineComponent({
                 });
         },
         handleSrc(fileName) {
-            console.log(`${USER_FOLDERS}${fileName}`);
             return `${USER_FOLDERS}${fileName}`;
         }
     },
     created() {
-        console.log('user',this.user.avatar);
         if (this.helpCall.comments) {
             this.comments = this.helpCall.comments.map((comment) => {
                 return {
@@ -106,7 +104,6 @@ export default defineComponent({
                     created_at: dayjs(comment.created_at).format('YYYY-MM-DD HH:mm:ss'),
                 };
             });
-            console.log(this.comments);
         }
     },
 });

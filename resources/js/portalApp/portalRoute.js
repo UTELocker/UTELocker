@@ -61,8 +61,13 @@ const routes = [
         component: TopUp,
     },
     {
-        path: '/wallet/transactions',
+        path: '/wallet/transactions/',
         name: 'wallet.transactions',
+        component: Transaction,
+    },
+    {
+        path: '/wallet/transactions/:id',
+        name: 'wallet.transactions.detail',
         component: Transaction,
     },
     {

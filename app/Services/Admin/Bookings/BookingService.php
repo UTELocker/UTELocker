@@ -198,9 +198,8 @@ class BookingService extends BaseService
         return $booking;
     }
 
-    public function delete($id)
+    public function delete(Booking $booking)
     {
-        $booking = $this->get($id);
         $booking->status = BookingStatus::CANCELLED;
         $booking->save();
         return $booking;

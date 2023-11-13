@@ -23,10 +23,14 @@ export default {
                     end_date: this.endDate,
                     list_slots_id: this.selectedSlots.map((slot) => slot.id),
                 }).then((res) => {
-                    if (this.isDontShowAgain) {
-                        localStorage.setItem(DONT_SHOW_POLICY_BOOKING, SHOW_POLICY_BOOKING_STATUS.DONT_SHOW);
+                    if (res.data.status === 'success') {
+                        if (this.isDontShowAgain) {
+                            localStorage.setItem(DONT_SHOW_POLICY_BOOKING, SHOW_POLICY_BOOKING_STATUS.DONT_SHOW);
+                        }
+                        resolve(res.data);
+                    } else {
+                        reject(res.data);
                     }
-                    resolve(res.data);
                 }).catch((err) => {
                     reject(err.response.data);
                 });

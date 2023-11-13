@@ -27,7 +27,6 @@ export default {
             get(WALLET_API.GET_TRANSACTIONS())
                 .then(response => {
                     this.transactions = response.data.data;
-                    console.log(this.transactions);
                     this.loading = false;
                 })
                 .catch(error => {

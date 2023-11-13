@@ -64,7 +64,6 @@ const actions = {
                 commit('setAvailableLockers', availableLockers);
                 resolve();
             }).catch(error => {
-                console.log(error);
                 reject(error);
             });
         })

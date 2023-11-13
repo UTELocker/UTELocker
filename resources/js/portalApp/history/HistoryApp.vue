@@ -24,6 +24,11 @@
                 </a-button>
                 </span>
             </template>
+            <template v-else-if="column.dataIndex === 'price'">
+                <span>
+                  {{ formatNumber(record) }}
+                </span>
+            </template>
         </template>
     </a-table>
     <a-modal
@@ -49,7 +54,7 @@
         <p>Mã Tủ: {{historyChoosed?.locker_code}}</p>
         <p>Trạng thái: {{handleStatus(historyChoosed?.status)}}</p>
         <p>Địa điểm: {{historyChoosed?.address}}</p>
-        <p>Tổng tiền: {{historyChoosed?.total_price}}</p>
+        <p>Tổng tiền: {{historyChoosed?.price}}</p>
         <p>Mã giao dịch: {{historyChoosed?.transaction_reference}}</p>
     </a-modal>
 </template>
@@ -110,9 +115,9 @@ const columns = [
     },
     {
         title: 'Tổng tiền',
-        dataIndex: 'total_price',
+        dataIndex: 'price',
         defaultSortOrder: 'descend',
-        sorter: (a, b) => a.total_price - b.total_price,
+        sorter: (a, b) => a.price - b.price,
         sortDirections: ['descend', 'ascend'],
     },
     {
@@ -156,7 +161,6 @@ export default defineComponent({
             }
         },
         handleStatus(status) {
-            console.log(status);
             return HISTORY_STATUS_TEXT[status];
         },
         handleShowDetail(record) {
@@ -237,7 +241,10 @@ export default defineComponent({
                     break;
             }
             return timeline;
-        }
+        },
+        formatNumber(record) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(record.price);
+        },
     },
     computed: {
         ...mapState({

@@ -3,13 +3,13 @@
     <template v-if="!isMobile">
         <help-call />
         <notification :isMobile="isMobile" />
-        <Github />
+        <User />
     </template>
 </template>
 <script>
 import {defineComponent} from "vue";
 import Navigation from "./Navigation.vue";
-import Github from "./Github.vue";
+import User from "./User.vue";
 import Notification from "./Notification.vue";
 import HelpCall from "./HelpCall.vue";
 
@@ -17,7 +17,7 @@ export default defineComponent({
     name: "Menu",
     components: {
         Notification,
-        Github,
+        User,
         Navigation,
         HelpCall,
     },

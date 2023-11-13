@@ -232,7 +232,6 @@ export default defineComponent({
                 ...this.form,
                 attachment: this.fileList,
             }
-            console.log(data);
             post(
                 API.POST_HELP_CALL(),
                 data,

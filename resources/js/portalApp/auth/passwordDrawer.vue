@@ -20,22 +20,27 @@
                 style="width: 100%; margin-top: 20px;"
                 @click="submit"
                 >
-                Submit
+                Xác nhận
             </a-button>
+            <div
+                style="color: 'gray'; font-size: 12px;"
+            >
+                Nếu bạn quên mật khẩu, vui lòng liên hệ với chúng tôi qua email.
+            </div>
             <div
                 style="color: 'gray'; font-size: 12px; margin-bottom: 10px;"
             >
-                If you forgot your password, please contact admin.
+                Mật khẩu mặc định là 123456.
             </div>
         </a-card>
         </div>
         <div style="display: flex !important; justify-content: center !important;" v-if="is2FA">
             <a-card title="OTP" style="width: 500px">
                 <div>
-                    Please enter OTP code that sent to your phone number {{ user.mobile }}.
+                    Nhập mã OTP được gửi về số điện thoại {{ user.mobile }}.
                 </div>
                 <div>
-                    If you can't receive OTP code, please click <a @click="sendOTP">here</a> to resend.
+                    Nếu bạn chưa nhận được mã vui lòng nhấn <a @click="sendOTP">đây</a> để gửi lại.
                 </div>
 
                 <inputs
@@ -48,7 +53,7 @@
                     style="width: 100%; margin-top: 20px;"
                     @click="verifyOtp"
                 >
-                    Submit
+                    Xác nhận
                 </a-button>
             </a-card>
         </div>

@@ -14,7 +14,6 @@
                 >
                     <WalletCard />
                     <Menu :menus="menuConstant" :active-menu-item="activeMenuItem" />
-                    <UserCard />
                 </a-drawer>
                 <div class="drawer-handle" @click="handleClickShowButton">
                     <close-outlined v-if="visible" :style="iconStyle" />
@@ -27,7 +26,6 @@
                         <section class="main-menu-inner">
                             <WalletCard />
                             <Menu :menus="menuConstant" :active-menu-item="activeMenuItem" />
-                            <UserCard />
                         </section>
                     </a-affix>
                 </a-col>
@@ -53,7 +51,6 @@ import Menu from "./Menu.vue";
 import WalletCard from "./common/WalletCard.vue";
 import menuConstant from "../../constants/menuConstant";
 import OverviewApp from "../../overview/OverviewApp.vue";
-import UserCard from "./common/UserCard.vue";
 
 export default defineComponent({
     name: "Layout",
@@ -63,7 +60,6 @@ export default defineComponent({
         },
     },
     components: {
-        UserCard,
         OverviewApp,
         WalletCard,
         Menu,
