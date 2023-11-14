@@ -10,6 +10,7 @@ use App\Services\BaseService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Locker;
 
 class LockerSlotService extends BaseService
 {
@@ -138,12 +139,18 @@ class LockerSlotService extends BaseService
         $this->model->where('id', $slotId)->update(['status' => $status, 'config' => $config]);
     }
 
-    public function getSlotsNotAvailable($lockerId, mixed $startDate, mixed $endDate)
+    public function getSlotsNotAvailable(Locker $locker, mixed $startDate, mixed $endDate)
     {
-        $startDate = Carbon::parse($startDate)->subMinutes(30)->toDateTimeString();
-        $endDate = Carbon::parse($endDate)->addMinutes(30)->toDateTimeString();
+        $slotCPU = $this->model
+            ->where('locker_id', $locker->id)
+            ->where('type', LockerSlotType::CPU)
+            ->select('config')
+            ->first();
+        $configLocker = json_decode($slotCPU->config, true);
+        $startDate = Carbon::parse($startDate)->subMinutes($configLocker['bufferTime'])->toDateTimeString();
+        $endDate = Carbon::parse($endDate)->addMinutes($configLocker['bufferTime'])->toDateTimeString();
 
-        return $this->model->where('locker_id', $lockerId)
+        return $this->model->where('locker_id', $locker->id)
             ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
             ->where('locker_slots.type', '=', LockerSlotType::SLOT)
             ->where(function ($q) {

@@ -7,6 +7,7 @@ use App\Classes\Scheduler\ExpireTokenTask;
 use App\Classes\Scheduler\OverdueWarningBookingTask;
 use App\Classes\Scheduler\OverdueBookingTask;
 use App\Classes\Scheduler\WarningExpireTask;
+use App\Classes\Scheduler\LockedBookingTask;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -22,6 +23,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(new OverdueBookingTask())->everyMinute();
         $schedule->call(new WarningExpireTask())->everyMinute();
         $schedule->call(new ExpireTokenTask())->everyMinute();
+        $schedule->call(new LockedBookingTask())->everyMinute();
     }
 
     /**

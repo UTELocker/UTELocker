@@ -26,7 +26,9 @@
 @push('scripts')
     <script>
         const tab = new URLSearchParams(window.location.search).get('tab');
-
+        $('.nav-item').removeClass('active');
+        const activeTab = "{{ $activeTab }}";
+        $('.' + activeTab).addClass('active');
         $('#save-app-settings-site-group-form').click(function () {
             if (tab == 'policy') {
                 const value = document.getElementById('description').children[0].innerHTML;

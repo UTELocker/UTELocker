@@ -11,8 +11,12 @@
             </x-forms.text>
         </div>
         <div class="col-lg-12">
-            <div id="description"></div>
-            <textarea name="config_policy" id="description-text" class="d-none"></textarea>
+            <div id="description">
+                {!! siteGroup()->config_policy ?? '' !!}
+            </div>
+            <textarea name="config_policy" id="description-text" class="d-none">
+                {!! siteGroup()->config_policy ?? '' !!}
+            </textarea>
         </div>
     </div>
 </div>

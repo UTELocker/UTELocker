@@ -15,11 +15,7 @@ class WarningExpireTask
     use HandleNotification;
     public function __invoke()
     {
-        $listBookings = Booking::whereIn('bookings.status', [BookingStatus::APPROVED])
-            ->whereBetween('bookings.end_date', [
-                Carbon::now()->format('Y-m-d H:i'),
-                Carbon::now()->addMinutes(30)->format('Y-m-d H:i')
-            ])
+        $listBookings = Booking::where('bookings.status', BookingStatus::APPROVED)
             ->leftJoin('locker_slots', 'locker_slots.id', '=', 'bookings.locker_slot_id')
             ->leftJoin('lockers', 'lockers.id', '=', 'locker_slots.locker_id')
             ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
@@ -34,7 +30,7 @@ class WarningExpireTask
         foreach ($listBookings as $booking) {
             $diffTime = Carbon::now()->diffInMinutes($booking->end_date);
             switch ($diffTime) {
-                case 14:
+                case 15:
                     $this->sendNotification(
                         NotificationType::BOOKING,
                         "Your booking will end in 15 minutes at locker $booking->locker_code",
@@ -44,7 +40,7 @@ class WarningExpireTask
                         $booking->id,
                     );
                     break;
-                case 4:
+                case 5:
                     $this->sendNotification(
                         NotificationType::BOOKING,
                         "Your booking will end in 5 minutes at locker $booking->locker_code",
@@ -54,7 +50,7 @@ class WarningExpireTask
                         $booking->id,
                     );
                     break;
-                case 0:
+                case 1:
                     $this->sendNotification(
                         NotificationType::BOOKING,
                         "Your booking is expending 30 minutes at locker $booking->locker_code",

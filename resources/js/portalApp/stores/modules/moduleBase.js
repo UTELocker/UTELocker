@@ -92,6 +92,7 @@ const actions = {
                 const data = response.data.data;
                 const bookingActivitiesActive = [];
                 const bookingActivitiesNotYet = [];
+                const bookingActivitiesExpired = [];
                 data.forEach(activity => {
                     const booking = {
                         id: activity.id,
@@ -107,14 +108,17 @@ const actions = {
                         lockerImage: activity.lockerImage,
                         lockerId: activity.lockerId,
                         lockerSlotId: activity.lockerSlotId,
+                        bufferTime: activity.bufferTime,
                     }
                     if (activity.status === BOOKING_ACTIVITY_STATUS.ACTIVE) {
                         bookingActivitiesActive.push(booking);
-                    } else {
+                    } else if (activity.status === BOOKING_ACTIVITY_STATUS.NOT_YET) {
                         bookingActivitiesNotYet.push(booking);
+                    } else {
+                        bookingActivitiesExpired.push(booking);
                     }
                 });
-                commit('setBookingActivities', bookingActivitiesActive.concat(bookingActivitiesNotYet));
+                commit('setBookingActivities', bookingActivitiesExpired.concat(bookingActivitiesActive).concat(bookingActivitiesNotYet));
                 resolve();
             });
         });

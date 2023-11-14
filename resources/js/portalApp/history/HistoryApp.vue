@@ -147,15 +147,17 @@ export default defineComponent({
         handleColorStatus(status) {
             switch (status) {
                 case HISTORY_STATUS.PENDING:
-                    return 'yellow';
+                    return 'purple';
                 case HISTORY_STATUS.APPROVED:
-                    return 'green';
+                    return 'blue';
                 case HISTORY_STATUS.CANCELLED:
-                    return 'red';
-                case HISTORY_STATUS.EXPIRED:
-                    return 'red';
-                case HISTORY_STATUS.REJECTED:
                     return 'orange';
+                case HISTORY_STATUS.EXPIRED:
+                    return 'yellow';
+                case HISTORY_STATUS.REJECTED:
+                    return 'red';
+                case HISTORY_STATUS.LOCKED:
+                    return 'red';
                 default:
                     return 'green';
             }

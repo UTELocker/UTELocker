@@ -37,7 +37,7 @@ class ChangePassRequest extends FormRequest
                         $fail('Booking not found');
                         return;
                     }
-                    if ($booking->status != BookingStatus::APPROVED) {
+                    if ($booking->status != BookingStatus::APPROVED && $booking->status != BookingStatus::EXPIRED) {
                         $fail('Booking not approved');
                     }
                 },

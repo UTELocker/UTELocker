@@ -7,6 +7,8 @@ use App\Models\LockerSlot;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
+use App\Enums\LockerSlotType;
+use Carbon\Carbon;
 
 class StoreBookingRequest extends FormRequest
 {
@@ -25,6 +27,38 @@ class StoreBookingRequest extends FormRequest
      */
     public function rules(): array
     {
+        $listSlotsId = $this->input('list_slots_id');
+        $lockerCPU = LockerSlot::where('type', LockerSlotType::CPU)
+        ->where('locker_id', function ($query) use ($listSlotsId) {
+            $query->select('locker_id')
+            ->from('locker_slots')
+            ->where('id', $listSlotsId[0]);
+        })
+        ->select('config')
+        ->first();
+        $configLocker = json_decode($lockerCPU->config, true);
+        $startDate = Carbon::parse($this->input('start_date'))
+            ->subMinutes($configLocker['bufferTime'] ?? 30)
+            ->toDateTimeString();
+        $endDate = Carbon::parse($this->input('end_date'))
+            ->addMinutes($configLocker['bufferTime'] ?? 30)
+            ->toDateTimeString();
+        $slot = LockerSlot::whereIn('locker_slots.id', $listSlotsId)
+            ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->where(function ($q) {
+                $q->where('bookings.status', BookingStatus::PENDING)
+                    ->orWhere('bookings.status', BookingStatus::APPROVED);
+            })
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('bookings.start_date', [$startDate, $endDate])
+                    ->orWhereBetween('bookings.end_date', [$startDate, $endDate]);
+            })
+            ->get();
+        if ($slot->count() > 0) {
+            throw ValidationException::withMessages([
+                'list_slots_id' => 'Slot ' . $slot[0]->row . '-' . $slot[0]->column . ' is not available',
+            ]);
+        }
         return [
             'start_date' => 'required|date_format:Y-m-d H:i|after:now',
             'end_date' => 'required|date_format:Y-m-d H:i|after:start_date',
@@ -34,26 +68,6 @@ class StoreBookingRequest extends FormRequest
                 'integer',
                 'distinct',
                 'exists:locker_slots,id',
-                function ($attribute, $value, $fail) {
-                    $startDate = $this->input('start_date');
-                    $endDate = $this->input('end_date');
-
-                    $slot = LockerSlot::where('locker_slots.id', $value)
-                        ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
-                        ->where(function ($q) {
-                            $q->where('bookings.status', BookingStatus::PENDING)
-                                ->orWhere('bookings.status', BookingStatus::APPROVED);
-                        })
-                        ->where(function ($q) use ($startDate, $endDate) {
-                            $q->whereBetween('bookings.start_date', [$startDate, $endDate])
-                                ->orWhereBetween('bookings.end_date', [$startDate, $endDate]);
-                        })
-                        ->first();
-
-                    if ($slot) {
-                        $fail('Slot ' . $slot->row . '-' . $slot->column . ' is not available');
-                    }
-                },
             ],
         ];
     }

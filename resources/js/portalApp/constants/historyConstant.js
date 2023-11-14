@@ -16,7 +16,7 @@ export const HISTORY_STATUS = Object.freeze({
 
 export const HISTORY_STATUS_TEXT = Object.freeze({
     [HISTORY_STATUS.PENDING]: 'Đang chờ',
-    [HISTORY_STATUS.APPROVED]: 'Đã duyệt',
+    [HISTORY_STATUS.APPROVED]: 'Đang hoạt động',
     [HISTORY_STATUS.REJECTED]: 'Đã từ chối',
     [HISTORY_STATUS.CANCELLED]: 'Đã hủy',
     [HISTORY_STATUS.EXPIRED]: 'Đã hết hạn',

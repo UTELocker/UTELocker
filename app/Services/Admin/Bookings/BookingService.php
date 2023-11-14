@@ -18,6 +18,7 @@ use App\Services\Wallets\TransactionService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Classes\Files;
+use App\Enums\LockerSlotType;
 
 class BookingService extends BaseService
 {
@@ -60,15 +61,21 @@ class BookingService extends BaseService
 
     protected function formatInputData(&$inputs)
     {
-        $inputs['pin_code'] = $inputs['pin_code'] ?? $this->randomPinCode();
         $inputs['client_id'] = $inputs['client_id'] ?? auth()->user()->client_id;
+        $inputs['pin_code'] = $inputs['pin_code'] ?? $this->randomPinCode($inputs['client_id']);
         $inputs['owner_id'] = $inputs['owner_id'] ?? auth()->user()->id;
         $inputs['status'] = $inputs['status'] ?? BookingStatus::PENDING;
     }
 
-    private function randomPinCode()
+    private function randomPinCode($clientId)
     {
-        return rand(100000, 999999);
+        while (true) {
+            $pinCode = rand(100000, 999999);
+            $booking = Booking::where('client_id', $clientId)->where('pin_code', $pinCode)->first();
+            if (!$booking) {
+                return $pinCode;
+            }
+        }
     }
 
     protected function setModelFields($inputs)
@@ -92,7 +99,8 @@ class BookingService extends BaseService
             ->where('bookings.client_id', $user->client_id)
             ->where(function ($query) {
                 $query->where('bookings.status', BookingStatus::APPROVED)
-                    ->orWhere('bookings.status', BookingStatus::PENDING);
+                    ->orWhere('bookings.status', BookingStatus::PENDING)
+                    ->orWhere('bookings.status', BookingStatus::EXPIRED);
             })
             ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
             ->leftJoin('lockers', 'locker_slots.locker_id', '=', 'lockers.id')
@@ -101,6 +109,7 @@ class BookingService extends BaseService
                 'lockers.id as locker_id', 'locker_slots.id as locker_slot_id',
                 'bookings.pin_code', 'bookings.start_date',
                 'bookings.end_date', 'bookings.created_at', 'bookings.id',
+                'bookings.status',
                 'lockers.code', 'lockers.image',
                 'locker_slots.row', 'locker_slots.column', 'locker_slots.locker_id',
                 'locker_slots.config',
@@ -114,7 +123,7 @@ class BookingService extends BaseService
     public function formatOutputApi($bookings) {
         $locker = null;
         $listNameSlotInLocker = [];
-
+        $configLocker = null;
         foreach ($bookings as $booking) {
             if (empty($locker) || $locker !== $booking->locker_id) {
                 $locker = $booking->locker_id;
@@ -123,6 +132,8 @@ class BookingService extends BaseService
                     ->orderBy('column', 'asc')
                     ->get();
                 $listNameSlotInLocker = Common::getListNameSlots($listSlotInLocker);
+                $configLocker = $listSlotInLocker->where('type', LockerSlotType::CPU)->first()->config;
+                $configLocker = json_decode($configLocker ?? '{}');
             }
 
             $startDateTime = explode(' ', $booking->start_date);
@@ -130,32 +141,12 @@ class BookingService extends BaseService
             $totalMinutes = strtotime($booking->end_date) - strtotime($booking->start_date);
             $totalPrice = ($booking->config->price_per_minute ?? 10 )* $totalMinutes;
 
-            $now = Carbon::now();
-            $endTime = new Carbon($booking->end_date);
-            $startTime = new Carbon($booking->start_date);
-            if ($startTime < $now && $endTime > $now) {
-                $status = BookingActivitiesStatus::ACTIVE;
-                $timeRemainMinutes = $now->diffInMinutes($endTime);
-                $daysRemain = round($timeRemainMinutes / 60 / 24);
-                $hoursRemain = $timeRemainMinutes / 60 % 24;
-                $timeRemain = [
-                    'days' => $daysRemain,
-                    'hours' => $hoursRemain,
-                    'minutes' => $timeRemainMinutes - $daysRemain * 24 * 60 - $hoursRemain * 60,
-                ];
-            } elseif ($startTime > $now) {
-                $status = BookingActivitiesStatus::NOT_YET;
-            } else {
-                $status = BookingActivitiesStatus::EXPIRED;
-            }
-
             $result[] = [
                 'id' => $booking->id,
                 'code' => $listNameSlotInLocker[$booking->row . '-' . $booking->column],
                 'pin_code' => $booking->pin_code,
-                'status' => $status,
+                'status' => $booking->status,
                 'address' => $booking->address,
-                'timeOut' => $timeRemain ?? ['days' => 0, 'hours' => 0, 'minutes' => 0,],
                 'lockerCode' => $booking->code,
                 'lockerSlotConfig' => $booking->config,
                 'dateBooked' => [
@@ -181,6 +172,7 @@ class BookingService extends BaseService
                     asset('images/default/lockerDefault.png'),
                 'lockerId' => $booking->locker_id,
                 'lockerSlotId' => $booking->locker_slot_id,
+                'bufferTime' => $configLocker->bufferTime ?? 0,
             ];
         }
 
@@ -193,14 +185,19 @@ class BookingService extends BaseService
         if ($booking->pin_code !== $oldPassword) {
             return false;
         }
-        $booking->pin_code = $this->randomPinCode();
+        $booking->pin_code = $this->randomPinCode($booking->client_id);
         $booking->save();
         return $booking;
     }
 
     public function delete(Booking $booking)
     {
-        $booking->status = BookingStatus::CANCELLED;
+        if ($booking->status == BookingStatus::EXPIRED || $booking->status == BookingStatus::APPROVED) {
+            $booking->status = BookingStatus::COMPLETED;
+        }
+        if ($booking->status == BookingStatus::PENDING) {
+            $booking->status = BookingStatus::CANCELLED;
+        }
         $booking->save();
         return $booking;
     }

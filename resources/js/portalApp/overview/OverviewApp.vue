@@ -67,7 +67,10 @@
                                         <a-row>
                                             <a-col :span="24">
                                                 <p>Mã ngăn: {{item.slot_code}}</p>
-                                                <p>Trạng thái: {{handleStatusText(item.status)}}</p>
+                                                <p  :style="{
+                                                    color: isExpired(item) ? 'red' : 'black',
+                                                }"
+                                                >Trạng thái: {{handleStatusText(item.status)}}</p>
                                             </a-col>
                                         </a-row>
                                     </a-col>
@@ -97,6 +100,7 @@
                                                     format="HH:mm"
                                                     :valueStyle= "{
                                                         fontSize: '1rem',
+                                                        color: isExpired(item) ? 'red' : 'green',
                                                     }"
                                                 />
                                             </p>
@@ -208,7 +212,10 @@ export default defineComponent({
             deleteBooking: 'moduleBase/deleteBooking',
         }),
         isActive(booking) {
-            return booking.status === BOOKING_ACTIVITY_STATUS.ACTIVE;
+            return booking.status === BOOKING_ACTIVITY_STATUS.ACTIVE || booking.status === BOOKING_ACTIVITY_STATUS.EXPIRED;
+        },
+        isExpired(booking) {
+            return booking.status === BOOKING_ACTIVITY_STATUS.EXPIRED;
         },
         handleStatusText(status) {
             switch(status) {
@@ -238,6 +245,11 @@ export default defineComponent({
         },
         handleTimeRemain(booking) {
             const EndDate = new Date(booking.end_date);
+            EndDate.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' });
+            if (booking.status == BOOKING_ACTIVITY_STATUS.EXPIRED) {
+                EndDate.setMinutes(EndDate.getMinutes() + parseInt(booking.bufferTime));
+            }
+
             return EndDate.getTime();
         },
         handleClickEndButton(booking) {

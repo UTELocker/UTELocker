@@ -1,4 +1,4 @@
-<template>
+<template id="policy-modal">
     <a-modal
         v-model:open="visible"
         :confirmLoading="isSubmitLoading"
@@ -43,7 +43,7 @@
                 </a-button>
             </a-row>
         </template>
-        <template #default>
+        <template #default style="padding: 0 15px;">
             <div v-html="this.settings.config_policy"></div>
         </template>
     </a-modal>
@@ -123,7 +123,9 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-ol {
-   list-style-type: decimal;
-}
+    .ant-modal-body{
+        ol {
+            list-style: decimal !important;
+        }
+    }
 </style>

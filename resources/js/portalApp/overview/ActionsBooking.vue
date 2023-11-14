@@ -182,7 +182,7 @@ export default defineComponent({
     },
     methods: {
         ...mapActions({
-            changePinCode: 'moduleBase/',
+            changePinCode: 'moduleBase/changePinCode',
             deleteBooking: 'moduleBase/deleteBooking',
         }),
         splitPinCode(booking) {

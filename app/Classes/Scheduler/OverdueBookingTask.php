@@ -8,6 +8,9 @@ use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Enums\LockerSlotStatus;
+use App\Enums\LockerSlotType;
+use App\Models\LockerSlot;
 
 class OverdueBookingTask
 {
@@ -15,8 +18,8 @@ class OverdueBookingTask
     {
         DB::transaction(function () {
             Booking::whereIn('bookings.status', [BookingStatus::APPROVED])
-                ->where('bookings.end_date', '<=', Carbon::now()->subMinutes(30)->format('Y-m-d H:i'))
-                ->update(['bookings.status' => BookingStatus::EXPIRED]);
+                    ->where('bookings.end_date', Carbon::now()->format('Y-m-d H:i'))
+                    ->update(['bookings.status' => BookingStatus::EXPIRED]);
         });
     }
 }

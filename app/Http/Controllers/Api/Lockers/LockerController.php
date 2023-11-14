@@ -47,7 +47,7 @@ class LockerController extends Controller
         if (!$this->lockerService->isNotExceedingLimitTime($configLocker, $startDate, $endDate)) {
             return Reply::error('Exceeding limit time', 'exceeding_limit_time');
         }
-        $listSlotsNotAvailable = $this->lockerSlotService->getSlotsNotAvailable($id, $startDate, $endDate);
+        $listSlotsNotAvailable = $this->lockerSlotService->getSlotsNotAvailable($locker, $startDate, $endDate);
         $module = $this->lockerService->getModulesAvailableBooking($locker, $listSlotsNotAvailable);
         $slotsUserBooked = $this->lockerService->getSlotsUserBooked($locker, $id);
 
