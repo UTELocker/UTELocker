@@ -384,4 +384,12 @@ class BookingService extends BaseService
             })
             ->get();
     }
+
+    public function deleteAllBookingUser($userId)
+    {
+        $bookings = $this->model->where('owner_id', $userId)->get();
+        foreach ($bookings as $booking) {
+            $this->delete($booking);
+        }
+    }
 }

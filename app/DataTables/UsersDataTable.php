@@ -14,6 +14,7 @@ use Yajra\DataTables\Html\Column;
 use App\View\Components\User as UserComponent;
 use App\Enums\UserRole;
 use App\Enums\UserGender;
+use App\Enums\UserStatus;
 
 class UsersDataTable extends BaseDataTable
 {
@@ -41,7 +42,11 @@ class UsersDataTable extends BaseDataTable
         $datatables->editColumn(
             'status',
             function ($row) {
-                return (new Status($row->active))->render();
+                $status = $row->active;
+                if ($row->status == UserStatus::BAN) {
+                    $status = UserStatus::BAN;
+                }
+                return (new Status($status))->render();
             }
         );
 
@@ -104,7 +109,12 @@ class UsersDataTable extends BaseDataTable
 
         $datatables->rawColumns(['name', 'action', 'status', 'check', 'gender']);
 
-        return $datatables;
+
+
+        return $datatables
+            ->setRowClass(function ($row) {
+                return $row->status == UserStatus::BAN ? 'disabled-row' : '';
+            });
     }
 
     /**

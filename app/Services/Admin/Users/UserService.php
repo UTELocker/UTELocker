@@ -15,16 +15,22 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Classes\CommonConstant;
 use Illuminate\Support\Facades\Hash;
+use App\Enums\UserStatus;
+use App\Services\Admin\Bookings\BookingService;
 
 class UserService extends BaseService
 {
     public const FORM_PREFIX = 'user_';
     private WalletService $walletService;
+    private BookingService $bookingService;
 
-    public function __construct(WalletService $walletService)
-    {
+    public function __construct(
+        WalletService $walletService,
+        BookingService $bookingService
+    ) {
         parent::__construct(new User());
         $this->walletService = $walletService;
+        $this->bookingService = $bookingService;
     }
 
     /**
@@ -88,12 +94,13 @@ class UserService extends BaseService
         } else {
             $inputs['is2FA'] = CommonConstant::DATABASE_NO;
         }
+        $inputs['status'] = $inputs['status'] ?? $this->model->status;
     }
 
     public function initDefaultData(): static
     {
         $this->model->active = CommonConstant::DATABASE_YES;
-
+        $this->model->status = UserStatus::ACTIVE;
         return $this;
     }
 
@@ -110,6 +117,7 @@ class UserService extends BaseService
         Common::assignField($this->model, 'locale', $inputs);
         Common::assignField($this->model, 'is2FA', $inputs);
         Common::assignField($this->model, 'active', $inputs);
+        Common::assignField($this->model, 'status', $inputs);
     }
 
     public function get($id)
@@ -180,5 +188,13 @@ class UserService extends BaseService
                 'email',
             )
             ->get();
+    }
+
+    public function delete($userId)
+    {
+        $this->setModel($this->get($userId));
+        $this->model->status = UserStatus::BAN;
+        $this->bookingService->deleteAllBookingUser($userId);
+        return $this->model->save();
     }
 }

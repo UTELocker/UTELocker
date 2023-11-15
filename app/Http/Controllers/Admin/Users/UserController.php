@@ -191,7 +191,8 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $this->userService->delete($id);
+        return Reply::success(__('messages.recordDeleted'));
     }
 
     public function profile(string $id)

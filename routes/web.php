@@ -36,7 +36,7 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::group(['middleware' => ['auth', 'auth.verify']], function () {
+Route::group(['middleware' => ['auth', 'auth.verify', 'user.banned']], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->middleware('permissionAdmin')
         ->name('admin.dashboard');
@@ -49,7 +49,7 @@ Route::group(['middleware' => ['auth', 'auth.verify']], function () {
         Route::get('help-call/{any}', [PortalController::class, 'index'])->where('any', '.*');
 });
 
-Route::group(['middleware' => ['auth', 'auth.verify', 'permissionAdmin']], function () {
+Route::group(['middleware' => ['auth', 'auth.verify', 'permissionAdmin', 'user.banned']], function () {
     Route::resource('clients', ClientController::class)
         ->names([
             'index' => 'admin.clients.index',
@@ -192,7 +192,7 @@ Route::group(['middleware' => ['auth', 'auth.verify', 'permissionAdmin']], funct
         ]);
 });
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', 'user.banned']], function () {
     Route::resource('users', UserController::class)
         ->names([
             'index' => 'admin.users.index',

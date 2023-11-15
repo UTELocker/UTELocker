@@ -4,7 +4,7 @@
         ]) }}>
     <div class="d-block text-capitalize">
         <h5 class="f-15 f-w-500 mb-20 text-darkest-grey">{{ $title }}
-            @if (!empty($info))
+            @if (isset($info))
                 <i
                     class="fa fa-question-circle"
                     data-toggle="popover"

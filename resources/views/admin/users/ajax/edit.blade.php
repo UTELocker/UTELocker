@@ -98,6 +98,17 @@
                                     </option>
                                 </x-forms.select>
                             </div>
+                            <div class="col-md-4">
+                                <x-forms.select fieldId="user_status" :fieldLabel="__('modules.users.status')"
+                                                fieldName="user_status" >
+                                    <option @if ($user->status == \App\Enums\UserStatus::ACTIVE) selected @endif value={{ \App\Enums\UserStatus::ACTIVE }}>
+                                        @lang('modules.users.activeNote')
+                                    </option>
+                                    <option @if ($user->status == \App\Enums\UserStatus::BAN) selected @endif value={{ \App\Enums\UserStatus::BAN }}>
+                                        @lang('app.banned')
+                                    </option>
+                                </x-forms.select>
+                            </div>
                         </div>
                     </div>
 

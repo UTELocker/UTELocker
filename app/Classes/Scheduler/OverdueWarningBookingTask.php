@@ -43,12 +43,6 @@ class OverdueWarningBookingTask
                     'locations.description as address',
                     'lockers.code as locker_code')
                 ->get();
-            Log::info([
-                Carbon::now()->addMinutes(
-                    $configLocker['bufferTime'] ?? 30
-                )->format('Y-m-d H:i'),
-                Carbon::now()->format('Y-m-d H:i')
-            ]);
             foreach ($listBookings as $booking) {
                 $diffTime = Carbon::now()->diffInMinutes($booking->end_date);
 

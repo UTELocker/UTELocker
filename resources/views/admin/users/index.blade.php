@@ -2,6 +2,12 @@
 
 @push('datatable-styles')
     @include('sections.datatables_css')
+    <style>
+        .disabled-row {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
 @endpush
 
 @section('filter-section')
@@ -97,12 +103,14 @@
                     @lang('app.add')
                     @lang('app.user')
                 </x-forms.link-primary>
-                <x-forms.button-secondary
-                    class="mr-3 float-left mb-2 mb-lg-0 mb-md-0" icon="plus"
-                    id="show-modal-token-register"
-                >
-                    @lang('app.createTokenRegister')
-                </x-forms.button-secondary>
+                @if (!user()->isSuperUser())
+                    <x-forms.button-secondary
+                        class="mr-3 float-left mb-2 mb-lg-0 mb-md-0" icon="plus"
+                        id="show-modal-token-register"
+                    >
+                        @lang('app.createTokenRegister')
+                    </x-forms.button-secondary>
+                @endif
             </div>
             <x-datatable.actions>
                 <div class="select-status mr-3">
@@ -228,6 +236,22 @@
 
         function openNewTabQr (token) {
             window.open('/qr-code?token=' + token, '_blank');
+        }
+
+        function deleteUser(userId) {
+            $.easyAjax({
+                url: "{{ route('admin.users.destroy', '') }}" + '/' + userId,
+                type: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    _method: "DELETE"
+                },
+                success: function(response) {
+                    if (response.status == "success") {
+                        window.LaravelDataTables["users-table"].draw();
+                    }
+                }
+            })
         }
 
         $(document).ready(function () {

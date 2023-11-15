@@ -118,4 +118,5 @@ return array(
     'error' => 'Error',
     'booking' => 'Booking',
     'portal' => 'Go to Portal',
+    'banned' => 'Banned',
 );

@@ -23,11 +23,46 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->route('user');
         $rules = [
             'user_name' => 'required',
-            'user_email' => 'required|email',
+            'user_email' => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) use ($userId) {
+                    $user = User::where('email', $value)
+                        ->when(!user()->isSuperUser(), function ($query) {
+                            $query->where('client_id', user()->client_id);
+                        })
+                        ->when(user()->isSuperUser(), function ($query) {
+                            $query->where('client_id', $this->user_client_id);
+                        })
+                        ->first();
+                    if ($user && $user->id != $userId) {
+                        $fail('Email already exists in the site group');
+                    }
+                },
+            ],
             'user_password' => 'nullable|min:8',
-            'user_mobile' => 'nullable|numeric',
+            'user_mobile' => [
+                'required',
+                'regex:/^([0-9\s\-\+\(\)]*)$/',
+                'min:10',
+                'max:11',
+                function ($attribute, $value, $fail) use ($userId) {
+                    $user = User::where('mobile', $value)
+                        ->when(!user()->isSuperUser(), function ($query) {
+                            $query->where('client_id', user()->client_id);
+                        })
+                        ->when(user()->isSuperUser(), function ($query) {
+                            $query->where('client_id', $this->user_client_id);
+                        })
+                        ->first();
+                    if ($user && $user->id != $userId) {
+                        $fail('Mobile already exists in the site group');
+                    }
+                },
+            ],
             'user_gender' => 'required|int|in:0,1,2',
             'user_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'user_locale' => 'required|string|in:en,vi',

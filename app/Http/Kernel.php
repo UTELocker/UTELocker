@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'permissionAdmin' => \App\Http\Middleware\PermissionAdmin::class,
         'permission.register' => \App\Http\Middleware\PermissionRegister::class,
         'enoughMoney' => \App\Http\Middleware\CheckEnoughMoney::class,
+        'user.banned' => \App\Http\Middleware\IsUsserBanned::class,
     ];
 }

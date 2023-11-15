@@ -245,11 +245,11 @@ export default defineComponent({
         },
         handleTimeRemain(booking) {
             const EndDate = new Date(booking.end_date);
+            console.log(booking.end_date);
             EndDate.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' });
             if (booking.status == BOOKING_ACTIVITY_STATUS.EXPIRED) {
                 EndDate.setMinutes(EndDate.getMinutes() + parseInt(booking.bufferTime));
             }
-
             return EndDate.getTime();
         },
         handleClickEndButton(booking) {

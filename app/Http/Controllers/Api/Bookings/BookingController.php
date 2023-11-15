@@ -81,12 +81,7 @@ class BookingController extends Controller
     public function destroy($id)
     {
         $booking = $this->bookingService->get($id);
-        $status = $booking->status;
         $this->bookingService->delete($booking);
-        $percentage = siteGroup()->refund_soon_cancel_booking;
-        if ($status == BookingStatus::PENDING && $percentage > 0) {
-            $this->transactionService->refund($booking->transaction_id, $percentage);
-        }
         return Reply::success('Delete bookings successfully');
     }
 

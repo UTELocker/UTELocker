@@ -10,6 +10,11 @@
                             <div class="col-10">
                                 <h4 class="card-title f-15 f-w-500 text-darkest-grey mb-0">
                                     {{ $user->name }}
+                                    <span class="badge badge-{{ $user->status == \App\Enums\UserStatus::BAN ? 'danger' : 'success' }} f-12">
+                                        {{
+                                            $user->status == \App\Enums\UserStatus::BAN ? __('app.banned') : __('app.active')
+                                        }}
+                                    </span>
                                 </h4>
                             </div>
                             <div class="col-2 text-right">

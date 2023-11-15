@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use App\Enums\UserStatus;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -30,9 +31,19 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        session()->forget('user');
+
+        if (user()->status == UserStatus::BAN) {
+            Auth::guard('web')->logout();
+            throw ValidationException::withMessages([
+                'email' => __('messages.auth.banned'),
+            ]);
+        }
 
         if (user()->active == CommonConstant::DATABASE_NO) {
             Auth::guard('web')->logout();

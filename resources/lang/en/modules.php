@@ -14,6 +14,7 @@ return array(
         'active' => 'Active',
         'activeNote' => 'Active Account',
         'inactive' => 'Inactive Account',
+        'status' => 'Status',
     ],
     'clients' => [
         'addedOn' => 'Added On',

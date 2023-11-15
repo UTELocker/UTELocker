@@ -26,6 +26,9 @@ class Status extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.datatable.status', ['isActive' => $this->isActive]);
+        return view('components.datatable.status', [
+            'isActive' => $this->isActive,
+            'status' => $this->status
+        ]);
     }
 }
