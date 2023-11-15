@@ -54,6 +54,48 @@
     @include('sections.datatables_js')
 
     <script>
+
+        function deleteLocation(locationId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Are you sure you want to delete this location?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.easyAjax({
+                    url: "{{ route('admin.location.locations.destroy', ':id') }}".replace(':id', locationId),
+                    type: "DELETE",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        _method: "DELETE",
+                    },
+                    success: function (response) {
+                        if (response.status == "success") {
+                            showTable();
+                            Swal.fire(
+                                "@lang('messages.recordDeleted')!",
+                                "@lang('messages.recordDeleted')",
+                                "success"
+                            );
+                        }
+                        else {
+                            Swal.fire(
+                                "@lang('app.error')!",
+                                response.message,
+                                "error"
+                            );
+                        }
+                    },
+                });
+                }
+            });
+        }
+
         $('#lockers-table').on('preXhr.dt', function(e, settings, data) {
             const dateRangePicker = $('#datatableRange').data('daterangepicker');
             let startDate = $('#datatableRange').val();
@@ -72,7 +114,7 @@
         });
 
         const showTable = () => {
-            window.LaravelDataTables["lockers-table"].draw(false);
+            window.LaravelDataTables["locations-table"].draw(false);
         }
 
         $(document).ready(function () {

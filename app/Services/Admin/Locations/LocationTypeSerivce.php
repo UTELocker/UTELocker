@@ -51,4 +51,25 @@ class LocationTypeSerivce extends BaseService
             $this->model->save();
         });
     }
+
+    public function delete(string $id)
+    {
+        $this->setModel($this->get($id));
+        if ($this->validateDelete()) {
+            return false;
+        }
+        DB::transaction(function () {
+            $this->model->delete();
+        });
+        return true;
+    }
+
+    protected function validateDelete()
+    {
+        $locations = $this->model->locations;
+        if (count($locations) > 0) {
+            return true;
+        }
+        return false;
+    }
 }

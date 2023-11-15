@@ -114,6 +114,11 @@ class LocationController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if ($this->locationService->delete($id)) {
+            return Reply::success(__('messages.recordDeleted'));
+        }
+        return Reply::error(
+            'Location is linked with lockers. Please delete lockers first.',
+        );
     }
 }

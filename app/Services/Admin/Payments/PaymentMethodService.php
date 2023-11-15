@@ -35,10 +35,11 @@ class PaymentMethodService extends BaseService
 
     protected function formatInputData(&$inputs): void
     {
-        $inputs['client_id'] = $inputs['client_id'] ? $inputs['client_id'] : $this->model->client_id ?? user()->client_id;
+        $inputs['client_id'] = isset($inputs['client_id']) ? $inputs['client_id'] : $this->model->client_id ?? user()->client_id;
         $inputs['code'] = $inputs['code'] ?? $this->model->code;
         $inputs['type'] = $inputs['type'] ?? $this->model->type;
         $inputs['config'] = $this->getPaymentMethodConfig($inputs);
+        $inputs['active'] = $inputs['active'] ?? $this->model->active ?? CommonConstant::DATABASE_NO;
     }
 
     private function getPaymentMethodConfig(array $inputs): string

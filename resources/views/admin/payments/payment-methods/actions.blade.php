@@ -14,8 +14,10 @@
                class="dropdown-item"><i class="fa fa-edit mr-2"></i>Edit</a>
             @if ($row->type != \App\Enums\PaymentMethodType::UTEPAY)
                 <a class="dropdown-item delete-table-row"
-                   href="javascript:;" data-form-id="user-delete-{{ $row->id }}"><i
-                        class="fa fa-trash mr-2"></i>Delete</a>
+                   href="javascript: deletePaymentMethod({{ $row->id }})" data-form-id="user-delete-{{ $row->id }}"><i
+                        class="fa fa-trash mr-2"></i>
+                        Inactive
+                    </a>
             @endif
         </div>
     </div>

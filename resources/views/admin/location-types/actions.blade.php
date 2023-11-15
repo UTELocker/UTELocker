@@ -13,7 +13,7 @@
             <a href="{{ route('admin.location.types.edit', $row->id) }}"
                class="dropdown-item openRightModal"><i class="fa fa-edit mr-2"></i>Edit</a>
             <a class="dropdown-item delete-table-row"
-               href="javascript:;" data-form-id="user-delete-{{ $row->id }}"><i
+               href="javascript: deletLocationType({{ $row->id }});" data-form-id="user-delete-{{ $row->id }}"><i
                     class="fa fa-trash mr-2"></i>Delete</a>
         </div>
     </div>

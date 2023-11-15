@@ -124,14 +124,14 @@ class LockerService extends BaseService
     {
         $modules = [];
         $slots = $locker->lockerSlots;
-
         foreach ($slots as $slot) {
             $modules[$slot->row][$slot->column] = $slot->toArray();
             if ($slot->type === LockerSlotType::SLOT) {
-                $modules[$slot->row][$slot->column]['statusSlot'] =
-                    in_array($slot->id, $slotsNotAvailable) ?
-                        LockerSlotStatus::BOOKED :
-                        LockerSlotStatus::AVAILABLE;
+                if (in_array($slot->id, $slotsNotAvailable))
+                    $modules[$slot->row][$slot->column]['statusSlot'] = LockerSlotStatus::BOOKED;
+                else
+                    $modules[$slot->row][$slot->column]['statusSlot'] =
+                        $slot->status === LockerSlotStatus::AVAILABLE ? LockerSlotStatus::AVAILABLE : LockerSlotStatus::LOCKED;
             } else {
                 $modules[$slot->row][$slot->column]['statusSlot'] = LockerSlotStatus::LOCKED;
             }
@@ -171,6 +171,7 @@ class LockerService extends BaseService
             ->where('lockers.status', '==', LockerStatus::IN_USE)
             ->withCount(['lockerSlots' => function ($query) use($startDate, $endDate) {
                 $query->where('type', LockerSlotType::SLOT)
+                    ->where('locker_slots.status', LockerSlotStatus::AVAILABLE)
                     ->whereNotIn('id', function ($q) use ($startDate, $endDate) {
                         $q->select('locker_slot_id')
                         ->from('bookings')
@@ -198,6 +199,10 @@ class LockerService extends BaseService
             ->join('licenses', 'licenses.locker_id', '=', 'lockers.id')
             ->join('locations', 'locations.id', '=', 'lockers.location_id')
             ->where('lockers.id', $id)
+            ->where(function ($q) {
+                $q->where('lockers.status', LockerStatus::IN_USE)
+                    ->orWhere('lockers.status', LockerStatus::AVAILABLE);
+            })
             ->where('licenses.client_id', user()->client_id)
             ->first();
     }

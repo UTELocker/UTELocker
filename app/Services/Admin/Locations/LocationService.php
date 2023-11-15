@@ -99,4 +99,25 @@ class LocationService extends BaseService
         });
 
     }
+
+    public function delete(string $id)
+    {
+        $this->setModel($this->get($id));
+        if ($this->validateDelete()) {
+            return false;
+        }
+        DB::transaction(function () {
+            $this->model->delete();
+        });
+        return true;
+    }
+
+    protected function validateDelete()
+    {
+        $lockers = $this->model->lockers;
+        if (count($lockers) > 0) {
+            return true;
+        }
+        return false;
+    }
 }

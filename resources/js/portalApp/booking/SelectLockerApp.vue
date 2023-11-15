@@ -45,7 +45,9 @@
                                         <p v-if="slot.type == SLOT_TYPE.SLOT">Trạng thái: {{
                                             slot.statusSlot === SLOT_STATUS.AVAILABLE
                                                 ? 'Còn trống'
-                                                : 'Đã đặt'
+                                                : (slot.statusSlot === SLOT_STATUS.BOOKED
+                                                    ? 'Đã đặt'
+                                                    : 'Bị khoá')
                                         }}</p>
                                     </template>
                                     <p>
@@ -141,12 +143,14 @@ export default defineComponent({
             if (slot.is_selected) {
                 return 'var(--green-3)';
             }
-
+            console.log(slot.statusSlot);
             switch (slot.statusSlot) {
                 case SLOT_STATUS.AVAILABLE:
                     return 'var(--green-6)';
                 case SLOT_STATUS.BOOKED:
                     return 'var(--error-color)';
+                default:
+                    return 'yellow';
             }
         },
         isSystemSlot(slot) {

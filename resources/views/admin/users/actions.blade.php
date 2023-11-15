@@ -20,7 +20,7 @@
                 <a class="dropdown-item delete-table-row"
                     href="javascript: deleteUser({{ $row->id }});" data-form-id="user-delete-{{ $row->id }}"
                     data-method="delete"
-                ><i class="fa fa-trash mr-2"></i>Delete</a>
+                ><i class="fa fa-trash mr-2"></i>Ban User</a>
             @endif
         </div>
     </div>

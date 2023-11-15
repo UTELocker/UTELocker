@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 use App\Enums\LockerSlotType;
 use Carbon\Carbon;
+use App\Enums\LockerSlotStatus;
 
 class StoreBookingRequest extends FormRequest
 {
@@ -29,13 +30,13 @@ class StoreBookingRequest extends FormRequest
     {
         $listSlotsId = $this->input('list_slots_id');
         $lockerCPU = LockerSlot::where('type', LockerSlotType::CPU)
-        ->where('locker_id', function ($query) use ($listSlotsId) {
-            $query->select('locker_id')
-            ->from('locker_slots')
-            ->where('id', $listSlotsId[0]);
-        })
-        ->select('config')
-        ->first();
+            ->where('locker_id', function ($query) use ($listSlotsId) {
+                $query->select('locker_id')
+                ->from('locker_slots')
+                ->where('id', $listSlotsId[0]);
+            })
+            ->select('config')
+            ->first();
         $configLocker = json_decode($lockerCPU->config, true);
         $startDate = Carbon::parse($this->input('start_date'))
             ->subMinutes($configLocker['bufferTime'] ?? 30)
@@ -45,13 +46,16 @@ class StoreBookingRequest extends FormRequest
             ->toDateTimeString();
         $slot = LockerSlot::whereIn('locker_slots.id', $listSlotsId)
             ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
-            ->where(function ($q) {
-                $q->where('bookings.status', BookingStatus::PENDING)
-                    ->orWhere('bookings.status', BookingStatus::APPROVED);
-            })
-            ->where(function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('bookings.start_date', [$startDate, $endDate])
-                    ->orWhereBetween('bookings.end_date', [$startDate, $endDate]);
+            ->where('locker_slots.status', LockerSlotStatus::LOCKED)
+            ->orWhere(function ($q) use ($startDate, $endDate) {
+                $q->where(function ($q) {
+                    $q->where('bookings.status', BookingStatus::PENDING)
+                        ->orWhere('bookings.status', BookingStatus::APPROVED);
+                })
+                ->where(function ($q) use ($startDate, $endDate) {
+                    $q->whereBetween('bookings.start_date', [$startDate, $endDate])
+                        ->orWhereBetween('bookings.end_date', [$startDate, $endDate]);
+                });
             })
             ->get();
         if ($slot->count() > 0) {

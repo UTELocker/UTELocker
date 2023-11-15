@@ -35,6 +35,41 @@
             window.LaravelDataTables["paymentmethods-table"].draw(false);
         }
 
+        function deletePaymentMethod(paymentMethodId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Are you sure you want to inactive this payment method?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.easyAjax({
+                        url: "{{ route('admin.payment.methods.destroy', ':id') }}".replace(':id', paymentMethodId),
+                        type: "DELETE",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            _method: "DELETE",
+                        },
+                        success: function (response) {
+                            if (response.status == "success") {
+                                showTable();
+                                Swal.fire(
+                                    "@lang('messages.recordDeleted')!",
+                                    "@lang('messages.recordDeleted')",
+                                    "success"
+                                );
+                            }
+                        },
+                    });
+                }
+            });
+        }
+
+
         $(document).ready(function () {
             showTable();
         })

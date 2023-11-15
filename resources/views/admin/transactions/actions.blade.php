@@ -12,8 +12,6 @@
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink-{{ $row->id }}" tabindex="0">
             <a href="{{ route('admin.payment.transaction.show', $row->reference) }}"
                class="dropdown-item"><i class="fa fa-eye mr-2"></i>Detail</a>
-            <a href="{{ route('admin.payment.methods.edit', $row->id) }}"
-               class="dropdown-item"><i class="fa fa-random mr-2"></i>RollBack</a>
         </div>
     </div>
 </div>

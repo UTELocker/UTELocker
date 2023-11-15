@@ -106,6 +106,11 @@ class LocationTypeController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if ($this->locationTypeService->delete($id)) {
+            return Reply::success(__('messages.recordDeleted'));
+        }
+        return Reply::error(
+            'Location Type is linked with Location. Please delete location first.',
+        );
     }
 }

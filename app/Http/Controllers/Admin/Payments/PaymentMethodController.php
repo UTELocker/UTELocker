@@ -12,6 +12,7 @@ use App\Libs\PaymentMethodConfig\CashPaymentMethodConfig;
 use App\Libs\PaymentMethodConfig\PaymentMethodLoader;
 use App\Services\Admin\Payments\PaymentMethodService;
 use Illuminate\Http\Request;
+use App\Classes\CommonConstant;
 
 class PaymentMethodController extends Controller
 {
@@ -116,6 +117,9 @@ class PaymentMethodController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $this->paymentMethodService->update([
+            'active' => CommonConstant::DATABASE_NO,
+        ], $id);
+        return Reply::success(__('Payment Method Deleted Successfully'));
     }
 }
