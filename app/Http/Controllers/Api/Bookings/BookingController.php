@@ -103,12 +103,10 @@ class BookingController extends Controller
     public function getHistoriesBooking()
     {
         $bookings = $this->bookingService->getHistoriesBooking(user());
-        $transactions = $this->transactionService->getTransactionsWithNumBookings(user());
         return Reply::successWithData('Get histories booking successfully',
             [
                 'data' => [
                     'bookings' => $bookings,
-                    'transactions' => $transactions
                 ]
             ]
         );

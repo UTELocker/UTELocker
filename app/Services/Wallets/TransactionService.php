@@ -61,6 +61,7 @@ class TransactionService extends BaseService
         Common::assignField($this->model, 'promotion_balance', $inputs);
         Common::assignField($this->model, 'time', $inputs);
         Common::assignField($this->model, 'content', $inputs);
+        Common::assignField($this->model, 'transaction_id', $inputs);
     }
 
     public function validateUniqueReference(string $reference): bool
@@ -149,11 +150,14 @@ class TransactionService extends BaseService
             ->get();
     }
 
-    public function refund($transactionId, $percentage)
+    public function refund($transactionId, $percentage, $content = '')
     {
         DB::beginTransaction();
         try {
             $transaction = $this->model->where('id', $transactionId)->firstOrFail();
+            if ($transaction->status != TransactionStatus::SUCCESS || $transaction->transaction_id) {
+                return ;
+            }
             $amount = $transaction->amount * $percentage / 100;
             $wallet =  Wallet::where('user_id',  $transaction->user_id)->first();
             $wallet->balance += $amount;
@@ -174,23 +178,30 @@ class TransactionService extends BaseService
                 'promotion_balance' =>  $wallet->promotion_balance,
                 'time' =>  now(),
                 'content' => 'Hoàn tiền mã đơn ' .  $transaction->reference,
+                'transaction_id' => $transaction->id,
             ];
             $newTransaction = $this->add($inputs);
             $user = User::where('id', $wallet->user_id)->select('client_id')->first();
+            $contentNotification = !empty($content) ? $content : 'Hoàn tiền mã đơn ' .  $transaction->reference;
             $this->sendNotification(
                 NotificationType::PAYMENT,
-                'Hoàn tiền mã đơn ' .  $transaction->reference,
+                $contentNotification,
                 $wallet->user_id,
                 $user->client_id,
                 NotificationParentTable::TABLE_TRANSACTIONS,
                 $newTransaction->id,
             );
+            $transaction->transaction_id = $newTransaction->id;
+            $transaction->save();
             DB::commit();
             return $transaction;
         } catch (\Exception $e) {
             DB::rollBack();
-            dd ($e);
-            return false;
+            // dd ($e);
+            // return [
+            //     'status' => 'error',
+            //     'message' => $e->getMessage(),
+            // ];
         }
     }
 }

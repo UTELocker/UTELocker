@@ -19,9 +19,14 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Classes\Files;
 use App\Enums\LockerSlotType;
+use App\Enums\UserRole;
+use App\Traits\HandleNotification;
+use App\Enums\NotificationType;
+use Illuminate\Support\Facades\Log;
 
 class BookingService extends BaseService
 {
+    use HandleNotification;
     private TransactionService $transactionService;
     public function __construct(Booking $model, TransactionService $transactionService)
     {
@@ -53,6 +58,22 @@ class BookingService extends BaseService
         $this->formatInputData($inputs);
         $this->setModelFields($inputs);
         DB::transaction(function () {
+            $this->model->save();
+            $wallet = auth()->user()->wallet;
+            $amount = LockerSlot::calculatePriceBooking(
+                [$this->model->locker_slot_id],
+                $this->model->start_date,
+                $this->model->end_date
+            );
+            $transaction =$this->transactionService->handlePayment(
+                $wallet,
+                $amount,
+                'Thanh toán đặt tủ',
+            );
+            if (!$transaction) {
+                throw new \Exception('Thanh toán thất bại');
+            }
+            $this->model->transaction_id = $transaction->id;
             $this->model->save();
         });
 
@@ -190,7 +211,7 @@ class BookingService extends BaseService
         return $booking;
     }
 
-    public function delete(Booking $booking)
+    public function delete(Booking $booking, $refundFull = false, $content = '')
     {
         if ($booking->status == BookingStatus::EXPIRED || $booking->status == BookingStatus::APPROVED) {
             $booking->status = BookingStatus::COMPLETED;
@@ -198,7 +219,22 @@ class BookingService extends BaseService
         if ($booking->status == BookingStatus::PENDING) {
             $booking->status = BookingStatus::CANCELLED;
         }
-        $booking->save();
+        $this->model->where('id', $booking->id)->update([
+            'status' => $booking->status,
+            'cancel_by' => user()->id,
+            'cancel_reason' => $content,
+        ]);
+        $percentage = $refundFull ? 100 : siteGroup()->refund_soon_cancel_booking;
+        if (($booking->status == BookingStatus::CANCELLED && $percentage > 0) || $refundFull) {
+            $transactionRefund = $this->transactionService->refund($booking->transaction_id, $percentage);
+            if (isset($transactionRefund['status']) && $transactionRefund['status'] == 'error') {
+                dd ($transactionRefund);
+                return [
+                    'status' => 'error',
+                    'message' => $transactionRefund['message'],
+                ];
+            }
+        }
         return $booking;
     }
 
@@ -236,23 +272,6 @@ class BookingService extends BaseService
         DB::beginTransaction();
         try {
             $bookings = $this->addListBooking($data);
-            $wallet = auth()->user()->wallet;
-            $amount = LockerSlot::calculatePriceBooking($data['list_slots_id'], $data['start_date'], $data['end_date']);
-            $transaction =$this->transactionService->handlePayment(
-                $wallet,
-                $amount,
-                'Thanh toán đặt tủ',
-            );
-            if (!$transaction) {
-                throw new \Exception('Thanh toán thất bại');
-            }
-
-            $listId = [];
-            foreach ($bookings as $booking) {
-                $listId[] = $booking->id;
-            }
-            $this->model->whereIn('id', $listId)->update(['transaction_id' => $transaction->id]);
-
             DB::commit();
             return [
                 'status' => 'success',
@@ -300,6 +319,7 @@ class BookingService extends BaseService
             ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
             ->leftJoin('transactions', 'bookings.transaction_id', '=', 'transactions.id')
             ->where('locker_slots.locker_id', $locker->id)
+            ->whereNull('transactions.transaction_id')
             ->whereIn('bookings.status', [BookingStatus::APPROVED, BookingStatus::PENDING, BookingStatus::COMPLETED])
             ->select([
                 DB::raw('DATE_FORMAT(bookings.start_date, "%m") as month'),
@@ -314,7 +334,12 @@ class BookingService extends BaseService
         $data['labels'] = $moths;
         $data['values'] = $bookings->groupBy('month')->map(function ($item) {
             return $item->sum('amount');
-        })->values()->toArray();
+        })->toArray();
+        foreach ($moths as $month) {
+            if (!isset($data['values'][$month])) {
+                $data['values'][$month] = 0;
+            }
+        }
         $data['colors'] = ['#36a2eb'];
         $data['name'] = __('modules.lockers.sumEarnings');
         return $data;
@@ -385,11 +410,88 @@ class BookingService extends BaseService
             ->get();
     }
 
-    public function deleteAllBookingUser($userId)
+    public function deleteAllBookingUser($userId, $content = null)
     {
-        $bookings = $this->model->where('owner_id', $userId)->get();
+        $bookings = $this->model->where('owner_id', $userId)
+            ->where('status', BookingStatus::APPROVED)
+            ->orWhere('status', BookingStatus::PENDING)
+            ->get();
         foreach ($bookings as $booking) {
-            $this->delete($booking);
+            $this->delete($booking, false, $content);
+        }
+    }
+
+    public function deleteAllBookingLocker($lockerId, $content = null)
+    {
+        $bookings = $this->model
+            ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->where('locker_slots.locker_id', $lockerId)
+            ->select('bookings.id',
+                    'bookings.transaction_id',
+                    'bookings.status',
+                    'bookings.owner_id',
+                    'locker_slots.locker_id'
+                )
+            ->where(function ($query) {
+                $query->where('bookings.status', BookingStatus::APPROVED)
+                    ->orWhere('bookings.status', BookingStatus::PENDING);
+            })
+            ->get();
+        $ownerUnique = $bookings->unique('owner_id');
+        foreach ($ownerUnique as $owner) {
+            Log::info('send notification to user: ' . $owner->owner_id);
+            $this->sendNotification(
+                NotificationType::LOCKER_SYSTEM,
+                $content ?? 'Hệ thống đã hủy tất cả các đặt tủ của bạn',
+                $owner->owner_id,
+                user()->client_id,
+                'lockers',
+                $owner->locker_id,
+            );
+        }
+
+        foreach ($bookings as $booking) {
+            $res = $this->delete($booking, true, $content);
+            if (isset($res['status']) && $res['status'] == 'error') {
+                throw new \Exception($res['message']);
+            }
+        }
+    }
+
+    public function deleteAllBookingSlotLocker($lockerSlotId, $content = null)
+    {
+        $bookings = $this->model
+            ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->where('locker_slots.id', $lockerSlotId)
+            ->select('bookings.id',
+                    'bookings.transaction_id',
+                    'bookings.status',
+                    'bookings.owner_id',
+                    'locker_slots.locker_id',
+                    'locker_slots.id as locker_slot_id'
+                )
+            ->where(function ($query) {
+                $query->where('bookings.status', BookingStatus::APPROVED)
+                    ->orWhere('bookings.status', BookingStatus::PENDING);
+            })
+            ->get();
+        $ownerUnique = $bookings->unique('owner_id');
+        foreach ($ownerUnique as $owner) {
+            $this->sendNotification(
+                NotificationType::LOCKER_SYSTEM,
+                $content ?? 'Hệ thống đã hủy tất cả đơn đặt tủ của bạn tại ngăn',
+                $owner->owner_id,
+                user()->client_id,
+                'lockers',
+                $owner->locker_id,
+            );
+        }
+
+        foreach ($bookings as $booking) {
+            $res = $this->delete($booking, true, $content);
+            if (isset($res['status']) && $res['status'] == 'error') {
+                throw new \Exception($res['message']);
+            }
         }
     }
 }

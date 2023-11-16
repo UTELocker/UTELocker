@@ -7,6 +7,7 @@ use App\Models\Booking;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Models\LockerSlot;
+use App\Models\Locker;
 
 /**
  * @method static static OptionOne()
@@ -40,6 +41,11 @@ final class NotificationParentTable extends Enum
                 $record->locker_slot_code = $codeSlotLocker;
                 return $record;
             case self::TABLE_LOCKERS:
+                return Locker::where('lockers.id', $parentId)
+                    ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
+                    ->select('lockers.code as locker_code', 'lockers.id as locker_id',
+                        'locations.description as address', 'locations.longitude', 'locations.latitude')
+                    ->first();
             case self::TABLE_TRANSACTIONS:
             default:
                 if (Schema::hasTable($table)) {

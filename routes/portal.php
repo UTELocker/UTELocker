@@ -49,6 +49,7 @@ Route::prefix('api-portal')->group(function () {
         Route::put('/{id}/status', [NotificationController::class, 'updateStatus'])
             ->name('portal.notifications.update.status');
         Route::post('/', [NotificationController::class, 'store'])->name('portal.notifications.store');
+        Route::get('/{id}', [NotificationController::class, 'show'])->name('api.notifications.show');
     });
 
     Route::prefix('payments')->group(function () {

@@ -13,4 +13,5 @@ return array(
     'companyEmail' => 'e.g. admin@hcmute.edu.vn',
     'code' => 'e.g. CODE001',
     'date_of_manufacture' => 'e.g. 2017-01-01',
+    'cancelReason' => 'e.g. locker is broken',
 );

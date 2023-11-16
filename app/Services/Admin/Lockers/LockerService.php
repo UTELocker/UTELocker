@@ -13,22 +13,30 @@ use App\Services\Admin\Licenses\LicenseService;
 use App\Services\BaseService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Services\Admin\Lockers\LockerSlotService;
+use App\Services\Admin\Bookings\BookingService;
+use App\Classes\Reply;
 
 class LockerService extends BaseService
 {
     private LicenseService $licenseService;
     private LockerSlotService $lockerSlotService;
+    private BookingService $bookingService;
     private array $slotDefault = [
         LockerSlotType::SLOT,
         LockerSlotType::CPU,
         LockerSlotType::SLOT
     ];
 
-    public function __construct(LicenseService $licenseService, LockerSlotService $lockerSlotService)
-    {
+    public function __construct(
+        LicenseService $licenseService,
+        LockerSlotService $lockerSlotService,
+        BookingService $bookingService
+    ) {
         parent::__construct(new Locker());
         $this->licenseService = $licenseService;
         $this->lockerSlotService = $lockerSlotService;
+        $this->bookingService = $bookingService;
     }
 
     public function initDefaultData(): static
@@ -54,12 +62,25 @@ class LockerService extends BaseService
         return $this->model;
     }
 
-    public function update(Locker $locker, array $inputs, array $options = []): locker
+    public function update(Locker $locker, array $inputs, array $options = [])
     {
         $this->setModel($locker);
         $this->formatInputData($inputs);
         $this->setModelFields($inputs);
-        $locker->save();
+        DB::beginTransaction();
+        try {
+            $this->model->save();
+            if ($this->model->status != LockerStatus::IN_USE) {
+                $this->bookingService->deleteAllBookingLocker($this->model->id);
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // return [
+            //     'status' => 'error',
+            //     'message' => $e->getMessage()
+            // ];
+        }
 
         return $locker;
     }
@@ -127,11 +148,14 @@ class LockerService extends BaseService
         foreach ($slots as $slot) {
             $modules[$slot->row][$slot->column] = $slot->toArray();
             if ($slot->type === LockerSlotType::SLOT) {
-                if (in_array($slot->id, $slotsNotAvailable))
+                if (in_array($slot->id, $slotsNotAvailable)) {
                     $modules[$slot->row][$slot->column]['statusSlot'] = LockerSlotStatus::BOOKED;
-                else
+                } else {
                     $modules[$slot->row][$slot->column]['statusSlot'] =
-                        $slot->status === LockerSlotStatus::AVAILABLE ? LockerSlotStatus::AVAILABLE : LockerSlotStatus::LOCKED;
+                        $slot->status === LockerSlotStatus::AVAILABLE
+                            ? LockerSlotStatus::AVAILABLE
+                            : LockerSlotStatus::LOCKED;
+                }
             } else {
                 $modules[$slot->row][$slot->column]['statusSlot'] = LockerSlotStatus::LOCKED;
             }

@@ -11,12 +11,18 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Locker;
+use App\Models\License;
+use App\Services\Admin\Bookings\BookingService;
+use App\Enums\LockerSlotStatus;
 
 class LockerSlotService extends BaseService
 {
-    public function __construct()
-    {
+    public BookingService $bookingService;
+    public function __construct(
+        BookingService $bookingService
+    ){
         parent::__construct(new LockerSlot());
+        $this->bookingService = $bookingService;
     }
 
     public function add(array $inputs, array $options = [])
@@ -133,10 +139,22 @@ class LockerSlotService extends BaseService
         return $this->model;
     }
 
-    public function updateSetting($slotId, $status, $config)
+    public function updateSetting($slotId, $status, $config, $cancelReason = '')
     {
         $config = json_encode($config);
-        $this->model->where('id', $slotId)->update(['status' => $status, 'config' => $config]);
+        DB::transaction(function () use ($slotId, $status, $config, $cancelReason) {
+            $slot = $this->get($slotId);
+            $slot->status = $status;
+            $slot->config = $config;
+            $slot->save();
+            if ($slot->type == LockerSlotType::SLOT && (
+                $slot->status == LockerSlotStatus::BOOKED ||
+                $slot->status == LockerSlotStatus::LOCKED
+            )) {
+                $this->bookingService->deleteAllBookingSlotLocker ($slotId, $cancelReason);
+            }
+        });
+
     }
 
     public function getSlotsNotAvailable(Locker $locker, mixed $startDate, mixed $endDate)
@@ -210,5 +228,21 @@ class LockerSlotService extends BaseService
     public function getByLockerId($lockerId)
     {
         return $this->model->where('locker_id', $lockerId)->get();
+    }
+
+    public function getLockerSlotByPassword($password, $licenseId)
+    {
+        $lockerId = License::where('id', $licenseId)->first()->locker_id;
+        return $this->model
+            ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->where('locker_slots.locker_id', $lockerId)
+            ->where('locker_slots.type', LockerSlotType::SLOT)
+            ->where('bookings.pin_code', $password)
+            ->where(function ($q) {
+                $q->where('bookings.status', BookingStatus::EXPIRED)
+                    ->orWhere('bookings.status', BookingStatus::APPROVED);
+            })
+            ->select('locker_slots.row', 'locker_slots.column')
+            ->first();
     }
 }

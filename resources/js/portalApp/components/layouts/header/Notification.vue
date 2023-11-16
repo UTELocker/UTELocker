@@ -85,12 +85,25 @@
         :closable="false"
     >
         <template #title>
-            <component :is="handleIconNotification(item)" style="margin-right: 8px" />
-            <p>
-                {{handleTypeNotification(notificationChoose)}}
-            </p>
+            <a-row>
+                <component :is="handleIconNotification(notificationDetail)" style="margin-right: 8px" />
+                <p>
+                    {{handleTypeNotification(notificationDetail)}}
+                </p>
+            </a-row>
         </template>
-        <p>{{notificationChoose.content}}</p>
+        <div>
+            <p>
+                <b>Content:</b>
+                {{notificationDetail.content}}
+            </p>
+        </div>
+        <div v-for="(value, key) in notificationDetail.content_detail" :key="key">
+            <p>
+                <b>{{key}}:</b>
+                {{value}}
+            </p>
+        </div>
         <template #footer>
             <a-button
                 type="primary"
@@ -104,7 +117,7 @@
 <script>
 import {defineComponent} from "vue";
 import {mapActions, mapState} from "vuex";
-import {NOTIFICATION_TYPE, NOTIFICATION_STATUS, NOTIFICATION_TYPE_LABEL_CHOOSE} from "../../../constants/notificationConstant";
+import {NOTIFICATION_TYPE, NOTIFICATION_STATUS, NOTIFICATION_TYPE_LABEL_CHOOSE, API} from "../../../constants/notificationConstant";
 import {
     CarryOutTwoTone,
     DollarTwoTone,
@@ -115,6 +128,7 @@ import {
     BellOutlined
 } from "@ant-design/icons-vue";
 import { notification, Modal } from 'ant-design-vue';
+import { get } from "../../../helpers/api";
 
 export default defineComponent({
     name: "Notification",
@@ -135,6 +149,7 @@ export default defineComponent({
             notificationChoose: null,
             typeNotificationChoose: NOTIFICATION_TYPE_LABEL_CHOOSE.ALL,
             listTypeNotification: Object.values(NOTIFICATION_TYPE_LABEL_CHOOSE),
+            notificationDetail: null,
         }
     },
     computed: {
@@ -216,12 +231,12 @@ export default defineComponent({
             return notification.status === NOTIFICATION_STATUS.READ;
         },
         handleClick(notification) {
+            this.markNotificationAsRead({
+                    notificationChoose: notification,
+                })
             switch (notification.type) {
                 case NOTIFICATION_TYPE.PAYMENT:
                     this.visible = false;
-                    this.markNotificationAsRead({
-                        notificationChoose: notification,
-                    })
                     this.$router.push({
                         name: 'wallet.transactions.detail',
                         params: {
@@ -231,9 +246,6 @@ export default defineComponent({
                     return false;
                 case NOTIFICATION_TYPE.BOOKING:
                     this.visible = false;
-                    this.markNotificationAsRead({
-                        notificationChoose: notification,
-                    })
                     this.$router.push({
                         name: 'portal.booking',
                         params: {
@@ -242,6 +254,21 @@ export default defineComponent({
                     });
                     return false;
                 case NOTIFICATION_TYPE.LOCKER_SYSTEM:
+                    this.visible = false;
+                    get(API.GET_DETAIL_NOTIFICATION(notification.id)).then((response) => {
+                        if (response.data.status === 'success') {
+                            this.isShowModal = true;
+                            this.notificationDetail = response.data.data;
+                            delete this.notificationDetail.content_detail.latitude;
+                            delete this.notificationDetail.content_detail.longitude;
+                            delete this.notificationDetail.content_detail.locker_id;
+                        }
+                    }).catch((error) => {
+                        Modal.error({
+                            title: 'Error',
+                            content: error.response.data.message,
+                        });
+                    });
                     return false;
                 case NOTIFICATION_TYPE.SITE_GROUP:
                 case NOTIFICATION_TYPE.SUPER_ADMIN:

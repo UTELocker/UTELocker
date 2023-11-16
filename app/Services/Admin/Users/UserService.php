@@ -194,7 +194,7 @@ class UserService extends BaseService
     {
         $this->setModel($this->get($userId));
         $this->model->status = UserStatus::BAN;
-        $this->bookingService->deleteAllBookingUser($userId);
+        $this->bookingService->deleteAllBookingUser($userId, 'User was banned');
         return $this->model->save();
     }
 }

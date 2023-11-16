@@ -29,8 +29,11 @@ class NotificationController extends Controller
 
     public function updateStatus($id, UpdateStatusRequest $request)
     {
-        $this->notificationService->updateStatus($id);
-        return Reply::success('Update status successfully');
+        $res = $this->notificationService->updateStatus($id);
+        return Reply::successWithData('Update status notification successfully',
+            [
+                'data' => $res
+            ]);
     }
 
     public function store(Request $request)

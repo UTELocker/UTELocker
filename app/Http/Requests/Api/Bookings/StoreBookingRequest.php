@@ -44,18 +44,20 @@ class StoreBookingRequest extends FormRequest
         $endDate = Carbon::parse($this->input('end_date'))
             ->addMinutes($configLocker['bufferTime'] ?? 30)
             ->toDateTimeString();
-        $slot = LockerSlot::whereIn('locker_slots.id', $listSlotsId)
-            ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
-            ->where('locker_slots.status', LockerSlotStatus::LOCKED)
-            ->orWhere(function ($q) use ($startDate, $endDate) {
-                $q->where(function ($q) {
-                    $q->where('bookings.status', BookingStatus::PENDING)
-                        ->orWhere('bookings.status', BookingStatus::APPROVED);
-                })
-                ->where(function ($q) use ($startDate, $endDate) {
-                    $q->whereBetween('bookings.start_date', [$startDate, $endDate])
-                        ->orWhereBetween('bookings.end_date', [$startDate, $endDate]);
-                });
+        $slot = LockerSlot::leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->whereIn('locker_slots.id', $listSlotsId)
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->where('locker_slots.status', LockerSlotStatus::LOCKED)
+                    ->orWhere(function ($q) use ($startDate, $endDate) {
+                        $q->where(function ($q) {
+                            $q->where('bookings.status', BookingStatus::PENDING)
+                                ->orWhere('bookings.status', BookingStatus::APPROVED);
+                        })
+                        ->where(function ($q) use ($startDate, $endDate) {
+                            $q->whereBetween('bookings.start_date', [$startDate, $endDate])
+                                ->orWhereBetween('bookings.end_date', [$startDate, $endDate]);
+                        });
+                    });
             })
             ->get();
         if ($slot->count() > 0) {

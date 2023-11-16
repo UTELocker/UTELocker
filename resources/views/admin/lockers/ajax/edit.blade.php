@@ -48,12 +48,10 @@
                                         \App\Enums\LockerStatus::getDescriptions([\App\Enums\LockerStatus::IN_USE])
                                         as $key => $status
                                     )
-                                        <option value="{{ $key }}">{{ $status }}</option>
+                                        <option @if ($key == $locker->status) selected @endif value="{{ $key }}">{{ $status }}</option>
                                     @endforeach
                                 </x-forms.select>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-4">
                                 <x-forms.select fieldId="location_id" :fieldLabel="__('modules.locations.title')"
                                                 fieldName="location_id">
@@ -67,6 +65,20 @@
                                 </x-forms.select>
                             </div>
                         </div>
+                        <div class="row" id="row_cancel_reason"
+                            @if ($locker->status == \App\Enums\LockerStatus::AVAILABLE) style="display: none;" @endif
+                        >
+                            <div class="col-md-12">
+                                <x-forms.text
+                                    fieldId="cancel_reason"
+                                    :fieldLabel="__('modules.bookings.cancelReason')"
+                                    fieldName="cancel_reason"
+                                    fieldRequired="false"
+                                    :fieldPlaceholder="__('placeholders.cancelReason')"
+                                    :fieldValue="''">
+                                </x-forms.text>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-lg-4">
                         <x-forms.file
@@ -74,7 +86,7 @@
                             :fieldLabel="__('modules.lockers.image')"
                             fieldName="image"
                             fieldId="image"
-                            fieldHeight="119" :popover="__('messages.fileFormat.ImageFile')" />
+                            fieldHeight="119" :popover="__('messages.fileFormat.ImageFile')"/>
                     </div>
                 </div>
                 <x-forms.actions>
@@ -105,6 +117,29 @@
         UTELocker.common.init(RIGHT_MODAL);
     });
 
+    $('#status').on('change', function() {
+        if ($(this).val() == '{{ \App\Enums\LockerStatus::AVAILABLE }}') {
+            $('#cancel_reason').val('');
+            $('#row_cancel_reason').hide();
+        } else {
+            Swal.fire({
+                title: 'Are you sure to change status?',
+                text: 'If you change status to Brken or Under Maintenance, all bookings will be canceled.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '{{ __('app.confirm') }}',
+                cancelButtonText: '{{ __('app.cancel') }}',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#row_cancel_reason').show();
+                } else {
+                    $('#status').val('{{ \App\Enums\LockerStatus::AVAILABLE }}');
+                    $('#status').trigger('change');
+                }
+            });
+        }
+    });
+
     function checkboxChange(parentClass, id) {
         let checkedData = '';
         $('.' + parentClass).find("input[type= 'checkbox']:checked").each(function() {
@@ -133,6 +168,13 @@
             success: function(response) {
                 if (response.status == 'success') {
                     window.location.href = response.redirectUrl;
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    });
                 }
             }
         })

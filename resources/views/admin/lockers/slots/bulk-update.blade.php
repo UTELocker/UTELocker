@@ -12,21 +12,37 @@
     <div class="modal-body">
             <div class="portlet-body">
                 <div class="form-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <x-forms.select fieldId="status"
-                                            :fieldLabel="__('app.status')"
-                                            :field
-                                            fieldName="status">
-                                @foreach(\App\Enums\LockerSlotStatus::getDescriptions() as $key => $status)
-                                    <option
-                                        value="{{ $key }}"
-                                        {{ $key == $slot->status ? 'selected' : '' }}
-                                    >{{ $status }}</option>
-                                @endforeach
-                            </x-forms.select>
+                    @if($slot->type == \App\Enums\LockerSlotType::SLOT)
+                        <div class="row">
+                            <div class="col-md-12">
+                                <x-forms.select fieldId="status"
+                                                :fieldLabel="__('app.status')"
+                                                :field
+                                                fieldName="status">
+                                    @foreach(\App\Enums\LockerSlotStatus::getDescriptions() as $key => $status)
+                                        <option
+                                            value="{{ $key }}"
+                                            {{ $key == $slot->status ? 'selected' : '' }}
+                                        >{{ $status }}</option>
+                                    @endforeach
+                                </x-forms.select>
+                            </div>
                         </div>
-                    </div>
+                        <div class="row" id="row_cancel_reason"
+                            style="{{ $slot->status == \App\Enums\LockerSlotStatus::AVAILABLE ? 'display: none' : '' }}"
+                        >
+                            <div class="col-md-12">
+                                    <x-forms.text
+                                        fieldId="cancel_reason"
+                                        :fieldLabel="__('modules.bookings.cancelReason')"
+                                        fieldName="cancel_reason"
+                                        fieldRequired="false"
+                                        :fieldPlaceholder="__('placeholders.cancelReason')"
+                                        :fieldValue="''">
+                                    </x-forms.text>
+                                </div>
+                        </div>
+                    @endif
                     @if($slot->type == \App\Enums\LockerSlotType::CPU)
                         <div class="row mt-2">
                             <div class="col-md-12">
@@ -90,6 +106,30 @@
 </x-form>
 
 <script>
+
+    $('#status').on('change', function() {
+        if ($(this).val() == '{{ \App\Enums\LockerSlotStatus::AVAILABLE }}') {
+            $('#cancel_reason').val('');
+            $('#row_cancel_reason').hide();
+        } else {
+            Swal.fire({
+                title: 'Are you sure to change status?',
+                text: 'If you change status to Locked or Booked, all bookings in slot will be canceled.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '{{ __('app.confirm') }}',
+                cancelButtonText: '{{ __('app.cancel') }}',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#row_cancel_reason').show();
+                } else {
+                    $('#status').val('{{ \App\Enums\LockerSlotStatus::AVAILABLE }}');
+                    $('#status').trigger('change');
+                }
+            });
+        }
+    });
+
     $(document).ready(function() {
         UTELocker.common.init(MODAL_LG);
 

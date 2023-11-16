@@ -3,6 +3,7 @@ export const API_NOTIFICATION_PREFIX = '/api-portal/notifications';
 export const API = Object.freeze({
     GET_NOTIFICATIONS: () => `${API_NOTIFICATION_PREFIX}/`,
     PUT_NOTIFICATION_STATUS: (notificationId) => `${API_NOTIFICATION_PREFIX}/${notificationId}/status`,
+    GET_DETAIL_NOTIFICATION: (notificationId) => `${API_NOTIFICATION_PREFIX}/${notificationId}`,
 });
 
 export const NOTIFICATION_STATUS = Object.freeze({
@@ -13,9 +14,9 @@ export const NOTIFICATION_STATUS = Object.freeze({
 export const NOTIFICATION_TYPE = Object.freeze({
     PAYMENT: 'payment',
     BOOKING: 'booking',
-    SUPER_ADMIN: 'super_admin',
-    LOCKER_SYSTEM: 'locker_system',
-    SITE_GROUP: 'site_group',
+    SUPER_ADMIN: 'superAdmin',
+    LOCKER_SYSTEM: 'lockerSystem',
+    SITE_GROUP: 'siteGroup',
     REPORT: 'report',
 });
 

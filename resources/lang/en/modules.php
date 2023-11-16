@@ -174,6 +174,7 @@ return array(
         'startDate' => 'Start Date',
         'endDate' => 'End Date',
         'status' => 'Status',
+        'cancelReason' => 'Cancel Reason',
     ],
     'transactions' => [
         'title' => 'Transactions',

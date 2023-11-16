@@ -103,7 +103,7 @@ class LockerSlotController extends Controller
         $form = $request->all();
         $status = $form['status'];
         unset($form['status'], $form['redirect_url'], $form['_token'], $form['_method']);
-        $this->lockerSlotService->updateSetting($slotId, $status, $form);
+        $this->lockerSlotService->updateSetting($slotId, $status, $form, $form['cancel_reason'] ?? '');
         return back()->with('success', 'Success');
     }
 

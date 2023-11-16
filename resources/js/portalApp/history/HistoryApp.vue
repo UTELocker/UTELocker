@@ -177,21 +177,25 @@ export default defineComponent({
         },
         handleTimeLine(history){
             const timeline = [];
+            const createdAtRaw = new Date(history.created_at);
+            const requestDate = createdAtRaw.toLocaleDateString("vi-VN") + ' ' + createdAtRaw.toLocaleTimeString("vi-VN");
+            const updateRaw = new Date(history.updated_at);
+            const updateDate = updateRaw.toLocaleDateString("vi-VN") + ' ' + updateRaw.toLocaleTimeString("vi-VN");
             timeline.push({
                 id: 1,
-                content: 'Request' + ' ' + new Date(history.created_at).toLocaleDateString("en-US"),
+                content: 'Đặt tủ vào lúc ' + requestDate,
                 color: 'blue',
             });
             switch (history.status){
                 case HISTORY_STATUS.APPROVED:
                     timeline.push({
                         id: 2,
-                        content: 'Start booking' + ' ' + history.start_date,
+                        content: 'Thời gian bắt đầu ' + history.start_date,
                         color: 'green',
                     });
                     timeline.push({
                         id: 2,
-                        content: 'End booking' + ' ' + history.end_date,
+                        content: 'Thời gian kết thúc ' + history.end_date,
                         color: 'green',
                     });
                     break;
@@ -199,43 +203,36 @@ export default defineComponent({
                     if (new Date(history.updated_at) < new Date(history.start_date)) {
                         timeline.push({
                             id: 2,
-                            content: 'Cancel' + ' ' + new Date(history.updated_at),
+                            content: 'Huỷ đặt ' + updateDate,
                             color: 'red',
                         });
                     } else {
                         timeline.push({
                             id: 2,
-                            content: 'Start booking' + ' ' + history.start_date,
+                            content: 'Thời gian kết thúc ' + history.start_date,
                             color: 'red',
                         });
                         timeline.push({
                             id: 2,
-                            content: 'Cancel' + ' ' + new Date(history.updated_at),
+                            content: 'Huỷ đặt ' + updateDate,
                             color: 'red',
                         });
                     }
-                    const cancelDate = new Date(history.updated_at);
-                    timeline.push({
-                        id: 2,
-                        content: 'Cancel' + ' ' + cancelDate.toLocaleDateString("vi-VN") + ' ' + cancelDate.toLocaleTimeString("vi-VN"),
-                        color: 'red',
-                    });
                     break;
                 case HISTORY_STATUS.EXPIRED:
                     timeline.push({
                         id: 2,
-                        content: 'Start booking' + ' ' + history.start_date,
+                        content: 'Thời gian kết thúc ' + history.start_date,
                         color: 'red',
                     });
                     timeline.push({
                         id: 2,
-                        content: 'End booking' + ' ' + history.end_date,
+                        content: 'Thời gian kết thúc ' + history.end_date,
                         color: 'red',
                     });
-                    const expiredDate = new Date(history.updated_at);
                     timeline.push({
                         id: 2,
-                        content: 'Expired' + ' ' + expiredDate.toLocaleDateString("vi-VN") + ' ' + expiredDate.toLocaleTimeString("vi-VN"),
+                        content: 'Quá giờ ' + updateDate,
                         color: 'red',
                     });
                     break;

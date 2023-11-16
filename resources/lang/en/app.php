@@ -119,4 +119,5 @@ return array(
     'booking' => 'Booking',
     'portal' => 'Go to Portal',
     'banned' => 'Banned',
+    'confirm' => 'Confirm',
 );

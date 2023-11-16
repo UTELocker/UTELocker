@@ -58,7 +58,19 @@ public function __construct(UserService $userService)
             'client_id' => 'required|exists:clients,id',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'gender' => 'required|in:' . implode(',', UserGender::getAll()),
-            'mobile' => 'required|numeric|digits_between:10,11',
+            'mobile' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (User::where('mobile', $value)
+                        ->where('client_id', $request->get('client'))
+                        ->exists()
+                    ) {
+                        $fail(__('validation.unique', ['attribute' => $attribute]));
+                    }
+                },
+            ],
         ]);
         $user = $this->userService->add($request->all(), ['isPrefix' => false]);
 

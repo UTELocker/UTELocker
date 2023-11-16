@@ -65,9 +65,7 @@ class BookingsDataTable extends BaseDataTable
         });
 
         $datatables->editColumn('amount', function ($row) {
-            $transaction = $row->transaction_id;
-            $sumBooking = Booking::where('transaction_id', $transaction)->get()->count();
-            return number_format($row->amount / $sumBooking);
+            return number_format($row->amount);
         });
 
         $datatables->rawColumns(['action', 'check', 'status', 'client_name', 'amount']);

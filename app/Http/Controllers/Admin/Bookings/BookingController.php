@@ -40,8 +40,7 @@ class BookingController extends Controller
         $this->slotCode = Common::getListNameSlots($lockerSlots, $this->booking->locker_slot_id);
         $this->pageTitle = __('app.show') . ' ' . __('app.booking');
         $this->historyLine = $this->bookingService->getHistoryLine($this->booking);
-        $sumBookingInTransaction = $this->bookingService->getSumBookingInTransaction($this->booking->transaction_id);
-        $this->booking->total_price = number_format($this->booking->total_price / $sumBookingInTransaction);
+        $this->booking->total_price = number_format($this->booking->total_price);
         if (request()->ajax()) {
             $this->view = 'admin.lockers.ajax.show';
             $html = view($this->view, $this->data)->render();

@@ -97,8 +97,14 @@ const actions = {
     },
     markNotificationAsRead({ commit }, payload) {
         const { notificationChoose } = payload;
+        if (notificationChoose.status === NOTIFICATION_STATUS.READ) {
+            return;
+        }
         return new Promise((resolve, reject) => {
-            put(API.PUT_NOTIFICATION_STATUS(notificationChoose.id), { status: NOTIFICATION_STATUS.READ }).then(response => {
+            put(API.PUT_NOTIFICATION_STATUS(notificationChoose.id), {
+                status: NOTIFICATION_STATUS.READ,
+                type: notificationChoose.type,
+             }).then(response => {
                 const notifications = state.notifications.map(notification => {
                     if (notification.id === notificationChoose.id) {
                         notification.status = NOTIFICATION_STATUS.READ;
