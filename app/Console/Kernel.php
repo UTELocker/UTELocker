@@ -2,12 +2,13 @@
 
 namespace App\Console;
 
-use App\Classes\Scheduler\ApprovedBookingTask;
-use App\Classes\Scheduler\ExpireTokenTask;
-use App\Classes\Scheduler\OverdueWarningBookingTask;
-use App\Classes\Scheduler\OverdueBookingTask;
-use App\Classes\Scheduler\WarningExpireTask;
-use App\Classes\Scheduler\LockedBookingTask;
+use App\Classes\Scheduler\Booking\ApprovedBookingTask;
+use App\Classes\Scheduler\Booking\ExpireTokenTask;
+use App\Classes\Scheduler\Booking\OverdueWarningBookingTask;
+use App\Classes\Scheduler\Booking\OverdueBookingTask;
+use App\Classes\Scheduler\Booking\WarningExpireTask;
+use App\Classes\Scheduler\Booking\LockedBookingTask;
+use App\Classes\Scheduler\SystemLocker\CheckLockerLiveTask;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,6 +25,8 @@ class Kernel extends ConsoleKernel
         $schedule->call(new WarningExpireTask())->everyMinute();
         $schedule->call(new ExpireTokenTask())->everyMinute();
         $schedule->call(new LockedBookingTask())->everyMinute();
+        $schedule->call(new CheckLockerLiveTask())
+            ->everyFiveMinutes();
     }
 
     /**

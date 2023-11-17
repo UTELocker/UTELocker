@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Classes\Scheduler;
+namespace App\Classes\Scheduler\Booking;
 
 use App\Models\CustomToken;
 use Carbon\Carbon;

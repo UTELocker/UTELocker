@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Classes\Scheduler;
+namespace App\Classes\Scheduler\Booking;
 
 use App\Enums\BookingStatus;
 use App\Enums\NotificationType;
