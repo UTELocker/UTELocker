@@ -71,13 +71,9 @@ class LockerSlotController extends Controller
         $this->pageTitle = 'Locker Slot';
         $this->view = 'admin.lockers.slots.show';
         $slot = $this->lockerSlotService->get($slotId);
-        if ($slot->type === LockerSlotType::SLOT) {
-            $bookingActive = $this->bookingService->getActiveBookingOfSlot($slot);
-        }
         return Reply::successWithData('Success', [
             'data' => [
                 'slot' => $slot,
-                'bookingActive' => $bookingActive ?? null,
             ],
         ]);
     }

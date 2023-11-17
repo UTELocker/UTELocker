@@ -22,12 +22,13 @@ use App\Enums\LockerSlotType;
 use App\Enums\UserRole;
 use App\Traits\HandleNotification;
 use App\Enums\NotificationType;
-use Illuminate\Support\Facades\Log;
+use App\Enums\ScopeCancelBookings;
 
 class BookingService extends BaseService
 {
     use HandleNotification;
     private TransactionService $transactionService;
+
     public function __construct(Booking $model, TransactionService $transactionService)
     {
         parent::__construct($model);
@@ -108,10 +109,6 @@ class BookingService extends BaseService
         Common::assignField($this->model, 'pin_code', $inputs);
         Common::assignField($this->model, 'start_date', $inputs);
         Common::assignField($this->model, 'end_date', $inputs);
-    }
-
-    public function get($id) {
-        return $this->model->findOrfail($id);
     }
 
     public function getBookingActivities(User $user) {
@@ -247,15 +244,6 @@ class BookingService extends BaseService
         return $booking;
     }
 
-    public function getActiveBookingOfSlot(LockerSlot $lockerSlot)
-    {
-        return $lockerSlot->bookings()->where('status', BookingStatus::APPROVED)
-            ->select('bookings.id', 'bookings.status', 'bookings.start_date', 'bookings.end_date', 'owner_id')
-            ->where('bookings.end_date', '>=', now())
-            ->where('bookings.start_date', '<=', now())
-            ->first();
-    }
-
     public function getBookingsBySlotId($slotId)
     {
         return $this->model->where('locker_slot_id', $slotId)
@@ -378,11 +366,6 @@ class BookingService extends BaseService
         ];
     }
 
-    public function getSumBookingInTransaction($transactionId)
-    {
-        return $this->model->where('transaction_id', $transactionId)->get()->count();
-    }
-
     public function getHistoriesBookingClient($bookingId = null)
     {
         return $this->model
@@ -410,43 +393,69 @@ class BookingService extends BaseService
             ->get();
     }
 
-    public function deleteAllBookingUser($userId, $content = null)
+    public function deleteBookings($type, $identifier, $content = null)
     {
-        $bookings = $this->model->where('owner_id', $userId)
-            ->where('status', BookingStatus::APPROVED)
-            ->orWhere('status', BookingStatus::PENDING)
-            ->get();
-        foreach ($bookings as $booking) {
-            $this->delete($booking, false, $content);
-        }
-    }
+        $query = $this->model->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id');
 
-    public function deleteAllBookingLocker($lockerId, $content = null)
-    {
-        $bookings = $this->model
-            ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
-            ->where('locker_slots.locker_id', $lockerId)
-            ->select('bookings.id',
-                    'bookings.transaction_id',
-                    'bookings.status',
-                    'bookings.owner_id',
-                    'locker_slots.locker_id'
-                )
-            ->where(function ($query) {
-                $query->where('bookings.status', BookingStatus::APPROVED)
-                    ->orWhere('bookings.status', BookingStatus::PENDING);
-            })
-            ->get();
+        switch ($type) {
+            case 'user':
+                $query->where('bookings.owner_id', $identifier);
+                break;
+            case 'locker':
+                $query->where('locker_slots.locker_id', $identifier);
+                break;
+            case 'slot_locker':
+                $query->where('locker_slots.id', $identifier);
+                break;
+            default:
+                throw new \InvalidArgumentException('Invalid type provided.');
+        }
+
+        $bookings = $query->select(
+            'bookings.id',
+            'bookings.transaction_id',
+            'bookings.status',
+            'bookings.owner_id',
+            'locker_slots.locker_id',
+            'locker_slots.id as locker_slot_id'
+        )
+        ->where(function ($query) {
+            $query->where('bookings.status', BookingStatus::APPROVED)
+                ->orWhere('bookings.status', BookingStatus::PENDING);
+        })
+        ->get();
+
         $ownerUnique = $bookings->unique('owner_id');
+
+        if (empty($content)) {
+            $message = 'Hệ thống đã hủy ';
+
+            switch ($type) {
+                case ScopeCancelBookings::USER:
+                    $message .= 'tất cả các đặt tủ của bạn';
+                    break;
+                case ScopeCancelBookings::LOCKER:
+                    $message .= 'tất cả các đặt tủ của bạn';
+                    break;
+                case ScopeCancelBookings::LOCKER_SLOT:
+                    $message .= 'tất cả đơn đặt tủ của bạn tại ngăn';
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            $message = $content;
+        }
+
         foreach ($ownerUnique as $owner) {
-            Log::info('send notification to user: ' . $owner->owner_id);
+
             $this->sendNotification(
                 NotificationType::LOCKER_SYSTEM,
-                $content ?? 'Hệ thống đã hủy tất cả các đặt tủ của bạn',
+                $message,
                 $owner->owner_id,
                 user()->client_id,
                 'lockers',
-                $owner->locker_id,
+                $owner->locker_id
             );
         }
 
@@ -458,40 +467,17 @@ class BookingService extends BaseService
         }
     }
 
-    public function deleteAllBookingSlotLocker($lockerSlotId, $content = null)
+    public function getBookingActivitiesLicense($licenseId)
     {
-        $bookings = $this->model
+        return $this->model
             ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
-            ->where('locker_slots.id', $lockerSlotId)
-            ->select('bookings.id',
-                    'bookings.transaction_id',
-                    'bookings.status',
-                    'bookings.owner_id',
-                    'locker_slots.locker_id',
-                    'locker_slots.id as locker_slot_id'
-                )
-            ->where(function ($query) {
-                $query->where('bookings.status', BookingStatus::APPROVED)
-                    ->orWhere('bookings.status', BookingStatus::PENDING);
-            })
+            ->leftJoin('licenses', 'locker_slots.locker_id', '=', 'licenses.locker_id')
+            ->where('bookings.status', BookingStatus::APPROVED)
+            ->where('licenses.id', $licenseId)
+            ->select(
+                'bookings.pin_code',
+                'locker_slots.row', 'locker_slots.column',
+            )
             ->get();
-        $ownerUnique = $bookings->unique('owner_id');
-        foreach ($ownerUnique as $owner) {
-            $this->sendNotification(
-                NotificationType::LOCKER_SYSTEM,
-                $content ?? 'Hệ thống đã hủy tất cả đơn đặt tủ của bạn tại ngăn',
-                $owner->owner_id,
-                user()->client_id,
-                'lockers',
-                $owner->locker_id,
-            );
-        }
-
-        foreach ($bookings as $booking) {
-            $res = $this->delete($booking, true, $content);
-            if (isset($res['status']) && $res['status'] == 'error') {
-                throw new \Exception($res['message']);
-            }
-        }
     }
 }

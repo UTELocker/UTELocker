@@ -172,9 +172,9 @@ class LockerController extends Controller
         $this->locker = $this->lockerService->get($id);
         $res = $this->lockerService->update($this->locker, $form);
 
-        // if (isset($res['status']) && $res['status'] == 'error') {
-        //     return Reply::error($res['message']);
-        // }
+        if (isset($res['status']) && $res['status'] == 'error') {
+            return Reply::error($res['message']);
+        }
 
         $redirectUrl = urldecode($request->redirect_url);
 

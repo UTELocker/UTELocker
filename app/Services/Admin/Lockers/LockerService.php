@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\Admin\Lockers\LockerSlotService;
 use App\Services\Admin\Bookings\BookingService;
 use App\Classes\Reply;
+use App\Enums\ScopeCancelBookings;
 
 class LockerService extends BaseService
 {
@@ -71,15 +72,19 @@ class LockerService extends BaseService
         try {
             $this->model->save();
             if ($this->model->status != LockerStatus::IN_USE) {
-                $this->bookingService->deleteAllBookingLocker($this->model->id);
+                $this->bookingService->deleteBookings(
+                    ScopeCancelBookings::LOCKER,
+                    $this->model->id,
+                    $inputs['cancel_reason']
+                );
             }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            // return [
-            //     'status' => 'error',
-            //     'message' => $e->getMessage()
-            // ];
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
         }
 
         return $locker;

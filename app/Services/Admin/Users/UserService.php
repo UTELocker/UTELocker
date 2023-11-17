@@ -17,6 +17,7 @@ use App\Classes\CommonConstant;
 use Illuminate\Support\Facades\Hash;
 use App\Enums\UserStatus;
 use App\Services\Admin\Bookings\BookingService;
+use App\Enums\ScopeCancelBookings;
 
 class UserService extends BaseService
 {
@@ -194,7 +195,11 @@ class UserService extends BaseService
     {
         $this->setModel($this->get($userId));
         $this->model->status = UserStatus::BAN;
-        $this->bookingService->deleteAllBookingUser($userId, 'User was banned');
+        $this->bookingService->deleteBookings(
+            ScopeCancelBookings::USER,
+            $userId,
+            'User was banned'
+        );
         return $this->model->save();
     }
 }

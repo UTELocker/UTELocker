@@ -12,7 +12,7 @@
 
 @section('content')
     <textarea id="myTextarea"></textarea>
-    <button type="button" class="btn btn-primary mt-2 ml-2">Save</button>
+    <button type="button" class="btn btn-primary mt-2 ml-2 mb-2" id='saveEdit'>Save</button>
 @endsection
 
 @push('scripts')
@@ -35,7 +35,12 @@
 
             });
 
-            $('.btn').click(function () {
+            $('#saveEdit').click(function () {
+                const text =
+                    '<span class="spinner-border spinner-border-sm"'
+                    + ' role="status" aria-hidden="true"></span> {{__('app.loading')}}';
+                $('#saveEdit').prop("disabled", true);
+                $('#saveEdit').html(text);
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You want to save this code?",
@@ -54,6 +59,8 @@
                                 _token: "{{ csrf_token() }}"
                             },
                             success: function (response) {
+                                $('#saveEdit').prop("disabled", false);
+                                $('#saveEdit').html('Save');
                                 if (response.status === 'success') {
                                     renderAlert(response.data, response.status);
                                 } else {
@@ -62,6 +69,8 @@
                             },
                             error: function (response) {
                                 renderAlert(response.message, 'error');
+                                $('#saveEdit').prop("disabled", false);
+                                $('#saveEdit').html('Save');
                             }
                         });
                     }
@@ -70,15 +79,16 @@
 
             function renderAlert(content, status) {
                 $('.alert').remove();
-                if (typeof content === 'object' && content !== '') {
-                    content = JSON.stringify(content);
-                }
                 const statusClass = status === 'success' ? 'alert-success' : 'alert-danger';
-                const html = `<div class="alert ${statusClass}" role="alert">
-                    <h5 class="alert-heading">${status === 'success' ? 'Code executed successfully' : 'Code executed failly'}</h5>
-                        ${content}
-                    </div>`;
-                $('#myTextarea').after(html);
+                let html = `<div class="alert ${statusClass}" role="alert">
+                    <h5 class="alert-heading">${status === 'success' ? 'Code executed successfully' : 'Code executed failly'}</h5>`
+                for (let i = 0; i < content.length; i++) {
+                    html += `<p>${
+                        JSON.stringify(content[i])
+                    }</p>`;
+                }
+                html+=`</div>`;
+                $('#saveEdit').after(html);
             }
         })
   </script>

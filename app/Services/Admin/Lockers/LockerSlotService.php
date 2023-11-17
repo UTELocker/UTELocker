@@ -14,10 +14,13 @@ use App\Models\Locker;
 use App\Models\License;
 use App\Services\Admin\Bookings\BookingService;
 use App\Enums\LockerSlotStatus;
+use App\Traits\HandleNotification;
+use App\Enums\ScopeCancelBookings;
 
 class LockerSlotService extends BaseService
 {
     public BookingService $bookingService;
+
     public function __construct(
         BookingService $bookingService
     ){
@@ -151,7 +154,11 @@ class LockerSlotService extends BaseService
                 $slot->status == LockerSlotStatus::BOOKED ||
                 $slot->status == LockerSlotStatus::LOCKED
             )) {
-                $this->bookingService->deleteAllBookingSlotLocker ($slotId, $cancelReason);
+                $this->bookingService->deleteBookings(
+                    ScopeCancelBookings::LOCKER_SLOT,
+                    $slotId,
+                    $cancelReason
+                );
             }
         });
 
@@ -235,6 +242,8 @@ class LockerSlotService extends BaseService
         $lockerId = License::where('id', $licenseId)->first()->locker_id;
         return $this->model
             ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->leftJoin('lockers', 'lockers.id', '=', 'locker_slots.locker_id')
+            ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
             ->where('locker_slots.locker_id', $lockerId)
             ->where('locker_slots.type', LockerSlotType::SLOT)
             ->where('bookings.pin_code', $password)
@@ -242,7 +251,10 @@ class LockerSlotService extends BaseService
                 $q->where('bookings.status', BookingStatus::EXPIRED)
                     ->orWhere('bookings.status', BookingStatus::APPROVED);
             })
-            ->select('locker_slots.row', 'locker_slots.column')
+            ->select('locker_slots.row', 'locker_slots.column', 'locker_slots.id',
+                'bookings.id as booking_id', 'locker_slots.locker_id', 'bookings.owner_id',
+                'bookings.client_id', 'locations.description as address'
+            )
             ->first();
     }
 }

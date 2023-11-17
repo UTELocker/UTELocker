@@ -157,13 +157,6 @@
                             $('#slotConfigForm').find('input[name="price"]').val($config.price);
                         }
                     }
-                    const bookingActive = response.data.bookingActive;
-                    if (bookingActive !== null && data.type !== "{{ \App\Enums\LockerSlotType::CPU }}") {
-                        let html = `<div class="alert alert-danger" role="alert">
-                                        <strong>@lang('settings.warning')</strong> @lang('settings.slotHasBooking')
-                                    </div>`;
-                        $('#slotConfigForm').find('.modal-body').prepend(html);
-                    }
                 }
             }
         });
