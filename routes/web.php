@@ -20,6 +20,8 @@ use App\Http\Controllers\PortalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Payments\TransactionController;
 use App\Http\Controllers\Admin\BlockerCodeEdit\BlockCodeEditController;
+use App\Http\Controllers\Admin\Notifications\NotificationController;
+use App\Http\Controllers\Admin\Lockers\BrokenLockersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -190,6 +192,20 @@ Route::group(['middleware' => ['auth', 'auth.verify', 'permissionAdmin', 'user.b
             'index' => 'admin.block-code-edit.index',
             'store' => 'admin.block-code-edit.store',
         ]);
+
+    Route::resource('notifications', NotificationController::class)
+            ->only(['index', 'update'])
+            ->names([
+                'index' => 'admin.notifications.index',
+                'update' => 'admin.notifications.update',
+            ]);
+
+    Route::resource('broken-lockers', BrokenLockersController::class)
+            ->only(['index', 'update'])
+            ->names([
+                'index' => 'admin.broken-lockers.index',
+                'update' => 'admin.broken-lockers.update',
+            ]);
 });
 
 Route::group(['middleware' => ['auth', 'user.banned']], function () {

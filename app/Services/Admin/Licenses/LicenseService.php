@@ -6,6 +6,7 @@ use App\Classes\Common;
 use App\Models\License;
 use App\Services\BaseService;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class LicenseService extends BaseService
 {
@@ -17,6 +18,8 @@ class LicenseService extends BaseService
     public function initDefaultData(): static
     {
         $this->model->code = $this->model::generateRandomCode();
+        $this->model->code_secret = Str::random(32);
+        $this->model->key_secret = Str::random(6);
         return $this;
     }
 

@@ -6,6 +6,7 @@ use App\Traits\HasSiteGroup;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\UserRole;
 
 class License extends Model
 {
@@ -24,5 +25,21 @@ class License extends Model
             return self::generateRandomCode();
         }
         return $code;
+    }
+
+    public static function getHashCode($licenseId, $options = null): string
+    {
+        $license = self::findOrFail($licenseId);
+        return $license->code_secret . '|' . $license->key_secret . ($options ? '|' . $options : '');
+    }
+
+    public static function getAdmins($licenseId)
+    {
+        return self::where('id', $licenseId)
+            ->joinLeft('clients', 'clients.id', '=', 'licenses.client_id')
+            ->joinLeft('users', 'users.client_id', '=', 'clients.id')
+            ->where('users.type', UserRole::Admin)
+            ->select('users.name', 'users.email', 'users.phone', 'users.id')
+            ->get();
     }
 }

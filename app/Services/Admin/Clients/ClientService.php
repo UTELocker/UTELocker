@@ -122,4 +122,14 @@ class ClientService extends BaseService
 
         return $this;
     }
+    public function getClientByLicenseId($licenseId)
+    {
+        return $this->model
+            ->leftJoin('licenses', 'licenses.client_id', '=', 'clients.id')
+            ->leftJoin('lockers', 'lockers.id', '=', 'licenses.locker_id')
+            ->where('licenses.id', $licenseId)
+            ->select('clients.name', 'clients.phone', 'clients.logo',
+                'lockers.code', 'lockers.status')
+            ->first();
+    }
 }

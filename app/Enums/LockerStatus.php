@@ -10,6 +10,7 @@ final class LockerStatus extends Enum
     public const IN_USE = 1;
     public const UNDER_MAINTENANCE = 2;
     public const BROKEN = 3;
+    public const PENDING_BROKEN = 4;
 
     public static function getDescriptions(array $exclude = []): array
     {
@@ -18,6 +19,7 @@ final class LockerStatus extends Enum
             self::IN_USE => __('app.enums.lockerStatus.inUse'),
             self::UNDER_MAINTENANCE => __('app.enums.lockerStatus.underMaintenance'),
             self::BROKEN => __('app.enums.lockerStatus.broken'),
+            self::PENDING_BROKEN => __('app.enums.lockerStatus.pendingBroken'),
         ];
 
         if (!empty($exclude)) {
@@ -27,5 +29,11 @@ final class LockerStatus extends Enum
         }
 
         return $descriptions;
+    }
+
+    public static function getLabel($status): string
+    {
+        $descriptions = self::getDescriptions();
+        return $descriptions[$status] ?? '';
     }
 }
