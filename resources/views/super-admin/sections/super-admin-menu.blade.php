@@ -36,6 +36,8 @@
                              :text="__('app.menu.lockers')" />
             <x-sub-menu-item :link="route('admin.licenses.index')"
                              :text="__('app.menu.licenses')" />
+            <x-sub-menu-item :link="route('admin.broken-lockers.index')"
+                :text="__('app.menu.brokenLockers')" />
         </div>
     </x-menu-item>
     <x-menu-item icon="front" :text="__('app.menu.booking')" viewBox="0 0 256 256">

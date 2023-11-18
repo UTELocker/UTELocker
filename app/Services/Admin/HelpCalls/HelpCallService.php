@@ -9,9 +9,14 @@ use Illuminate\Support\Facades\DB;
 use App\Classes\Files;
 use App\Enums\HelpCallType;
 use App\Enums\HelpCallStatus;
+use App\Traits\HandleNotification;
+use App\Enums\UserRole;
+use App\Enums\NotificationType;
+use App\Models\User;
 
 class HelpCallService extends BaseService {
 
+    use HandleNotification;
 
     public function __construct()
     {
@@ -24,6 +29,19 @@ class HelpCallService extends BaseService {
         $this->formatInputData($inputs);
         $this->setModelFields($inputs);
         $this->model->save();
+        $adminsOfClient = User::where('client_id', user()->client_id)
+            ->where('type', UserRole::ADMIN)
+            ->get();
+        foreach ($adminsOfClient as $admin) {
+            $this->sendNotification(
+                NotificationType::REPORT,
+                'Người dùng báo lỗi ' . $this->model->title,
+                $admin->id,
+                user()->client_id,
+                'help_calls',
+                $this->model->id
+            );
+        }
         return $this->model;
     }
 

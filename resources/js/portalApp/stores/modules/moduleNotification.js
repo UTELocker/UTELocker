@@ -44,7 +44,7 @@ const actions = {
             const notificationsBooking = [];
             const notificationsPayment = [];
             get(API.GET_NOTIFICATIONS()).then(response => {
-                const data = response.data.data;
+                const data = response.data.data.data;
                 const notifications = data.map(notification => {
                     if (notification.status === NOTIFICATION_STATUS.UNREAD) {
                         notificationUnreadCount++;

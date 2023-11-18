@@ -93,6 +93,9 @@ export default defineComponent({
                 });
         },
         handleSrc(fileName) {
+            if (fileName == null) {
+                return '/images/default/avatarDefault.png';
+            }
             return `${USER_FOLDERS}${fileName}`;
         }
     },

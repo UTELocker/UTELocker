@@ -100,7 +100,13 @@ class LockerService extends BaseService
                 globalSettings()->date_format,
                 $inputs['date_of_manufacture']
             )->format('Y-m-d');
+        } else {
+            $inputs['date_of_manufacture'] = $this->model->date_of_manufacture;
         }
+        $inputs['code'] = $inputs['code'] ?? $this->model->code;
+        $inputs['status'] = $inputs['status'] ?? $this->model->status;
+        $inputs['location_id'] = $inputs['location_id'] ??  $this->model->location_id;
+        $inputs['description'] = $inputs['description'] ?? $this->model->description;
     }
 
     protected function setModelFields($inputs)

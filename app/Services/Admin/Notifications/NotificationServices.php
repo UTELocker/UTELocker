@@ -51,12 +51,15 @@ class NotificationServices extends BaseService
 
     }
 
-    public function getOfUser($userId)
+    public function getOfUser($userId, $skipType = [])
     {
-        return $this->model
+        $query = $this->model
             ->where('owner_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->orderBy('created_at', 'desc');
+        if (!empty($skipType)) {
+            $query->whereNotIn('type', $skipType);
+        }
+        return $query->get();
     }
 
     public function get($id)

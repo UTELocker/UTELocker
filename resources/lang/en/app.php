@@ -32,6 +32,7 @@ return array(
         'booking' => 'Booking',
         'bookings' => 'Bookings',
         'code' => 'Code',
+        'brokenLockers' => 'Broken Lockers',
     ],
     'datatable' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/English.json',
     'exportExcel' => 'Export Excel',
@@ -82,6 +83,7 @@ return array(
             'inUse' => 'In Use',
             'underMaintenance' => 'Under Maintenance',
             'broken' => 'Broken',
+            'pendingBroken' => 'Pending Broken',
         ],
         'bookingStatus' => [
             'pending' => 'Pending',
@@ -120,4 +122,12 @@ return array(
     'portal' => 'Go to Portal',
     'banned' => 'Banned',
     'confirm' => 'Confirm',
+    'notifications' => [
+        'errorLocker' => [
+            'lockerNotLive' => 'Locker :code is not live at :time',
+        ],
+    ],
+    'showAll' => 'Show All',
+    'markRead' => 'Mark as Read',
+    'newNotifications' => 'New Notifications',
 );

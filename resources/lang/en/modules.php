@@ -202,5 +202,8 @@ return array(
     ],
     'histories' => [
         'booking' => 'Line Booking History',
-    ]
+    ],
+    'brokenLockers' => [
+        'title' => 'Broken Lockers',
+    ],
 );

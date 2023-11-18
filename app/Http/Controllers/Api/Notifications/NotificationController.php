@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Notifications\UpdateStatusRequest;
 use App\Services\Admin\Notifications\NotificationServices;
 use Illuminate\Http\Request;
+use App\Enums\NotificationType;
+use App\Http\Resources\NotificationCollection;
+use App\Http\Resources\NotificationResource;
 
 class NotificationController extends Controller
 {
@@ -23,7 +26,7 @@ class NotificationController extends Controller
         $notifications = $this->notificationService->getOfUser($userId);
         return Reply::successWithData('Get notifications successfully',
             [
-                'data' => $notifications
+                'data' => new NotificationCollection($notifications)
             ]);
     }
 
@@ -32,7 +35,7 @@ class NotificationController extends Controller
         $res = $this->notificationService->updateStatus($id);
         return Reply::successWithData('Update status notification successfully',
             [
-                'data' => $res
+                'data' => new NotificationResource($res)
             ]);
     }
 
@@ -50,6 +53,22 @@ class NotificationController extends Controller
         return Reply::successWithData('Get notification successfully',
             [
                 'data' => $notificationDetail
+            ]);
+    }
+
+    public function getAdminNotifications()
+    {
+        $notifications = $this->notificationService->getOfUser(user()->id, [
+            NotificationType::BOOKING,
+            NotificationType::PAYMENT,
+            NotificationType::SUPER_ADMIN,
+            NotificationType::LOCKER_SYSTEM,
+            NotificationType::SITE_GROUP,
+            NotificationType::REPORT
+        ]);
+        return Reply::successWithData('Get notifications successfully',
+            [
+                'data' => $notifications
             ]);
     }
 }

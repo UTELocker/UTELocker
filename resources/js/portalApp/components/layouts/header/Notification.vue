@@ -48,7 +48,7 @@
                             <a-badge status="processing" v-if="!isRead(item)"/>
                         </template>
                         <a-list-item-meta
-                            :description="'Created at: ' + handleDate(item)"
+                            :description="'Created at: ' + item.created_at"
                             style="align-items: center !important;"
                         >
                         <template #title>
@@ -273,6 +273,11 @@ export default defineComponent({
                 case NOTIFICATION_TYPE.SITE_GROUP:
                 case NOTIFICATION_TYPE.SUPER_ADMIN:
                 case NOTIFICATION_TYPE.REPORT:
+                    this.visible = false;
+                    this.$router.push({
+                        name: 'help-call.admin',
+                    });
+                    return false;
                 default:
                     this.notificationChoose = notification;
                     if (notification.status === NOTIFICATION_STATUS.UNREAD) {
@@ -293,11 +298,6 @@ export default defineComponent({
                         this.visible = false;
                     }
             }
-        },
-        handleDate(notification) {
-            return notification.created_at.substring(8, 10)
-            + '/' + notification.created_at.substring(5, 7)
-            + ' ' + notification.created_at.substring(11, 16);
         },
         isTypeNotificationChoose(type) {
             return this.typeNotificationChoose === type;
