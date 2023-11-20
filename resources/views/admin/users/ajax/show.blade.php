@@ -8,8 +8,6 @@
                 <i class="fa fa-times"></i>
             </a>
             <x-tab :href="route('admin.users.show', ['user' => $user->id, 'tab' => 'profiles'])" :text="__('Profile')" class="profiles" />
-            <x-tab :href="route('admin.users.show', $user->id)" :text="__('Invoices')" class="invoices" />
-            <x-tab :href="route('admin.users.show', $user->id)" :text="__('Test')" class="test" />
         </div>
     </div>
 @endsection

@@ -119,6 +119,7 @@ class ClientService extends BaseService
         $this->model->locale = 'vi';
         $this->model->status = ClientStatus::PUBLIC;
         $this->model->allow_signup = CommonConstant::DATABASE_YES;
+        $this->model->refund_soon_cancel_booking = 30;
 
         return $this;
     }

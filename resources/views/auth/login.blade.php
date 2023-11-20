@@ -80,6 +80,9 @@
     <x-slot name="scripts">
         <script>
             $(document).ready(function () {
+
+                $('#email').focus();
+
                 $("form#login-form").submit(function () {
                     const button = $('form#login-form').find('#submit-login');
                     const text =
@@ -99,6 +102,9 @@
                 $("#submit-email").on('click', function () {
                     const email = $('#email').val();
                     this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{__('app.loading')}}';
+
+                    $('#email').removeClass('is-invalid');
+                    $('#email').parent().find('.invalid-feedback').remove();
 
                     $.ajax({
                         url: '{{ route('api.user.listClient') }}',
@@ -133,6 +139,10 @@
                         }
                     });
                 });
+
+                if ($('#email').val() !== '') {
+                    $('#submit-email').trigger('click');
+                }
             });
         </script>
     </x-slot>

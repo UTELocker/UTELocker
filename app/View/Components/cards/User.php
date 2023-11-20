@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components\cards;
+namespace App\View\Components\Cards;
 
 use App\Classes\Files;
 use Closure;

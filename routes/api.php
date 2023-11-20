@@ -92,17 +92,23 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('help-call')->group(function () {
         Route::prefix('std-problems')->group(function () {
-            Route::get('/', [HelpCallStdProblemController::class, 'index'])->name('portal.help-call.std-problems');
+            Route::get('/', [HelpCallStdProblemController::class, 'index'])->name('api.help-call.std-problems');
+            Route::put('/{id}', [HelpCallStdProblemController::class, 'update'])
+                ->name('api.help-call.std-problems.update');
             Route::post('/', [HelpCallStdProblemController::class, 'store'])
-                ->name('portal.help-call.std-problems.store');
+                ->name('api.help-call.std-problems.store');
+            Route::delete('/{id}', [HelpCallStdProblemController::class, 'destroy'])
+                ->name('api.help-call.std-problems.destroy');
         });
-
         Route::prefix('/')->group(function () {
-            Route::get('/user', [HelpCallController::class, 'getHelpCallUser'])->name('portal.help-call.user');
-            Route::post('/', [BookingController::class, 'storeHelpCall'])->name('portal.help-call.store');
-            Route::get('/{id}', [HelpCallController::class, 'show'])->name('portal.help-call.show');
+            Route::get('/user', [HelpCallController::class, 'getHelpCallUser'])->name('api.help-call.user');
+            Route::get('/admin', [HelpCallController::class, 'getHelpCallAdmin'])->name('api.help-call.admin');
+            Route::post('/', [HelpCallController::class, 'store'])->name('api.help-call.store');
+            Route::get('/{id}', [HelpCallController::class, 'show'])->name('api.help-call.show');
             Route::post('/{id}/comment', [HelpCallController::class, 'comment'])
-                ->name('portal.help-call.comment');
+                ->name('api.help-call.comment');
+            Route::put('/{id}', [HelpCallController::class, 'update'])
+                ->name('api.help-call.update');
         });
     });
 });
