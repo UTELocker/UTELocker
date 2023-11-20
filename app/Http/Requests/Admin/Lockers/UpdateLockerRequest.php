@@ -25,8 +25,20 @@ class UpdateLockerRequest extends FormRequest
     {
         return [
             'date_of_manufacture' => 'required|date_format:' . globalSettings()->date_format,
-            'status' => 'required|in:' . implode(',', array_keys(
-                    LockerStatus::getDescriptions([LockerStatus::IN_USE]))),
+            'status' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $locker = Locker::where('id', $this->route('locker'))->first();
+                    if ($locker && $locker->status == LockerStatus::AVAILABLE && $value != LockerStatus::IN_USE) {
+                        $fail('You can not change status of use locker');
+                    }
+
+                    if ($locker && $locker->status == LockerStatus::IN_USE && $value == LockerStatus::AVAILABLE) {
+                        $fail('You can not change status of available locker');
+                    }
+
+                },
+            ],
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'location_id' => 'required|exists:locations,id',

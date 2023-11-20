@@ -98,6 +98,7 @@
 
                 $("#submit-email").on('click', function () {
                     const email = $('#email').val();
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{__('app.loading')}}';
 
                     $.ajax({
                         url: '{{ route('api.user.listClient') }}',
@@ -128,6 +129,7 @@
                             }</div>`;
                             $('#email').addClass('is-invalid');
                             $('#email').parent().append(html);
+                            $('#submit-email').html('{{ __('app.getSiteGroup') }} <i class="fa fa-arrow-right pl-1"></i>');
                         }
                     });
                 });

@@ -44,11 +44,22 @@
                                                 fieldName="status"
                                                 fieldRequired="true"
                                 >
-                                    @foreach(
-                                        \App\Enums\LockerStatus::getDescriptions([
-                                            \App\Enums\LockerStatus::IN_USE,
+                                    @php
+
+                                        $statusesExcute = $locker->status == \App\Enums\LockerStatus::AVAILABLE
+                                        ? [
+                                            \App\Enums\LockerStatus::UNDER_MAINTENANCE,
                                             \App\Enums\LockerStatus::PENDING_BROKEN,
-                                        ])
+                                            \App\Enums\LockerStatus::AVAILABLE,
+                                            \App\Enums\LockerStatus::BROKEN,
+                                        ]
+                                        : [
+                                            \App\Enums\LockerStatus::AVAILABLE,
+                                            \App\Enums\LockerStatus::PENDING_BROKEN,
+                                        ]
+                                    @endphp
+                                    @foreach(
+                                        \App\Enums\LockerStatus::getDescriptions($statusesExcute)
                                         as $key => $status
                                     )
                                         <option @if ($key == $locker->status) selected @endif value="{{ $key }}">{{ $status }}</option>
@@ -110,6 +121,12 @@
 
 <script src="{{ asset('vendor/jquery/dropzone/dropzone.min.js') }}"></script>
 <script>
+
+    if ('{{ $locker->status }}' != '{{ \App\Enums\LockerStatus::AVAILABLE }}') {
+        $('#status').val('{{ \App\Enums\LockerStatus::IN_USE }}');
+        $('#status').trigger('change');
+    }
+
     $(document).ready(function() {
         datepicker(
             '#date_of_manufacture',{
@@ -121,7 +138,7 @@
     });
 
     $('#status').on('change', function() {
-        if ($(this).val() == '{{ \App\Enums\LockerStatus::AVAILABLE }}') {
+        if ($(this).val() == '{{ \App\Enums\LockerStatus::IN_USE }}') {
             $('#cancel_reason').val('');
             $('#row_cancel_reason').hide();
         } else {
@@ -136,7 +153,7 @@
                 if (result.isConfirmed) {
                     $('#row_cancel_reason').show();
                 } else {
-                    $('#status').val('{{ \App\Enums\LockerStatus::AVAILABLE }}');
+                    $('#status').val('{{ \App\Enums\LockerStatus::IN_USE }}');
                     $('#status').trigger('change');
                 }
             });

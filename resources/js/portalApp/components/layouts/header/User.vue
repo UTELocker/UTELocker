@@ -1,6 +1,6 @@
 <template>
     <a-dropdown :trigger="['click']">
-        <a class="ant-dropdown-link" @click.prevent>
+        <a class="ant-dropdown-link" @click.prevent v-if="!this.isMobile">
             <a-avatar :size="40" :style="{
                 float: 'left',
                 marginRight: '10px',
@@ -10,6 +10,11 @@
                     <UserOutlined/>
                 </template>
             </a-avatar>
+        </a>
+        <a class="ant-dropdown-link" @click.prevent v-else>
+            <p>
+                {{this.user.name}}
+            </p>
         </a>
         <template #overlay>
         <a-menu>
@@ -34,6 +39,12 @@ export default defineComponent({
     components: {
         UserOutlined,
         LogoutOutlined,
+    },
+    props: {
+        isMobile: {
+            type: Boolean,
+            default: false,
+        },
     },
     computed: {
         ...mapState({

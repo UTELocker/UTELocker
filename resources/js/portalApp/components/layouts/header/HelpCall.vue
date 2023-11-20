@@ -1,11 +1,14 @@
 <template>
     <a-dropdown :trigger="['click']"  :arrow="{ pointAtCenter: true }" :placement="'bottomRight'">
     <a class="ant-dropdown-link" @click.prevent>
-        <a-badge>
+        <a-badge v-if="!this.isMobile">
             <a-avatar shape="square" size="large" style="background-color: #034da9;">
                 <CustomerServiceTwoTone two-tone-color="#FFFF" />
             </a-avatar>
         </a-badge>
+        <p v-if="this.isMobile">
+            Trợ giúp
+        </p>
     </a>
     <template #overlay>
       <a-menu>
@@ -28,6 +31,12 @@ export default defineComponent({
     name: 'HelpCall',
     components: {
         CustomerServiceTwoTone,
+    },
+    props: {
+        isMobile: {
+            type: Boolean,
+            default: false,
+        },
     },
     setup() {
         const store = useStore()

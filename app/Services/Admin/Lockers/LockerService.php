@@ -17,6 +17,7 @@ use App\Services\Admin\Lockers\LockerSlotService;
 use App\Services\Admin\Bookings\BookingService;
 use App\Classes\Reply;
 use App\Enums\ScopeCancelBookings;
+use App\Enums\NotificationType;
 
 class LockerService extends BaseService
 {
@@ -234,10 +235,7 @@ class LockerService extends BaseService
             ->join('licenses', 'licenses.locker_id', '=', 'lockers.id')
             ->join('locations', 'locations.id', '=', 'lockers.location_id')
             ->where('lockers.id', $id)
-            ->where(function ($q) {
-                $q->where('lockers.status', LockerStatus::IN_USE)
-                    ->orWhere('lockers.status', LockerStatus::AVAILABLE);
-            })
+            ->where('lockers.status', LockerStatus::IN_USE)
             ->where('licenses.client_id', user()->client_id)
             ->first();
     }
@@ -291,14 +289,41 @@ class LockerService extends BaseService
     {
         return $this->model
             ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
-            ->where(function ($q) {
-                $q->where('lockers.status', LockerStatus::IN_USE)
-                    ->orWhere('lockers.status', LockerStatus::AVAILABLE);
-            })
+            ->where('lockers.status', LockerStatus::IN_USE)
             ->where('locations.client_id', user()->client_id)
             ->select(
                 'lockers.id', 'lockers.code', 'locations.description as address',
             )
             ->get();
+    }
+
+    public function getNumFailures(Locker $locker)
+    {
+        $data = [];
+        $bookings = $this->model
+            ->leftJoin('notifications', function ($join) {
+                $join->on('notifications.parent_id', '=', 'lockers.id')
+                    ->where('notifications.type', NotificationType::LOCKER_BROKEN);
+            })
+            ->where('lockers.id', $locker->id)
+            ->groupBy('notifications.parent_id')
+            ->get();
+        $bookings = $bookings->where('month', '<=', Carbon::now()->format('m'));
+        $moths = [];
+        for ($i = 0; $i < 6; $i++) {
+            $moths[] = Carbon::now()->subMonths($i)->format('m');
+        }
+        $data['labels'] = $moths;
+        $data['values'] = $bookings->groupBy('month')->map(function ($item) {
+            return $item->sum('amount');
+        })->toArray();
+        foreach ($moths as $month) {
+            if (!isset($data['values'][$month])) {
+                $data['values'][$month] = 0;
+            }
+        }
+        $data['colors'] = ['#36a2eb'];
+        $data['name'] = __('modules.lockers.sumEarnings');
+        return $data;
     }
 }

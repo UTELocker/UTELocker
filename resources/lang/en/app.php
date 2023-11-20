@@ -130,4 +130,5 @@ return array(
     'showAll' => 'Show All',
     'markRead' => 'Mark as Read',
     'newNotifications' => 'New Notifications',
+    'setUpWizard' => 'Set Up Wizard',
 );

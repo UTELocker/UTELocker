@@ -78,6 +78,10 @@ class LockersDataTable extends BaseDataTable
             return 'row-' . $row->id;
         });
 
+        $datatables->addColumn('status', function ($row) {
+            return view('admin.lockers.status', compact('row'));
+        });
+
         $datatables->rawColumns(['code', 'action', 'check']);
 
         return $datatables;
@@ -177,6 +181,11 @@ class LockersDataTable extends BaseDataTable
                 'name' => 'location',
                 'orderable' => false,
                 'title' => __('app.location')
+            ],
+            __('app.status') => [
+                'data' => 'status',
+                'name' => 'lockers.status',
+                'title' => __('app.status')
             ],
             __('app.createdAt') => [
                 'data' => 'created_at',

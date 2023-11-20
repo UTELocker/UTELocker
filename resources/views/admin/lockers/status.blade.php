@@ -1,6 +1,6 @@
 @switch($row->status)
     @case(\App\Enums\LockerStatus::AVAILABLE)
-        <i class="fa fa-circle mr-1 f-10" style="color: #0011ff;"></i>
+        <i class="fa fa-circle mr-1 f-10" style="color: #2b00ff;"></i>
         @break
     @case(\App\Enums\LockerStatus::IN_USE)
         <i class="fa fa-circle mr-1 f-10" style="color: #5dff00;"></i>

@@ -105,6 +105,7 @@ class LockerController extends Controller
                 $this->slots = $this->locker->lockerSlotAvailable;
                 $this->numBooking = $this->bookingService->numBooking($this->locker);
                 $this->sumEarn = $this->bookingService->sumEarn($this->locker);
+                $this->numFailures = $this->lockerService->getNumFailures($this->locker);
                 $this->view = 'admin.lockers.ajax.details';
                 break;
         }
@@ -145,7 +146,9 @@ class LockerController extends Controller
         }
         $this->locker = $this->lockerService->get($id);
         $this->locations = $this->locationService->getLocationsOfLocker($this->locker);
-        $this->pageTitle = __('app.update') . ' ' . __('app.locker');
+        $this->pageTitle = $this->locker->status == LockerStatus::AVAILABLE
+            ? __('app.setUpWizard') . ' ' . __('app.locker')
+            : __('app.update') . ' ' . __('app.locker');
 
         if (request()->ajax()) {
             $this->view = 'admin.lockers.ajax.edit';

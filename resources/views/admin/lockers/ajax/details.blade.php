@@ -1,6 +1,6 @@
 <div class="row mt-4">
     <div class="col-xl-7 col-lg-12 col-md-12 mb-4 mb-xl-0 mb-lg-4">
-        <x-cards.data :title="__('modules.lockers.lockerDetails')" :otherClasses="'p-4'">
+        <x-cards.data :title="__('modules.lockers.lockerDetails')" :otherClasses="'mb-4'">
             <x-cards.data-row :label="__('modules.lockers.code')" :value="$locker->code ?? '--'" />
 
             <x-cards.data-row :label="__('modules.lockers.description')" :value="$locker->description ?? '--'" />
@@ -37,6 +37,10 @@
             <x-cards.data-row :label="__('modules.license.warrantyDuration')" :value="$license->warranty_duration ?? '--'" />
             <x-cards.data-row :label="__('app.createdAt')" :value="$locker->created_at ?? '--'" />
         </x-cards.data>
+        <div class="py-2" ></div>
+        <x-cards.data :title="__('modules.lockers.numFailures')" :otherClasses="'p-4 mt-4'">
+            <x-bar-chart id="task-chart3" :chartData="$numBooking" height="300"  :spaceRatio="0.5" prefix="Month"></x-bar-chart>
+        </x-cards.data>
     </div>
     <div class="col-xl-5 col-lg-12 col-md-12">
         <x-cards.data :title="__('modules.lockers.lockerPerformance')" :otherClasses="'p-4'">
@@ -48,5 +52,5 @@
                 @lang('modules.lockers.sumEarnings')</p>
             <x-bar-chart id="task-chart1" :chartData="$sumEarn" height="300"  :spaceRatio="0.5" prefix="Month"></x-bar-chart>
         </x-cards.data>
-</div>
+    </div>
 </div>

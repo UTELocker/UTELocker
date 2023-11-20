@@ -55,7 +55,12 @@
                                                 fieldRequired="true"
                                 >
                                     @foreach(
-                                        \App\Enums\LockerStatus::getDescriptions([\App\Enums\LockerStatus::IN_USE])
+                                        \App\Enums\LockerStatus::getDescriptions([
+                                            \App\Enums\LockerStatus::IN_USE,
+                                            \App\Enums\LockerStatus::UNDER_MAINTENANCE,
+                                            \App\Enums\LockerStatus::BROKEN,
+                                            \App\Enums\LockerStatus::PENDING_BROKEN
+                                        ])
                                         as $key => $status
                                     )
                                         <option value="{{ $key }}">{{ $status }}</option>

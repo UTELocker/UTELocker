@@ -1,5 +1,5 @@
 <template>
-    <Navigation />
+    <Navigation  :isMobile="isMobile" />
     <template v-if="!isMobile">
         <help-call />
         <notification :isMobile="isMobile" />

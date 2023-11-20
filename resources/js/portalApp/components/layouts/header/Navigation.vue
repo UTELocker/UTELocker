@@ -12,15 +12,28 @@
         <a-menu-item key="wallet">
             <router-link to="/wallet">UTEPay</router-link>
         </a-menu-item>
+        <a-menu-item key="help" v-if="isMobile">
+            <help-call :isMobile="isMobile" />
+        </a-menu-item>
+        <a-menu-item key="user" v-if="isMobile">
+            <User :isMobile="isMobile" />
+        </a-menu-item>
     </a-menu>
 </template>
 <script>
 import {computed, defineComponent, inject, ref, watch} from "vue";
 import {GLOBAL_CONFIG} from "../../../SymbolKey";
 import {useRoute} from "vue-router";
+import User from "./User.vue";
+import HelpCall from "./HelpCall.vue";
 
 export default defineComponent({
     name: "Navigation",
+    components: {
+        User,
+        HelpCall,
+    },
+    props: ['isMobile'],
     setup() {
         const globalConfig = inject(GLOBAL_CONFIG);
         const menuMode = computed(() => {

@@ -40,7 +40,11 @@
                     Nhập mã OTP được gửi về số điện thoại {{ user.mobile }}.
                 </div>
                 <div>
-                    Nếu bạn chưa nhận được mã vui lòng nhấn <a @click="sendOTP">đây</a> để gửi lại.
+                    Mã OTP sẽ hết hạn sau <span>{{ timerCount }}</span> giây.
+                    Nếu bạn chưa nhận được mã vui lòng nhấn <a @click="sendOTP" :style="{
+                        color: timerCount <= 0 ? 'blue' : 'gray',
+                        cursor: timerCount <= 0 ? 'pointer' : 'not-allowed',
+                    }">đây</a> để gửi lại.
                 </div>
 
                 <inputs
@@ -90,6 +94,7 @@ export default defineComponent({
             appVerifier : '',
             otp: '',
             test: '',
+            timerCount: 60,
         };
     },
     computed: {
@@ -97,6 +102,19 @@ export default defineComponent({
             user: state => state.moduleBase.user,
             isAccept: state => state.moduleWallet.isAccept,
         }),
+    },
+    watch: {
+        timerCount: {
+            handler(value) {
+                if (value > 0 && this.is2FA) {
+                    setTimeout(() => {
+                        this.timerCount--;
+                    }, 1000);
+                }
+
+            },
+            immediate: true
+        }
     },
     methods: {
         ...mapActions({
@@ -113,6 +131,7 @@ export default defineComponent({
                 this.renderRecaptcha();
                 setTimeout(()=>{
                     this.sendOTP();
+                    this.timerCount--;
                 },1000)
             })
             .catch(err => {
@@ -136,12 +155,17 @@ export default defineComponent({
             },1000)
         },
 
+        formatMobile(mobile) {
+            return `+84${mobile.slice(1)}`
+        },
+
         sendOTP() {
             let appVerifier = this.appVerifier
-            const phoneNumber = '+84382349463';
+            const phoneNumber = formatMobile(this.user.mobile);
             firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
                 .then(function (confirmationResult) {
                     window.confirmationResult = confirmationResult;
+                    this.timerCount = 60;
                 }).catch(function (error) {
                     Modal.error({
                         title: 'Error',

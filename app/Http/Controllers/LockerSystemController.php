@@ -9,6 +9,7 @@ use App\Services\Admin\Lockers\LockerSlotService;
 use App\Services\Admin\Bookings\BookingService;
 use App\Services\LockeSystem\LockerSystemLogService;
 use App\Services\Admin\Licenses\LicenseService;
+use App\Classes\Reply;
 
 class LockerSystemController extends Controller
 {

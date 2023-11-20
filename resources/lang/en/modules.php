@@ -121,6 +121,7 @@ return array(
         'lockerPicture' => 'Locker Picture',
         'numBookings' => 'Number of Bookings',
         'sumEarnings' => 'Sum of Earnings',
+        'numFailures' => 'Number of Failures',
     ],
     'locations' => [
         'title' => 'Locations',

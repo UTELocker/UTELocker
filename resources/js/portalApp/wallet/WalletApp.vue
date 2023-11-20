@@ -24,7 +24,7 @@
                 class="wallet-action"
             >
                 <a-button type="primary" @click="this.$router.push({name: 'wallet.topup'})">Nạp Tiền</a-button>
-                <a-button type="primary">Rút Tiền</a-button>
+                <a-button type="primary" v-if="false">Rút Tiền</a-button>
             </div>
         </div>
     </a-card>

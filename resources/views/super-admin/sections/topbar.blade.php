@@ -73,10 +73,48 @@
     @csrf
 </form>
 
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
 <script>
 
     const notificationUnread = [];
     const notificationRead = [];
+
+    var pusher = new Pusher('{{ globalSettings()->pusher_app_key }}', {
+        cluster: '{{ globalSettings()->pusher_app_cluster }}'
+    });
+
+    var channel = pusher.subscribe('notification'
+        + ".{{ \App\Enums\NotificationType::LOCKER_BROKEN }}"
+        + ".{{ user()->client_id }}"
+        + ".{{ user()->id }}");
+
+    channel.bind('pusher:subscription_succeeded', function(members) {
+    });
+    channel.bind('App\\Events\\NotificationProcessed', function(data) {
+        const notification = data.notification;
+        Swal.fire({
+            icon: "info",
+            text: notification.content,
+
+            toast: true,
+            position: "top-end",
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+
+            customClass: {
+                confirmButton: "btn btn-primary",
+            },
+            showClass: {
+                popup: "swal2-noanimation",
+                backdrop: "swal2-noanimation",
+            },
+        });
+        notificationUnread.push(notification);
+        renderBagde();
+        renderNotificationList();
+    });
 
     $.ajax({
         url: "{{ route('admin.notifications.index') }}",
