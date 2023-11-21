@@ -204,7 +204,7 @@ class LockerService extends BaseService
             ->when($locations, function ($query, $locations) {
                 $query->whereIn('locations.id', $locations);
             })
-            ->where('lockers.status', '==', LockerStatus::IN_USE)
+            ->where('lockers.status', LockerStatus::IN_USE)
             ->withCount(['lockerSlots' => function ($query) use($startDate, $endDate) {
                 $query->where('type', LockerSlotType::SLOT)
                     ->where('locker_slots.status', LockerSlotStatus::AVAILABLE)
@@ -300,22 +300,24 @@ class LockerService extends BaseService
     public function getNumFailures(Locker $locker)
     {
         $data = [];
-        $bookings = $this->model
-            ->leftJoin('notifications', function ($join) {
-                $join->on('notifications.parent_id', '=', 'lockers.id')
-                    ->where('notifications.type', NotificationType::LOCKER_BROKEN);
-            })
+        $brokenLockers = $this->model
+            ->leftJoin('notifications', 'notifications.parent_id', '=', 'lockers.id')
             ->where('lockers.id', $locker->id)
-            ->groupBy('notifications.parent_id')
+            ->where('notifications.type', NotificationType::LOCKER_BROKEN)
+            ->select(
+                DB::raw('DATE_FORMAT(notifications.created_at, "%m") as month'),
+                DB::raw('DATE_FORMAT(notifications.created_at, "%Y-%m-%d %H") as hours'),
+            )
             ->get();
-        $bookings = $bookings->where('month', '<=', Carbon::now()->format('m'));
+        $brokenLockers = $brokenLockers->where('month', '<=', Carbon::now()->format('m'));
+        $brokenLockers = $brokenLockers->unique('hours');
         $moths = [];
         for ($i = 0; $i < 6; $i++) {
             $moths[] = Carbon::now()->subMonths($i)->format('m');
         }
         $data['labels'] = $moths;
-        $data['values'] = $bookings->groupBy('month')->map(function ($item) {
-            return $item->sum('amount');
+        $data['values'] = $brokenLockers->groupBy('month')->map(function ($item) {
+            return $item->count();
         })->toArray();
         foreach ($moths as $month) {
             if (!isset($data['values'][$month])) {
