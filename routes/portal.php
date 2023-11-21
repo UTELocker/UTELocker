@@ -33,7 +33,8 @@ Route::prefix('api-portal')->group(function () {
         Route::get('activities', [BookingController::class, 'getBookingActivities'])
             ->name('portal.booking.activities');
         Route::put('/{id}/extend-time', [BookingController::class, 'extendTime'])
-            ->name('portal.bookings.extendTime');
+            ->name('portal.bookings.extendTime')
+            ->middleware('enoughMoney');
         Route::post('/change-password', [BookingController::class, 'changePassword'])
             ->name('portal.bookings.changePassword');
         Route::get('slot/{slotId}', [BookingController::class, 'getBookingsBySlotId'])

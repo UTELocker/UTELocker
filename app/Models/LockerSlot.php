@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\LockerSlotType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
 
 class LockerSlot extends Model
 {
@@ -33,6 +34,15 @@ class LockerSlot extends Model
         return $code;
     }
 
+    public static function getConfigLocker($lockerId)
+    {
+        $slotCPU = self::where('locker_id', $lockerId)
+            ->where('type', LockerSlotType::CPU)
+            ->get();
+        $configLocker = $slotCPU->where('type', LockerSlotType::CPU)->first()->config ?? '{}';
+        return json_decode($configLocker, true);
+    }
+
     public static function calculatePriceBooking($lockerSlotId, $startTime, $endTime)
     {
         $lockerSlot = self::whereIn('id', $lockerSlotId)
@@ -47,7 +57,8 @@ class LockerSlot extends Model
         $configLocker = $lockerSlot->where('type', LockerSlotType::CPU)->first()->config ?? '{}';
         $configLocker = json_decode($configLocker, true);
 
-        $totalHours = (strtotime($endTime) - strtotime($startTime)) / 3600;
+        $totalHours = Carbon::parse($endTime)->diffInHours($startTime);
+
         $price = 0;
         foreach ($lockerSlot as $slot) {
             if ($slot->type == LockerSlotType::SLOT) {

@@ -34,14 +34,14 @@ class PutExtendTimeRequest extends FormRequest
 
                     $booking = Booking::where('id', $idBooking)
                         ->where('owner_id', user()->id)
+                        ->where(function ($query) {
+                            $query->where('status', BookingStatus::APPROVED)
+                                ->orWhere('status', BookingStatus::PENDING);
+                        })
                         ->first();
 
                     if (!$booking) {
                         $fail('Booking not found');
-                    }
-
-                    if ($booking->status != BookingStatus::APPROVED) {
-                        $fail('Booking is not active');
                     }
 
                     if ($value < 30) {

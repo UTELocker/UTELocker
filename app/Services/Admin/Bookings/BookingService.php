@@ -238,9 +238,25 @@ class BookingService extends BaseService
     public function extendTime($id, array $data)
     {
         $booking = $this->get($id);
-        $extendDate = Carbon::parse($booking->end_date)->addMinutes($data['extend_time']);
+        $extendDate = Carbon::parse($booking->end_date)->addMinutes($data['extend_time'])->format('Y-m-d H:i:s');
         $booking->end_date = $extendDate;
-        $booking->save();
+        DB::transaction(function () use ($booking) {
+            $wallet = auth()->user()->wallet;
+            $amount = LockerSlot::calculatePriceBooking(
+                [$booking->locker_slot_id],
+                $booking->getOriginal('end_date'),
+                $booking->end_date
+            );
+            $transaction =$this->transactionService->handlePayment(
+                $wallet,
+                $amount,
+                'Thanh toán thêm giờ đặt tủ',
+            );
+            if (!$transaction) {
+                throw new \Exception('Thanh toán thất bại');
+            }
+            $booking->save();
+        });
         return $booking;
     }
 
