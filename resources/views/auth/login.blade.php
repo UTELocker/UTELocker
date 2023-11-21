@@ -74,6 +74,11 @@
                         class="btn-primary f-w-500 rounded w-100 height-50 f-18">
                     {{ __('app.login') }} <i class="fa fa-arrow-right pl-1"></i>
                 </button>
+
+                <button type="button" id="back-submit-email"
+                        class="btn-secondary f-w-500 rounded w-100 height-50 f-18 mt-2">
+                    {{ __('app.resetEmail') }} <i class="fa fa-arrow-left pl-1"></i>
+                </button>
             </div>
         </div>
     </form>
@@ -102,9 +107,6 @@
                 $("#submit-email").on('click', function () {
                     const email = $('#email').val();
                     this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{__('app.loading')}}';
-
-                    $('#email').removeClass('is-invalid');
-                    $('#email').parent().find('.invalid-feedback').remove();
 
                     $.ajax({
                         url: '{{ route('api.user.listClient') }}',
@@ -143,6 +145,16 @@
                 if ($('#email').val() !== '') {
                     $('#submit-email').trigger('click');
                 }
+
+                $('#back-submit-email').click(function () {
+                    $('#submit-email').html('{{ __('app.getSiteGroup') }} <i class="fa fa-arrow-right pl-1"></i>');
+                    $('#btnRegister').removeClass('d-none');
+                    $('#email').attr('readonly', false);
+                    $('#submit-email').removeClass('d-none');
+                    $('#site-group-section').addClass('d-none');
+                    $('#password').val('');
+
+                });
             });
         </script>
     </x-slot>

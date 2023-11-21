@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Models\PasswordResetToken;
+use App\Models\User;
 
 class NewPasswordController extends Controller
 {
@@ -19,7 +21,16 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): View
     {
-        return view('auth.reset-password', ['request' => $request]);
+        $user = PasswordResetToken::where('token', $request->token)
+            ->leftJoin('users', function ($join) {
+                $join->on('password_reset_tokens.email', '=', 'users.email')
+                    ->on('password_reset_tokens.client_id', '=', 'users.client_id');
+            })
+            ->leftJoin('clients', 'users.client_id', '=', 'clients.id')
+            ->select('users.name', 'clients.name as client_name')
+            ->firstOrFail();
+
+        return view('auth.reset-password', ['request' => $request, 'user' => $user]);
     }
 
     /**
@@ -31,24 +42,30 @@ class NewPasswordController extends Controller
     {
         $request->validate([
             'token' => ['required'],
-            'email' => ['required', 'email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // Here we will attempt to reset the user's password. If it is successful we
-        // will update the password on an actual user model and persist it to the
-        // database. Otherwise we will parse the error and return the response.
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
-                ])->save();
+        $userId = User::
+            leftJoin('password_reset_tokens', function ($join) {
+                $join->on('password_reset_tokens.email', '=', 'users.email')
+                    ->on('password_reset_tokens.client_id', '=', 'users.client_id');
+            })
+            ->where('password_reset_tokens.token', $request->token)
+            ->select('users.id')
+            ->firstOrFail();
 
-                event(new PasswordReset($user));
-            }
-        );
+        $user = User::where('id', $userId->id)
+            ->update([
+                'password' => Hash::make($request->password),
+            ]);
+
+        if ($user) {
+            PasswordResetToken::where('token', $request->token)->delete();
+
+            $status = Password::PASSWORD_RESET;
+        } else {
+            $status = Password::INVALID_TOKEN;
+        }
 
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can

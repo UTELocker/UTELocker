@@ -28,7 +28,7 @@ class StoreLockerRequest extends FormRequest
                 LockerStatus::getDescriptions([LockerStatus::IN_USE]))),
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'warranty_duration' => 'required|integer|min:1',
+            'warranty_duration' => 'required|integer|min:1|max:5',
         ];
     }
 }

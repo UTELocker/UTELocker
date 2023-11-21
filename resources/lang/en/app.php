@@ -131,4 +131,5 @@ return array(
     'markRead' => 'Mark as Read',
     'newNotifications' => 'New Notifications',
     'setUpWizard' => 'Set Up Wizard',
+    'resetEmail' => 'Reset Email',
 );

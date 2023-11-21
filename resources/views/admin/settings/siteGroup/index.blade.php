@@ -15,6 +15,10 @@
                                 href="{{ route('admin.siteGroupSettings.index') }}?tab=policy" role="tab" aria-controls="nav-ticketAgents"
                                 aria-selected="true">{{ __('modules.settings.menu.site-group.policy') }}
                             </a>
+                            <a class="nav-item nav-link f-15 active email"
+                                href="{{ route('admin.siteGroupSettings.index') }}?tab=email" role="tab" aria-controls="nav-ticketAgents"
+                                aria-selected="true">{{ __('modules.settings.menu.site-group.email') }}
+                            </a>
                         </div>
                     </nav>
                 </div>

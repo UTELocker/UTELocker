@@ -24,15 +24,16 @@ class SiteGroupSettingController extends BaseSettingController
         $this->clientService = $clientService;
         $this->pageTitle = __('modules.settings.menu.site-group.menu');
         $this->activeSettingMenu = 'settings-site-group';
-        if (user()) {
-            $this->middleware(function ($request, $next) {
-                return user()->hasPermission(UserRole::ADMIN)
-                    ? $next($request)
-                    : redirect()->route('admin.dashboard');
-            });
-        } else {
-            $this->middleware('auth.license');
-        }
+        $this->middleware(function ($request, $next) {
+
+            if (user() == null) {
+                $this->middleware('auth.license');
+            }
+
+            return user()->hasPermission(UserRole::ADMIN)
+                ? $next($request)
+                : redirect()->route('admin.dashboard');
+        });
     }
 
     public function index()
@@ -59,6 +60,7 @@ class SiteGroupSettingController extends BaseSettingController
         $this->view = match ($this->activeTab) {
             'siteGroupSettings' => 'admin.settings.siteGroup.ajax.siteGroupSettings',
             'policy' => 'admin.settings.siteGroup.ajax.policy',
+            'email' => 'admin.settings.siteGroup.ajax.email',
         };
 
         return view('admin.settings.siteGroup.index', $this->data);
@@ -79,7 +81,15 @@ class SiteGroupSettingController extends BaseSettingController
             'status',
             'allow_signup',
             'config_policy',
-            'refund_soon_cancel_booking'
+            'refund_soon_cancel_booking',
+            'email_mailer',
+            'email_host',
+            'email_port',
+            'email_username',
+            'email_password',
+            'email_encryption',
+            'email_from_address',
+            'email_from_name',
         ]);
         $this->clientService->update($this->client, $form, ['isPrefix' => false]);
 

@@ -43,6 +43,6 @@
     <!-- Template JS -->
     <script src="{{ asset('js/main.js') }}"></script>
 
-    {{ $scripts }}
+    {{ $scripts ?? '' }}
 </body>
 </html>

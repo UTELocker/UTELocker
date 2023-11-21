@@ -1,39 +1,67 @@
-<x-guest-layout>
+<x-auth>
     <form method="POST" action="{{ route('password.store') }}">
         @csrf
 
         <!-- Password Reset Token -->
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <p>
+            Hi {{ $user->name }}, <br>
+            Please enter your new password of your account in <br> {{ $user->client_name }}.
+        </p>
 
         <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="form-group text-left">
+            <label for="password">{{ __('app.password') }}</label>
+            <x-forms.input-group>
+                <input type="password" name="password" id="password"
+                       placeholder="{{ __('placeholders.password') }}" tabindex="3"
+                       class="form-control height-50 f-15 light_text @error('password') is-invalid @enderror">
+
+                <x-slot name="append">
+                    <button type="button" data-toggle="tooltip"
+                            data-original-title="{{ __('app.viewPassword') }}"
+                            class="btn btn-outline-secondary border-grey height-50 toggle-password">
+                        <i
+                            class="fa fa-eye"></i></button>
+                </x-slot>
+
+            </x-forms.input-group>
+            @if ($errors->has('password'))
+                <div class="invalid-feedback d-block">{{ $errors->first('password') }}</div>
+            @endif
         </div>
 
         <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
+        <div class="form-group text-left">
+            <label for="password_confirmation">{{ __('app.password') }}</label>
+            <x-forms.input-group>
+                <input type="password" name="password_confirmation" id="password_confirmation"
+                       placeholder="{{ __('placeholders.password') }}" tabindex="3"
+                       class="form-control height-50 f-15 light_text @error('password_confirmation') is-invalid @enderror">
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                <x-slot name="append">
+                    <button type="button" data-toggle="tooltip"
+                            data-original-title="{{ __('app.viewPassword') }}"
+                            class="btn btn-outline-secondary border-grey height-50 toggle-password">
+                        <i
+                            class="fa fa-eye"></i></button>
+                </x-slot>
+
+            </x-forms.input-group>
+            @if ($errors->has('password'))
+                <div class="invalid-feedback d-block">{{ $errors->first('password') }}</div>
+            @endif
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
-            </x-primary-button>
-        </div>
+        <button
+            type="submit"
+            id="submit-login"
+            class="btn-primary f-w-500 rounded w-100 height-50 f-18">
+            {{ __('Reset Password') }} <i class="fa fa-arrow-right pl-1"></i>
+        </button>
     </form>
-</x-guest-layout>
+</x-auth>
+
+

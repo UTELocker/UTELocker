@@ -59,6 +59,7 @@ return array(
                 'menu' => 'Site Group',
                 'site-group' => 'Site Group',
                 'policy' => 'Policy',
+                'email' => 'Email',
             ],
             'pusher' => [
                 'menu' => 'Pusher Settings',
@@ -93,6 +94,14 @@ return array(
         'firebase_app_id' => 'Firebase App ID',
         'firebase_measurement_id' => 'Firebase Measurement ID',
         'refund_soon_cancel_booking' => '% Refund Soon Cancel Booking',
+        'email_host' => 'Email Host',
+        'email_port' => 'Email Port',
+        'email_username' => 'Email Username',
+        'email_password' => 'Email Password',
+        'email_encryption' => 'Email Encryption',
+        'email_from_address' => 'Email From Address',
+        'email_from_name' => 'Email From Name',
+        'email_mailer' => 'Email Mailer',
     ],
     'lockers' => [
         'lockerDetails' => 'Locker Details',

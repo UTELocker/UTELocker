@@ -61,6 +61,13 @@ class ClientService extends BaseService
         $inputs['allow_signup'] = $inputs['allow_signup'] ?? $this->model->allow_signup;
         $inputs['config_policy'] = $inputs['config_policy'] ?? $this->model->config_policy;
         $inputs['refund_soon_cancel_booking'] = $inputs['refund_soon_cancel_booking'] ?? $this->model->refund_soon_cancel_booking;
+        $inputs['email_mailer'] = $inputs['email_mailer'] ?? $this->model->email_mailer;
+        $inputs['email_host'] = $inputs['email_host'] ?? $this->model->email_host;
+        $inputs['email_port'] = $inputs['email_port'] ?? $this->model->email_port;
+        $inputs['email_username'] = $inputs['email_username'] ?? $this->model->email_username;
+        $inputs['email_password'] = $inputs['email_password'] ?? $this->model->email_password;
+        $inputs['email_encryption'] = $inputs['email_encryption'] ?? $this->model->email_encryption;
+        $inputs['email_from_address'] = $inputs['email_from_address'] ?? $this->model->email_from_address;
     }
 
     protected function setModelFields($inputs): void
@@ -80,6 +87,13 @@ class ClientService extends BaseService
         Common::assignField($this->model, 'allow_signup', $inputs);
         Common::assignField($this->model, 'config_policy', $inputs);
         Common::assignField($this->model, 'refund_soon_cancel_booking', $inputs);
+        Common::assignField($this->model, 'email_mailer', $inputs);
+        Common::assignField($this->model, 'email_host', $inputs);
+        Common::assignField($this->model, 'email_port', $inputs);
+        Common::assignField($this->model, 'email_username', $inputs);
+        Common::assignField($this->model, 'email_password', $inputs);
+        Common::assignField($this->model, 'email_encryption', $inputs);
+        Common::assignField($this->model, 'email_from_address', $inputs);
     }
 
     public function get($id)
