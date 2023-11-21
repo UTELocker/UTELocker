@@ -9,9 +9,19 @@
     class="ajax-form"
     action="{{ route('admin.lockers.slots.update', ['locker' => $lockerId, 'slot' => $slot->id]) }}"
 >
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li class="text-danger">{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+
     <div class="modal-body">
             <div class="portlet-body">
-                <div class="form-body">
                     @if($slot->type == \App\Enums\LockerSlotType::SLOT)
                         <div class="row">
                             <div class="col-md-12">
@@ -69,14 +79,6 @@
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-12">
-                                <label class="control-label">@lang('settings.defaultPrice')</label>
-                                <input type="number" name="price" class="form-control"
-                                    value="{{ $slot?->price }}" min="0"
-                                    placeholder="@lang('settings.pricePlaceholder')">
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-12">
                                 <label class="control-label">@lang('settings.bufferTime')</label>
                                 <input type="number" name="bufferTime" class="form-control"
                                     placeholder="@lang('settings.bufferTimePlaceholder')"
@@ -84,17 +86,14 @@
                             </div>
                         </div>
                     @endif
-                    @if($slot->type == \App\Enums\LockerSlotType::SLOT)
-                        <div class="row mt-2">
-                            <div class="col-md-12">
-                                <label class="control-label">@lang('settings.price')</label>
-                                <input type="number" name="price" class="form-control"
-                                    value="{{ $slot?->price }}" min="0"
-                                    placeholder="@lang('settings.pricePlaceholder')">
-                            </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <label class="control-label">@lang('settings.price')</label>
+                            <input type="number" name="price" class="form-control"
+                                value="{{ $slot?->price }}" min="0"
+                                placeholder="@lang('settings.pricePlaceholder')">
                         </div>
-                    @endif
-                </div>
+                    </div>
             </div>
     </div>
     <div class="modal-footer">

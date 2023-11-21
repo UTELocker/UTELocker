@@ -186,7 +186,6 @@ export default defineComponent({
             deleteBooking: 'moduleBase/deleteBooking',
         }),
         splitPinCode(booking) {
-            console.log('booking', booking);
             return booking.pin_code.split("");
         },
         copyPinCode(booking) {

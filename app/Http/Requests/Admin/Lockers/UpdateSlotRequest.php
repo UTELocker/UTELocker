@@ -4,6 +4,8 @@ namespace App\Http\Requests\Admin\Lockers;
 
 use App\Enums\LockerSlotStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Enums\LockerSlotType;
+use App\Models\LockerSlot;
 
 class UpdateSlotRequest extends FormRequest
 {
@@ -22,8 +24,22 @@ class UpdateSlotRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'status' => 'required|int|in:' . implode(',', array_keys(LockerSlotStatus::getDescriptions())),
-        ];
+        $rules = [];
+        $lockerSlotId = $this->route('slot');
+        $lockerSlot = LockerSlot::find($lockerSlotId);
+        if ($lockerSlot->type === LockerSlotType::SLOT) {
+            $rules = [
+                'status' => 'required|int|in:' . implode(',', array_keys(LockerSlotStatus::getDescriptions())),
+            ];
+        } else {
+            $rules = [
+                'hours' => 'required|numeric|min:0',
+                'prefix' => 'required|string|max:10',
+                'bufferTime' => 'required|numeric|min:0|max:180',
+                'maxBookings' => 'required|numeric|min:0',
+            ];
+        }
+        $rules['price'] = ['required', 'numeric', 'min:0'];
+        return $rules;
     }
 }

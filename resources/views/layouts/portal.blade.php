@@ -14,7 +14,7 @@
 <body>
     <div id="portalApp"></div>
     <script>
-        window.user = {!! json_encode(user()) !!};
+        window.user = {!! json_encode(auth()->user()) !!};
         window.settings = {!! json_encode($siteGroupSettings) !!};
         window.configFireBase = {!! json_encode($configFireBase) !!};
         window.csrfToken = "{{ csrf_token() }}";

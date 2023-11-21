@@ -79,13 +79,16 @@ const actions = {
                 if (response.data.status === 'success') {
                     const data = response.data.data;
                     let slotCPU = {};
-                    data.module.forEach(module => {
-                        module.forEach(slot => {
-                            if (slot.type === SLOT_TYPE.CPU) {
-                                slotCPU = slot;
+
+                    for (const [key, value] of Object.entries(data.module)) {
+                        for (const [key, val] of Object.entries(value)) {
+                            if (val.type === SLOT_TYPE.CPU) {
+                                slotCPU = val;
+                                break;
                             }
-                        })
-                    });
+                        }
+                    }
+
                     const configLocker = JSON.parse(slotCPU.config ? slotCPU.config : `
                         {
                             "price": 10000,
@@ -105,21 +108,22 @@ const actions = {
                             longitude: data.locker.longitude,
                         },
                         code: data.locker.code,
-                    }
-                    const modules = data.module.map(module => {
-                        const slots = module.map(slot => {
-                            const configSlot = JSON.parse(slot.config ? slot.config : '{}');
+                    };
+
+                    const modules = Object.keys(data.module).map(row => {
+                        const slots = Object.keys(data.module[row]).map(col => {
+                            console .log(data.module[row][col]);
+                            const configSlot = JSON.parse(data.module[row][col].config ? data.module[row][col].config : '{}');
                             configSlot.price = configSlot.price ? configSlot.price : configLocker.price;
                             return {
-                                ...slot,
+                                ...data.module[row][col],
                                 is_selected: false,
-                                number_of_slot: slot.type === SLOT_TYPE.SLOT ? configLocker.prefix + numberOfSlot++ : null,
+                                number_of_slot: data.module[row][col].type === SLOT_TYPE.SLOT ? configLocker.prefix + numberOfSlot++ : null,
                                 config: configSlot,
                             }
-                        })
+                        });
                         return slots;
                     });
-
                     const configNumberSlot = data.configNumberSlot;
 
                     commit('setLocker', locker);

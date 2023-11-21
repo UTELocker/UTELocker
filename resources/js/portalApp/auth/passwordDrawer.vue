@@ -161,7 +161,7 @@ export default defineComponent({
 
         sendOTP() {
             let appVerifier = this.appVerifier
-            const phoneNumber = formatMobile(this.user.mobile);
+            const phoneNumber = this.formatMobile(this.user.mobile);
             firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
                 .then(function (confirmationResult) {
                     window.confirmationResult = confirmationResult;

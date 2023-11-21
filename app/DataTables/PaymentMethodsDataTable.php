@@ -107,7 +107,7 @@ class PaymentMethodsDataTable extends BaseDataTable
             ],
             __('app.code') => ['data' => 'code', 'name' => 'code', 'title' => __('app.code')],
             __('app.name') => ['data' => 'code', 'name' => 'code', 'title' => __('app.name')],
-            __('app.status') => ['data' => 'status', 'name' => 'status', 'title' => __('app.status')],
+            __('app.status') => ['data' => 'status', 'name' => 'status', 'title' => __('app.status'),'orderable' => false],
             __('app.createdAt') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('app.createdAt')]
         ];
 

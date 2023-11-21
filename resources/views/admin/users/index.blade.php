@@ -12,14 +12,6 @@
 
 @section('filter-section')
     <x-filters.filter-box>
-        <!-- DATE START -->
-        <div class="select-box d-flex pr-2 border-right-grey border-right-grey-sm-0">
-            <p class="mb-0 pr-2 f-14 text-dark-grey d-flex align-items-center">@lang('app.duration')</p>
-            <div class="select-status d-flex">
-                <input type="text" class="position-relative text-dark form-control my-2 text-left f-14  p-1 border-additional-grey"
-                       id="datatableRange" placeholder="@lang('placeholders.dateRange')">
-            </div>
-        </div>
 
         <!-- SEARCH BY TASK START -->
         <div class="task-search d-flex  py-1 px-lg-3 px-0 border-right-grey align-items-center">

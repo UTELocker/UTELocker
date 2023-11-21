@@ -92,7 +92,6 @@
                     <a-button
                         type="primary"
                         @click="() => {
-                            console.log(record);
                             transactionSelected = record;
                             visible = true;
                         }"
@@ -423,7 +422,6 @@ export default defineComponent({
             const id = this.$route.params.id;
             if (id) {
                 this.transactionSelected = this.transactions.find(transaction => transaction.id === parseInt(id));
-                console.log(this.transactionSelected);
                 this.visible = true;
             }
         });
@@ -434,7 +432,6 @@ export default defineComponent({
                 const id = this.$route.params.id;
                 if (id) {
                     this.transactionSelected = this.transactions.find(transaction => transaction.id === parseInt(id));
-                    console.log(this.transactionSelected);
                     this.visible = true;
                 }
             }

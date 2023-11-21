@@ -143,7 +143,6 @@ export default defineComponent({
             if (slot.is_selected) {
                 return 'var(--green-3)';
             }
-            console.log(slot.statusSlot);
             switch (slot.statusSlot) {
                 case SLOT_STATUS.AVAILABLE:
                     return 'var(--green-6)';
