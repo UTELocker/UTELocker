@@ -9,6 +9,7 @@ use App\Enums\LockerStatus;
 use App\Traits\HandleNotification;
 use App\Enums\NotificationType;
 use App\Models\Locker;
+use Illuminate\Support\Facades\Log;
 
 class CheckLockerLiveTask
 {
@@ -19,7 +20,12 @@ class CheckLockerLiveTask
         $lockers = License::
             leftJoin('lockers', 'lockers.id', '=', 'licenses.locker_id')
             ->leftJoin('locker_system_logs', 'locker_system_logs.license_id', '=', 'licenses.id')
-            ->select('licenses.id', 'locker_system_logs.updated_at', 'lockers.code', 'lockers.id as locker_id')
+            ->select('licenses.id',
+                'locker_system_logs.updated_at',
+                'lockers.code',
+                'lockers.id as locker_id',
+                'licenses.client_id',
+                )
             ->groupBy('licenses.id')
             ->where('lockers.status', LockerStatus::IN_USE)
             ->whereNotNull('licenses.client_id')
@@ -28,12 +34,19 @@ class CheckLockerLiveTask
                     ->orWhere('locker_system_logs.updated_at', '<', DB::raw('DATE_SUB(NOW(), INTERVAL 10 MINUTE)'));
             })
             ->get();
+        Log::info('CheckLockerLiveTask: ' . $lockers->count() . ' lockers');
         $lockers->each(function ($locker) {
+            Log::info([
+                'locker' => $locker
+            ]);
             if (!$locker->updated_at) {
                 Locker::where('id', $locker->locker_id)->update([
                     'status' => LockerStatus::PENDING_BROKEN,
                 ]);
                 $admins = License::getAdmins($locker->id);
+                Log::info([
+                    'admins' => $admins
+                ]);
                 foreach ($admins as $admin) {
                     $this->sendNotification(
                         NotificationType::LOCKER_BROKEN,

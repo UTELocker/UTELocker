@@ -67,6 +67,8 @@ class PaymentMethodsDataTable extends BaseDataTable
      */
     public function query(PaymentMethod $model): QueryBuilder
     {
+        $search = is_array($this->request()->get('search')) ? '' : $this->request()->get('search');
+        $status = request()->get('status') ?? '';
         $query = $model
             ->newQuery()
             ->leftJoin('clients', 'clients.id', '=', 'payment_methods.client_id')
@@ -80,6 +82,17 @@ class PaymentMethodsDataTable extends BaseDataTable
 
         if (!auth()->user()->isSuperUser()) {
             $query->where('payment_methods.client_id', auth()->user()->client_id);
+        }
+
+        if ($status !== '') {
+            $query->where('payment_methods.active', $status);
+        }
+
+        if ($search !== '') {
+            $query->where(function ($query) use ($search) {
+                $query->orWhere('payment_methods.code', 'like', '%' . $search . '%');
+                $query->orWhere('payment_methods.name', 'like', '%' . $search . '%');
+            });
         }
 
         return $query;

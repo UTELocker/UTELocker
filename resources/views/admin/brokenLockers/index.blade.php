@@ -44,10 +44,32 @@
                 <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.status')</label>
                 <div class="select-filter mb-4">
                     <div class="select-others">
-                        <select class="form-control select-picker" data-container="body" name="status" id="status">
+                        <select class="form-control select-picker" data-container="body" name="status" id="status-filter">
                             <option value="all">@lang('app.all')</option>
-                            <option value="active">@lang('app.active')</option>
-                            <option value="deactive">@lang('app.inactive')</option>
+                            @foreach(
+                                \App\Enums\LockerStatus::getDescriptions([
+                                    \App\Enums\LockerStatus::IN_USE,
+                                    \App\Enums\LockerStatus::AVAILABLE,
+                                ])
+                                as $key => $status
+                            )
+                                <option value="{{ $key }}">{{ $status }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="more-filter-items">
+                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.location')</label>
+                <div class="select-filter mb-4">
+                    <div class="select-others">
+                        <select class="form-control select-picker" data-container="body" name="location" id="location-filter">
+                            <option value="all">@lang('app.all')</option>
+                            @foreach($locations as $location)
+                                <option value="{{$location->id}}">
+                                    {{ $location->description }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -258,6 +280,38 @@
                     }
                 })
             });
+        });
+
+        const table = $('#broken-lockers-table');
+
+        $('#search-text-field').on('keyup', function () {
+            const value = $(this).val();
+            table.on('preXhr.dt', function (e, settings, data) {
+                data.search = value === '' ? null : value;
+            }).DataTable().ajax.reload();
+        });
+
+        $('#location-filter').on('change', function () {
+            const value = $(this).val();
+            table.on('preXhr.dt', function (e, settings, data) {
+                data.location = value === 'all' ? null : value;
+            }).DataTable().ajax.reload();
+        });
+
+        $('#status-filter').on('change', function () {
+            const value = $(this).val();
+            table.on('preXhr.dt', function (e, settings, data) {
+                data.status = value === 'all' ? null : value;
+            }).DataTable().ajax.reload();
+        });
+
+        $('#reset-filters-2').on('click', function () {
+            $('#location-filter').val('all').selectpicker('refresh');
+            $('#status-filter').val('all').selectpicker('refresh');
+            table.on('preXhr.dt', function (e, settings, data) {
+                data.status = '';
+                data.location = '';
+            }).DataTable().ajax.reload();
         });
     </script>
 @endpush

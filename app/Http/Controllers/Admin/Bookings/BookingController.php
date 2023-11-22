@@ -10,23 +10,29 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\Admin\Bookings\BookingService;
 use App\Services\Admin\Lockers\LockerSlotService;
+use App\Services\Admin\Locations\LocationService;
 
 class BookingController extends Controller
 {
     private BookingService $bookingService;
     private LockerSlotService $lockerSlotService;
+    private LocationService $locationService;
+
     public function __construct(
         BookingService $bookingService,
-        LockerSlotService $lockerSlotService
+        LockerSlotService $lockerSlotService,
+        LocationService $locationService,
     ) {
         parent::__construct();
         $this->pageTitle = 'Bookings';
         $this->bookingService = $bookingService;
         $this->lockerSlotService = $lockerSlotService;
+        $this->locationService = $locationService;
     }
 
     public function index(BookingsDataTable $dataTable)
     {
+        $this->locations = $this->locationService->getLocationsOfClient();
         return $dataTable->render('admin.bookings.index', $this->data);
     }
 

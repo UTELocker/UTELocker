@@ -417,13 +417,13 @@ class BookingService extends BaseService
         $query = $this->model->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id');
 
         switch ($type) {
-            case 'user':
+            case ScopeCancelBookings::USER:
                 $query->where('bookings.owner_id', $identifier);
                 break;
-            case 'locker':
+            case ScopeCancelBookings::LOCKER:
                 $query->where('locker_slots.locker_id', $identifier);
                 break;
-            case 'slot_locker':
+            case ScopeCancelBookings::LOCKER_SLOT:
                 $query->where('locker_slots.id', $identifier);
                 break;
             default:

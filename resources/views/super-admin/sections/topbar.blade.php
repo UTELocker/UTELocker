@@ -128,6 +128,7 @@
                         notificationRead.push(notification);
                     }
                 });
+                console.log(notificationUnread);
                 renderBagde();
                 renderNotificationList();
             }
@@ -164,7 +165,7 @@
                         <i class="${icon} f-16 text-dark-grey"></i>
                     </div>
                     <div class="w-100">
-                        <p class="f-14 mb-0 text-dark f-w-500">${notification.label}</p>
+                        <p class="f-14 mb-0 text-dark f-w-500">Locker Broken</p>
                         <p class="f-12 mb-0 text-dark-grey">${notification.content}</p>
                         <p class="f-12 mb-0 text-dark-grey">${notification.created_at}</p>
                     </div>

@@ -121,6 +121,7 @@ const actions = {
         });
     },
     markAllNotificationAsRead({ commit }) {
+        console.log('markAllNotificationAsRead');
         return new Promise((resolve, reject) => {
             put(API.PUT_NOTIFICATION_STATUS('all'), { status: NOTIFICATION_STATUS.READ }).then(response => {
                 const notifications = state.notifications.map(notification => {

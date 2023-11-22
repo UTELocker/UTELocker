@@ -25,8 +25,8 @@ class Kernel extends ConsoleKernel
         $schedule->call(new WarningExpireTask())->everyMinute();
         $schedule->call(new ExpireTokenTask())->everyMinute();
         $schedule->call(new LockedBookingTask())->everyMinute();
-        // $schedule->call(new CheckLockerLiveTask())
-        //     ->everyFiveMinutes();
+        $schedule->call(new CheckLockerLiveTask())
+            ->everyMinute();
     }
 
     /**

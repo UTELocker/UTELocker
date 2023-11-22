@@ -98,6 +98,7 @@ class BrokenLockersDataTable extends BaseDataTable
     {
         $search = is_array($this->request()->get('search')) ? '' : $this->request()->get('search');
         $location = $this->request()->get('location') ?? '';
+        $status = $this->request()->get('status') ?? '';
         $query = $model
             ->newQuery()
             ->leftJoin('licenses', 'licenses.locker_id', '=', 'lockers.id')
@@ -131,6 +132,10 @@ class BrokenLockersDataTable extends BaseDataTable
 
         if ($location != '') {
             $query->where('lockers.location_id', $location);
+        }
+
+        if ($status != '') {
+            $query->where('lockers.status', $status);
         }
 
         return $query;
@@ -180,7 +185,8 @@ class BrokenLockersDataTable extends BaseDataTable
             __('app.status') => [
                 'data' => 'status',
                 'name' => 'status',
-                'title' => __('app.status')
+                'title' => __('app.status'),
+                'orderable' => false,
             ],
             __('app.location') => [
                 'data' => 'location',

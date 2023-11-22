@@ -35,11 +35,11 @@ class License extends Model
 
     public static function getAdmins($licenseId)
     {
-        return self::where('id', $licenseId)
-            ->joinLeft('clients', 'clients.id', '=', 'licenses.client_id')
-            ->joinLeft('users', 'users.client_id', '=', 'clients.id')
-            ->where('users.type', UserRole::Admin)
-            ->select('users.name', 'users.email', 'users.phone', 'users.id')
+        return self::where('licenses.id', $licenseId)
+            ->leftJoin('clients', 'clients.id', '=', 'licenses.client_id')
+            ->leftJoin('users', 'users.client_id', '=', 'clients.id')
+            ->where('users.type', UserRole::ADMIN)
+            ->select('users.name', 'users.email', 'users.mobile', 'users.id')
             ->get();
     }
 }

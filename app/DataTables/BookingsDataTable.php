@@ -78,7 +78,10 @@ class BookingsDataTable extends BaseDataTable
      */
     public function query(Booking $model): QueryBuilder
     {
-        return $model->newQuery()
+        $search = is_array($this->request()->get('search')) ? '' : $this->request()->get('search');
+        $location = $this->request()->get('location') ?? '';
+        $status = $this->request()->get('status') ?? '';
+        $query = $model->newQuery()
             ->leftJoin('locker_slots', 'locker_slots.id', '=', 'bookings.locker_slot_id')
             ->leftJoin('lockers', 'lockers.id', '=', 'locker_slots.locker_id')
             ->leftJoin('transactions', 'transactions.id', '=', 'bookings.transaction_id')
@@ -94,6 +97,24 @@ class BookingsDataTable extends BaseDataTable
                 'transactions.id as transaction_id', 'transactions.amount as amount',
                 'clients.name as client_name', 'clients.id as client_id'
             );
+
+        if ($search != '') {
+            $query->where(function ($query) use ($search) {
+                $query->whereRaw('UPPER(lockers.code) like ?', ['%' . strtoupper($search) . '%'])
+                    ->orWhereRaw('UPPER(locations.description) like ?', ['%' . strtoupper($search) . '%'])
+                    ->orWhereRaw('UPPER(locations.code) like ?', ['%' . strtoupper($search) . '%']);
+            });
+        }
+
+        if ($location != '') {
+            $query->where('lockers.location_id', $location);
+        }
+
+        if ($status != '') {
+            $query->where('bookings.status', $status);
+        }
+
+        return $query;
     }
 
     /**
@@ -127,12 +148,38 @@ class BookingsDataTable extends BaseDataTable
                 'title' => '#'
             ],
             __('modules.lockers.code') => ['data' => 'code', 'name' => 'code', 'title' => __('modules.lockers.code')],
-            __('app.status') => ['data' => 'status', 'name' => 'status', 'title' => __('app.status')],
-            __('modules.locations.address') => ['data' => 'address', 'name' => 'address', 'title' => __('modules.locations.address')],
-            __('modules.bookings.startDate') => ['data' => 'start_date', 'name' => 'start_date', 'title' => __('modules.bookings.startDate')],
-            __('modules.bookings.endDate') => ['data' => 'end_date', 'name' => 'end_date', 'title' => __('modules.bookings.endDate')],
-            __('modules.bookings.create') => ['data' => 'created_at', 'name' => 'created_at', 'title' => __('modules.bookings.create')],
-            __('modules.transactions.amount') => ['data' => 'amount', 'name' => 'amount', 'title' => __('modules.transactions.amount')],
+            __('app.status') => [
+                'data' => 'status',
+                'name' => 'status',
+                'title' => __('app.status'),
+                'orderable' => false,
+            ],
+            __('modules.locations.address') => [
+                'data' => 'address',
+                'name' => 'address',
+                'title' => __('modules.locations.address'),
+                'orderable' => false,
+            ],
+            __('modules.bookings.startDate') => [
+                'data' => 'start_date',
+                'name' => 'start_date',
+                'title' => __('modules.bookings.startDate')
+            ],
+            __('modules.bookings.endDate') => [
+                'data' => 'end_date',
+                'name' => 'end_date',
+                'title' => __('modules.bookings.endDate')
+            ],
+            __('modules.bookings.create') => [
+                'data' => 'created_at',
+                'name' => 'created_at',
+                'title' => __('modules.bookings.create')
+            ],
+            __('modules.transactions.amount') => [
+                'data' => 'amount',
+                'name' => 'amount',
+                'title' => __('modules.transactions.amount')
+            ],
         ];
 
         if (user()->isSuperUser()) {
