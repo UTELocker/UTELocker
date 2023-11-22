@@ -172,7 +172,7 @@ export default defineComponent({
         },
         calculatePrice() {
             const [hours, minutes] = this.calculateTimeExtend();
-            const price = this.booking.slot_config?.price_of_hour ?? 10000;
+            const price = this.booking.pricePerHours;
             const total = hours * price + minutes * price / 60;
             return total.toFixed(2);
         },

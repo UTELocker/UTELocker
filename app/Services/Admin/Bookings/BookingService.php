@@ -157,7 +157,9 @@ class BookingService extends BaseService
             $startDateTime = explode(' ', $booking->start_date);
             $endDateTime = explode(' ', $booking->end_date);
             $totalMinutes = strtotime($booking->end_date) - strtotime($booking->start_date);
-            $totalPrice = ($booking->config->price_per_minute ?? 10 )* $totalMinutes;
+            $configSlotLocker = json_decode($booking->config ?? '{}');
+            $pricePerHours = $configSlotLocker->price ?? $configLocker->price;
+            $totalPrice = $pricePerHours * $totalMinutes;
 
             $result[] = [
                 'id' => $booking->id,
@@ -191,6 +193,7 @@ class BookingService extends BaseService
                 'lockerId' => $booking->locker_id,
                 'lockerSlotId' => $booking->locker_slot_id,
                 'bufferTime' => $configLocker->bufferTime ?? 0,
+                'pricePerHours' => $pricePerHours,
             ];
         }
 

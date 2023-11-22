@@ -57,8 +57,7 @@ class LockerSlot extends Model
         $configLocker = $lockerSlot->where('type', LockerSlotType::CPU)->first()->config ?? '{}';
         $configLocker = json_decode($configLocker, true);
 
-        $totalHours = Carbon::parse($endTime)->diffInHours($startTime);
-
+        $totalHours = Carbon::parse($endTime)->diffInMinutes(Carbon::parse($startTime)) / 60;
         $price = 0;
         foreach ($lockerSlot as $slot) {
             if ($slot->type == LockerSlotType::SLOT) {

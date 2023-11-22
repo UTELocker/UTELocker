@@ -93,6 +93,12 @@ export default defineComponent({
             isloading: false,
             showModal: false,
             is2FA: false,
+            nameFiled: '',
+            form: {
+                oldPassword: '',
+                newPassword: '',
+                confirmPassword: '',
+            }
         }
     },
     methods: {
@@ -132,6 +138,11 @@ export default defineComponent({
             }).then(() => {
                 this.isloading = false;
                 this.showModal = false;
+                this.form = {
+                    oldPassword: '',
+                    newPassword: '',
+                    confirmPassword: '',
+                };
                 Modal.success({
                     title: 'Cập nhập thông tin thành công',
                     content: 'Thông tin của bạn đã được cập nhập',
@@ -145,6 +156,10 @@ export default defineComponent({
                 });
             });
         },
+        handleClickEdit(nameFiled) {
+            this.nameFiled = nameFiled;
+            this.showModal = true;
+        }
     },
     created() {
         this.is2FA = this.user.is2FA

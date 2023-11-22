@@ -109,6 +109,7 @@ const actions = {
                         lockerId: activity.lockerId,
                         lockerSlotId: activity.lockerSlotId,
                         bufferTime: activity.bufferTime,
+                        pricePerHours: activity.pricePerHours,
                     }
                     if (activity.status === BOOKING_ACTIVITY_STATUS.ACTIVE) {
                         bookingActivitiesActive.push(booking);

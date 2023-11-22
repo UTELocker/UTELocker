@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Bookings;
 
 use App\Classes\Reply;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\bookings\ChangePassRequest;
+use App\Http\Requests\Api\Bookings\ChangePassRequest;
 use App\Http\Requests\Api\Bookings\PutExtendTimeRequest;
 use App\Http\Requests\Api\Bookings\StoreBookingRequest;
 use App\Models\Transaction;
