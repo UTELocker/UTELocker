@@ -17,11 +17,6 @@ return new class extends Migration
             ->first();
         $sadmin->is2fa = CommonConstant::DATABASE_NO;
         $sadmin->save();
-
-        $gen = User::where('email', 'gen@email.com')
-            ->first();
-        $gen->is2fa = CommonConstant::DATABASE_NO;
-        $gen->save();
     }
 
     /**
