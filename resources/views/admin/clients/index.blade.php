@@ -87,6 +87,37 @@
     @include('sections.datatables_js')
 
     <script>
+        function deleteClient(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You will not be able to recover the deleted client!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then(function (result) {
+                if (result.value) {
+                    const url = "{{ route('admin.clients.destroy', ':id') }}";
+                    const deleteUrl = url.replace(':id', id);
+                    $.easyAjax({
+                        url: deleteUrl,
+                        type: "DELETE",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            _method: "DELETE"
+                        },
+                        success: function (response) {
+                            if (response.status === "success") {
+                                window.LaravelDataTables["clients-table"].draw(false);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
         $('#clients-table').on('preXhr.dt', function(e, settings, data) {
             const dateRangePicker = $('#datatableRange').data('daterangepicker');
             let startDate = $('#datatableRange').val();

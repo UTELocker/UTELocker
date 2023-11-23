@@ -176,8 +176,7 @@ class ClientController extends Controller
             abort(403);
         }
 
-        $this->client = $this->clientService->get($id);
-        $this->client->delete();
+        $this->clientService->delete($id);
 
         return Reply::success(__('messages.recordDeleted'));
     }

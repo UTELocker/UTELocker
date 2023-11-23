@@ -11,6 +11,24 @@ use App\Models\Client;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use App\Models\Booking;
+use App\Models\CustomToken;
+use App\Models\HelpCall;
+use App\Models\HelpCallComment;
+use App\Models\HelpCallStdProblems;
+use App\Models\License;
+use App\Models\Locker;
+use App\Models\LockerSlot;
+use App\Models\LockerSystemLog;
+use App\Models\Location;
+use App\Models\LocationType;
+use App\Models\Notification;
+use App\Models\PasswordResetToken;
+use App\Models\PaymentMethod;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\Wallet;
 
 class ClientService extends BaseService
 {
@@ -146,5 +164,33 @@ class ClientService extends BaseService
             ->select('clients.name', 'clients.phone', 'clients.logo',
                 'lockers.code', 'lockers.status')
             ->first();
+    }
+
+    public function delete($id)
+    {
+        DB::transaction(function () use ($id) {
+            Notification::where('client_id', $id)->delete();
+            HelpCallComment::where('client_id', $id)->delete();
+            HelpCall::where('client_id', $id)->delete();
+            HelpCallStdProblems::where('client_id', $id)->delete();
+            LocationType::where('client_id', $id)->delete();
+            Location::where('client_id', $id)->delete();
+            Booking::where('client_id', $id)->delete();
+            LockerSlot::leftJoin('Licenses', 'Licenses.locker_id', '=', 'locker_slots.locker_id')
+                ->where('Licenses.client_id', $id)->delete();
+            Locker::leftJoin('Licenses', 'Licenses.locker_id', '=', 'lockers.id')
+                ->where('Licenses.client_id', $id)->delete();
+            License::where('client_id', $id)->delete();
+            PaymentMethod::where('client_id', $id)->delete();
+            CustomToken::where('client_id', $id)->delete();
+            LockerSystemLog::where('client_id', $id)->delete();
+            PasswordResetToken::where('client_id', $id)->delete();
+            Transaction::leftJoin('users', 'users.id', '=', 'transactions.user_id')
+                ->where('users.client_id', $id)->delete();
+            Wallet::leftJoin('users', 'users.id', '=', 'wallets.user_id')
+                ->where('users.client_id', $id)->delete();
+            User::where('client_id', $id)->delete();
+            $this->model->where('id', $id)->delete();
+        });
     }
 }
