@@ -18,5 +18,6 @@ return array(
         'failed' => 'Failed',
         'not_active' => 'Your account is not active. Please contact admin.',
         'banned' => 'Your account is banned. Please contact admin.',
-    )
+    ),
+    'depositFailed' => 'Top up failed',
 );
