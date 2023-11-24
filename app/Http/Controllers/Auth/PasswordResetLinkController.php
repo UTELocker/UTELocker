@@ -34,6 +34,24 @@ class PasswordResetLinkController extends Controller
             'client_id' => 'required|integer',
         ]);
 
+        $client = DB::table('clients')
+            ->where('id', $request->client_id)
+            ->first();
+
+        if (!$client) {
+            return redirect()->back()->withErrors(['client_id' => 'Client not found']);
+        }
+
+        config([
+            'mail.default' => $client->email_mailer,
+            'mail.mailers.smtp.host' => $client->email_host,
+            'mail.mailers.smtp.port' => $client->email_port,
+            'mail.mailers.smtp.encryption' => $client->email_encryption,
+            'mail.mailers.smtp.username' => $client->email_username,
+            'mail.mailers.smtp.password' => $client->email_password,
+            'mail.from.address' => $client->email_from_address,
+        ]);
+
         $token = Str::random(60);
 
         DB::table('password_reset_tokens')
