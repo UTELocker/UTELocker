@@ -10,9 +10,19 @@
     >
         <div style="display: flex !important; justify-content: center !important;" v-if="!is2FA">
             <a-card title="Password" style="width: 500px">
-                <inputs
-                    @setInput="(val) => form.password = val"
-                />
+                <div style="display: flex; flex-direction: row; justify-content: center;">
+                    <v-otp-input
+                        ref="otpInput"
+                        v-model:value="form.password"
+                        input-classes="otp-input"
+                        separator=""
+                        :num-inputs="6"
+                        :should-auto-focus="true"
+                        :input-type="letter-numeric"
+                        :conditionalClass="['one', 'two', 'three', 'four', 'five', 'six']"
+                        :placeholder="['*', '*', '*', '*', '*', '*']"
+                    />
+                </div>
 
                 <a-button
                 type="primary"
@@ -47,9 +57,20 @@
                     }">đây</a> để gửi lại.
                 </div>
 
-                <inputs
-                    @setInput="(val) => otp = val"
-                />
+                <div style="display: flex; flex-direction: row; justify-content: center; margin-top: 10px">
+                    <v-otp-input
+                        ref="otpInput"
+                        v-model:value="otp"
+                        input-classes="otp-input"
+                        separator=""
+                        :num-inputs="6"
+                        :should-auto-focus="true"
+                        :input-type="letter-numeric"
+                        :conditionalClass="['one', 'two', 'three', 'four', 'five', 'six']"
+                        :placeholder="['*', '*', '*', '*', '*', '*']"
+                    />
+                </div>
+
                 <div id="recaptcha-container"></div>
                 <a-button
                     type="primary"
@@ -65,7 +86,7 @@
 </template>
 <script>
 import { defineComponent } from 'vue';
-import Inputs from './inputs.vue';
+import VOtpInput from "vue3-otp-input";
 import { post } from '../../portalApp/helpers/api';
 import { WALLET_API } from '../constants/walletConstant';
 import { mapState, mapActions } from 'vuex';
@@ -76,7 +97,7 @@ import { Modal } from 'ant-design-vue';
 export default defineComponent({
     name: 'PasswordDrawer',
     components: {
-        Inputs,
+        VOtpInput,
     },
     props: {
         show: {
@@ -123,19 +144,31 @@ export default defineComponent({
         submit() {
             this.loading = true;
             post(WALLET_API.POST_AUTHENTICATE(),{
-                password: this.form.password.join(''),
+                password: this.form.password,
             })
             .then(res => {
-                this.loading = false;
-                this.is2FA = true;
-                this.renderRecaptcha();
-                setTimeout(()=>{
-                    this.sendOTP();
-                    this.timerCount--;
-                },1000)
+                if (res.data.status == 'success') {
+                    this.loading = false;
+                    this.is2FA = true;
+                    this.renderRecaptcha();
+                    setTimeout(()=>{
+                        this.sendOTP();
+                        this.timerCount--;
+                    },1000)
+                } else {
+                    Modal.error({
+                        title: 'Error',
+                        content: res.data.message,
+                    });
+                    this.loading = false;
+                }
             })
             .catch(err => {
                 this.loading = false;
+                Modal.error({
+                    title: 'Error',
+                    content: err.message,
+                });
             })
         },
 
@@ -180,7 +213,7 @@ export default defineComponent({
         verifyOtp(){
             let vm = this
             this.loading = true;
-            window.confirmationResult.confirm(this.otp.join('')).then(function (result) {
+            window.confirmationResult.confirm(this.otp).then(function (result) {
                 vm.accept();
             }).catch(function (error) {
                 console.log('error verify otp', error)
@@ -193,3 +226,29 @@ export default defineComponent({
     },
 });
 </script>
+<style>
+.otp-input {
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  margin: 0 10px;
+  font-size: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+/* Background colour of an input field with value */
+.otp-input.is-complete {
+  background-color: #e4e4e4;
+}
+.otp-input::-webkit-inner-spin-button,
+.otp-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input::placeholder {
+  font-size: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+</style>
