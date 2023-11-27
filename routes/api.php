@@ -48,9 +48,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('lockers')->group(function () {
         Route::get('/', [LockerController::class, 'get'])->name('api.locker.get');
         Route::get('get-activities', [LockerController::class, 'getLockerActivities'])
-            ->name('portal.locker.activities');
+            ->name('api.locker.activities');
         Route::post('/{id}/modules', [LockerController::class, 'getModules'])->name('api.locker.getModules');
-        Route::get('{lockerId}/slots/', [LockerController::class, 'getSlots'])->name('portal.locker.slot');
+        Route::get('{lockerId}/slots/', [LockerController::class, 'getSlots'])->name('api.locker.slot');
     });
 
     Route::prefix('bookings')->group(function () {
@@ -86,7 +86,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('payments')->group(function () {
         Route::prefix('wallets')->group(function () {
-            Route::post('/auth', [PaymentController::class, 'auth'])->name('portal.wallet.auth');
+            Route::get('/getWallet', [PaymentController::class, 'getWallet'])->name('api.wallet.get');
+            Route::post('/deposit', [PaymentController::class, 'deposit'])->name('api.wallet.deposit');
+            Route::get('{methodId}/deposit/callback', [PaymentController::class, 'depositCallback'])
+                ->name('api.wallet.deposit.callback');
+            Route::post('/auth', [PaymentController::class, 'auth'])->name('api.wallet.auth');
+        });
+        Route::prefix('methods')->group(function () {
+            Route::get('/', [PaymentMethodController::class, 'index'])->name('api.payment.method.index');
+            Route::get('/{id}', [PaymentMethodController::class, 'show'])->name('api.payment.method.show');
+        });
+        Route::prefix('transactions')->group(function () {
+            Route::get('/', [PaymentController::class, 'getTransactions'])->name('api.payment.transaction.get');
         });
     });
 

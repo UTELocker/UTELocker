@@ -128,7 +128,6 @@
                         notificationRead.push(notification);
                     }
                 });
-                console.log(notificationUnread);
                 renderBagde();
                 renderNotificationList();
             }

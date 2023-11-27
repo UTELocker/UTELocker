@@ -136,7 +136,6 @@
 
         $('#status-filter').on('change', function () {
                 const value = $(this).val();
-                console.log(value);
                 table.on('preXhr.dt', function (e, settings, data) {
                     data.status = value === 'all' ? null : value;
                 }).DataTable().ajax.reload();

@@ -125,6 +125,7 @@
                             } else {
                                 const placeholder = "{{ __('app.listSiteGroups') }}";
                                 $('#client').html('');
+                                $('#client-section').removeClass('d-none');
                                 $('#client').append(`<option value="">${placeholder}</option>`);
                                 $.each(data.data, function (key, value) {
                                     $('#client').append(`<option value="${value.id}">${value.name}</option>`);

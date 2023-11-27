@@ -196,13 +196,11 @@ export default defineComponent({
             let appVerifier = this.appVerifier
             let vm = this
             const phoneNumber = this.formatMobile(this.user.mobile);
-            console.log('phoneNumber', phoneNumber)
             firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
                 .then(function (confirmationResult) {
                     window.confirmationResult = confirmationResult;
                     vm.timerCount = 60;
                 }).catch(function (error) {
-                    console.log('error send otp', error)
                     Modal.error({
                         title: 'Error',
                         content: error.message,
@@ -216,7 +214,6 @@ export default defineComponent({
             window.confirmationResult.confirm(this.otp).then(function (result) {
                 vm.accept();
             }).catch(function (error) {
-                console.log('error verify otp', error)
                 Modal.error({
                     title: 'Error',
                     content: error.message,

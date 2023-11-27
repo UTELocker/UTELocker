@@ -157,7 +157,7 @@ const actions = {
                 commit('setBookingActivities', bookingActivities);
             }
         }).catch(error => {
-            console.log(error);
+            //
         });
     },
     extendTimeBooking({ commit }, payload) {

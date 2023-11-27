@@ -121,7 +121,6 @@ export default defineComponent({
                     }
                 },
                 onCancel() {
-                    console.log('Cancel');
                 },
             });
         },

@@ -15,7 +15,6 @@ export default {
                     window.location.href = res.data.redirectUrl;
                 })
                 .catch((err) => {
-                    console.log(err);
                 })
                 .finally(() => {
                     this.isLoading = false;
