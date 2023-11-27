@@ -287,7 +287,7 @@ if (el) {
     el.addEventListener("click", closeTaskDetail);
 }
 
-$("body").on("click", ".toggle-password", function () {
+$(".toggle-password").click(function () {
     var $selector = $(this).closest(".input-group").find("input.form-control");
     $(this).find(".svg-inline--fa").toggleClass("fa-eye fa-eye-slash");
     var $type = $selector.attr("type") === "password" ? "text" : "password";

@@ -6,13 +6,13 @@
             }"
         >
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px">
-                <h3 style="margin: 0;">Notifications</h3>
+                <h3 style="margin: 0;">Thông báo</h3>
                 <a-button
                     type="link"
                     size="small"
                     @click=markAllAsRead()
                 >
-                    Mark all as read
+                    Đánh dấu đã đọc tất cả
                 </a-button>
             </div>
             <a-space
@@ -174,19 +174,19 @@ export default defineComponent({
         handleTypeNotification(notification) {
             switch (notification.type) {
                 case NOTIFICATION_TYPE.PAYMENT:
-                    return 'Payment';
+                    return 'Thanh toán';
                 case NOTIFICATION_TYPE.BOOKING:
-                    return 'Booking';
+                    return 'Đặt tủ';
                 case NOTIFICATION_TYPE.SUPER_ADMIN:
                     return 'Super Admin';
                 case NOTIFICATION_TYPE.SITE_GROUP:
                     return 'Site Group';
                 case NOTIFICATION_TYPE.LOCKER_SYSTEM:
-                    return 'Locker System';
+                    return 'Hệ thống tủ';
                 case NOTIFICATION_TYPE.REPORT:
-                    return 'Report';
+                    return 'Báo cáo';
                 default:
-                    return 'All';
+                    return 'Tất cả';
             }
         },
         handleIconNotification(notification) {

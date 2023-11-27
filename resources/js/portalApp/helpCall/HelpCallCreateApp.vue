@@ -117,18 +117,17 @@
     </a-form>
 </template>
 <script>
-import { defineComponent, reactive, ref, h } from 'vue';
+import { defineComponent, reactive, ref } from 'vue';
 import { notification, message } from 'ant-design-vue';
 import { API, HELP_CALL_TYPE, HELP_CALL_TYPE_TEXT } from '../constants/helpCallConstant';
 import { get, post } from '../helpers/api';
 import SelectedDetail from './SelectedDetail.vue';
-import { SmileOutlined } from '@ant-design/icons-vue';
 
 export default defineComponent({
     name: 'HelpCallCreateApp',
-    components: {
+    components: [
         SelectedDetail,
-    },
+    ],
     setup() {
         const rules = reactive({
             type: [
