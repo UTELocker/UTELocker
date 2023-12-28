@@ -240,7 +240,7 @@ class LockerSlotService extends BaseService
     public function getLockerSlotByPassword($password, $licenseId)
     {
         $lockerId = License::where('id', $licenseId)->first()->locker_id;
-        return $this->model
+        $slotLockerChosen = $this->model
             ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
             ->leftJoin('lockers', 'lockers.id', '=', 'locker_slots.locker_id')
             ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
@@ -256,5 +256,24 @@ class LockerSlotService extends BaseService
                 'bookings.client_id', 'locations.description as address'
             )
             ->first();
+        if (!$slotLockerChosen) {
+            return null;
+        }
+        $slotsInLocker = $this->model->where('locker_id', $lockerId)
+            ->select('id', 'row', 'column')
+            ->orderBy('row')
+            ->orderBy('column')
+            ->get();
+
+        $count = 1;
+        foreach ($slotsInLocker as $slot) {
+            if ($slot->id == $slotLockerChosen->id) {
+                $slotLockerChosen->numOfLocker = $count;
+                break;
+            }
+            $count++;
+        }
+
+        return $slotLockerChosen;
     }
 }
