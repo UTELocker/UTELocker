@@ -25,11 +25,6 @@ class SiteGroupSettingController extends BaseSettingController
         $this->pageTitle = __('modules.settings.menu.site-group.menu');
         $this->activeSettingMenu = 'settings-site-group';
         $this->middleware(function ($request, $next) {
-
-            if (user() == null) {
-                $this->middleware('auth.license');
-            }
-
             return user()->hasPermission(UserRole::ADMIN)
                 ? $next($request)
                 : redirect()->route('admin.dashboard');
@@ -100,21 +95,5 @@ class SiteGroupSettingController extends BaseSettingController
         }
         clearSessionSettings('siteGroup');
         return Reply::successWithData(__('messages.recordUpdated'), ['redirectUrl' => $redirectUrl]);
-    }
-
-    public function settingsLockerSystem (Request $request) {
-        $settings = $this->clientService->getClientByLicenseId($request->header('X-License-Id'));
-        $globalSettings = globalSettings();
-        return Reply::successWithData('Settings found', [
-            'data' => [
-                'settings' => $settings,
-                'globalSettings' => [
-                    'pusher_app_id' => $globalSettings->pusher_app_id,
-                    'pusher_app_key' => $globalSettings->pusher_app_key,
-                    'pusher_app_secret' => $globalSettings->pusher_app_secret,
-                    'pusher_app_cluster' => $globalSettings->pusher_app_cluster,
-                ],
-            ],
-        ]);
     }
 }

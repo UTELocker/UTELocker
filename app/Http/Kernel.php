@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'enoughMoney' => \App\Http\Middleware\CheckEnoughMoney::class,
         'auth.license' => \App\Http\Middleware\AuthenticateLicense::class,
         'user.banned' => \App\Http\Middleware\IsUsserBanned::class,
+        'after' => \App\Http\Middleware\AfterHandelMiddleware::class,
     ];
 }

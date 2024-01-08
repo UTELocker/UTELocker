@@ -9,6 +9,7 @@ use App\Services\Admin\Lockers\LockerSlotService;
 use App\Services\Admin\Bookings\BookingService;
 use App\Services\LockeSystem\LockerSystemLogService;
 use App\Services\Admin\Licenses\LicenseService;
+use App\Services\Admin\Clients\ClientService;
 use App\Classes\Reply;
 
 class LockerSystemController extends Controller
@@ -17,6 +18,7 @@ class LockerSystemController extends Controller
     protected ?BookingService $bookingService;
     protected ?LockerSystemLogService $lockerSystemLogService;
     protected ?LicenseService $licenseService;
+    protected ?ClientService $clientService;
 
     use HandleNotification;
 
@@ -24,12 +26,14 @@ class LockerSystemController extends Controller
         LockerSlotService $lockerSlotService,
         BookingService $bookingService,
         LockerSystemLogService $lockerSystemLogService,
-        LicenseService $licenseService
+        LicenseService $licenseService,
+        ClientService $clientService
     ) {
         $this->lockerSlotService = $lockerSlotService;
         $this->bookingService = $bookingService;
         $this->lockerSystemLogService = $lockerSystemLogService;
         $this->licenseService = $licenseService;
+        $this->clientService = $clientService;
     }
 
     public function systemPassword (Request $request)
@@ -75,5 +79,22 @@ class LockerSystemController extends Controller
         $data['license_id'] = $request->header('X-License-Id');
         $data['client_id'] = $this->licenseService->get($data['license_id'])->client_id;
         $this->lockerSystemLogService->add($data);
+        return Reply::success('Log active successfully');
+    }
+
+    public function settingsLockerSystem (Request $request) {
+        $settings = $this->clientService->getClientByLicenseId($request->header('X-License-Id'));
+        $globalSettings = globalSettings();
+        return Reply::successWithData('Settings found', [
+            'data' => [
+                'settings' => $settings,
+                'globalSettings' => [
+                    'pusher_app_id' => $globalSettings->pusher_app_id,
+                    'pusher_app_key' => $globalSettings->pusher_app_key,
+                    'pusher_app_secret' => $globalSettings->pusher_app_secret,
+                    'pusher_app_cluster' => $globalSettings->pusher_app_cluster,
+                ],
+            ],
+        ]);
     }
 }
