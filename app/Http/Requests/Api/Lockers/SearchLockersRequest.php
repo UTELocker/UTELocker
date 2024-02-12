@@ -24,8 +24,8 @@ class SearchLockersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'start_date' => 'required|date_format:Y-m-d H:i|after:now',
-            'end_date' => 'required|date_format:Y-m-d H:i|after:start_date',
+            'start_date' => 'required|after:now',
+            'end_date' => 'required|after:start_date',
             'number_of_slots' => 'nullable|integer|min:1',
             'location_ids' => 'nullable|array',
             'location_ids.*' => 'integer|exists:locations,id',

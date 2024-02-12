@@ -14,6 +14,8 @@ use App\Classes\Reply;
 
 class LockerSystemController extends Controller
 {
+    use HandleNotification;
+
     protected ?LockerSlotService $lockerSlotService;
     protected ?BookingService $bookingService;
     protected ?LockerSystemLogService $lockerSystemLogService;
@@ -96,5 +98,15 @@ class LockerSystemController extends Controller
                 ],
             ],
         ]);
+    }
+
+    function pusher()
+    {
+        $this->sendNotification(
+            NotificationType::LOCKER_SYSTEM,
+            'Ngăn tủ tại ' . 'address' . ' đã được mở',
+            1,
+            1,
+        );
     }
 }

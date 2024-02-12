@@ -328,6 +328,36 @@ export default defineComponent({
                 });
             });
         },
+        checkUserNotificationPermission () {
+             // check if the browser Notification if not, ask for permission
+            console.log(Notification.requestPermission());
+            if (!("Notification" in window)) {
+                alert("This browser does not support desktop notification");
+            } else {
+                // Check if the user has granted permission for notifications
+                if (Notification.permission === "granted") {
+
+                } else if (Notification.permission !== "denied") {
+                // Otherwise, request permission from the user
+                Notification.requestPermission().then(permission => {
+
+                });
+                }
+            }
+        },
+
+        displayBrowserNotification (message) {
+            const title = 'UTE Locker';
+            const options = {
+                body: message,
+                icon: 'path/to/icon',
+                vibrate: [100, 50, 100]
+            }
+            const notification = new Notification(title, options)
+            navigator.serviceWorker.getRegistration().then((reg) => {
+                reg.showNotification(notification)
+            })
+        },
     },
     created() {
         this.loadNotifications();
@@ -335,10 +365,15 @@ export default defineComponent({
         typeChanel.forEach((type) => {
             window.Echo.channel('notification.' + type + '.' + this.user.client_id + '.' + this.user.id)
                 .listen('NotificationProcessed', (e) => {
+                    this.displayBrowserNotification(e.notification.content);
                     this.listenPusher(e.notification);
                 });
         });
-    }
+    },
+    mounted () {
+        this.checkUserNotificationPermission()
+    },
+
 });
 </script>
 

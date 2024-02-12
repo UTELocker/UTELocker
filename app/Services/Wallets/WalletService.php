@@ -123,7 +123,9 @@ class WalletService extends BaseService
 
     public function getTransactionsByUserId(User $user)
     {
-        return Transaction::where('user_id', $user->id)->get();
+        return Transaction::where('user_id', $user->id)
+            ->with('paymentMethod')
+            ->get();
     }
 
     public function auth($auth)
