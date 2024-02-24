@@ -12,6 +12,8 @@ Route::prefix('/')->middleware('auth.license')->group(function () {
         ->name('api_qt.lockers.slots.password');
     Route::get('/sync', [LockerSystemController::class, 'syn'])
         ->name('api_qt.lockers.slots.syn');
+    Route::post('/reset-pass', [LockerSystemController::class, 'resetPass'])
+        ->name('api_qt.lockers.slots.resetPass');
 
     //test pusher for VĨ
     Route::get('/pusher', [LockerSystemController::class, 'pusher'])

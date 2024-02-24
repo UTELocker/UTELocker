@@ -89,7 +89,7 @@ class BookingService extends BaseService
         $inputs['status'] = $inputs['status'] ?? BookingStatus::PENDING;
     }
 
-    private function randomPinCode($clientId)
+    public function randomPinCode($clientId)
     {
         while (true) {
             $pinCode = rand(100000, 999999);

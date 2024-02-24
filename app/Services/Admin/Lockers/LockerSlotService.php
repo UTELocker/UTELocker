@@ -260,7 +260,7 @@ class LockerSlotService extends BaseService
             return null;
         }
         $slotsInLocker = $this->model->where('locker_id', $lockerId)
-            ->select('id', 'row', 'column')
+            ->select('id', 'row', 'column', 'type')
             ->orderBy('row')
             ->orderBy('column')
             ->get();
@@ -271,9 +271,35 @@ class LockerSlotService extends BaseService
                 $slotLockerChosen->numOfLocker = $count;
                 break;
             }
-            $count++;
+            if ($slot->type == LockerSlotType::SLOT) {
+                $count++;
+            }
         }
 
         return $slotLockerChosen;
     }
+
+    public function resetPassSlot($password, $licenseId)
+    {
+        $locker = License::where('id', $licenseId)->first();
+        $this->model
+            ->leftJoin('bookings', 'bookings.locker_slot_id', '=', 'locker_slots.id')
+            ->leftJoin('lockers', 'lockers.id', '=', 'locker_slots.locker_id')
+            ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
+            ->where('locker_slots.locker_id', $locker->locker_id)
+            ->where('locker_slots.type', LockerSlotType::SLOT)
+            ->where('bookings.pin_code', $password)
+            ->where(function ($q) {
+                $q->where('bookings.status', BookingStatus::EXPIRED)
+                    ->orWhere('bookings.status', BookingStatus::APPROVED);
+            })
+            ->select('locker_slots.row', 'locker_slots.column', 'locker_slots.id',
+                'bookings.id as booking_id', 'locker_slots.locker_id', 'bookings.owner_id',
+                'bookings.client_id', 'locations.description as address'
+            )
+            ->update([
+                'pin_code' => $this->bookingService->randomPinCode($locker->client_id)
+            ]);
+    }
+
 }

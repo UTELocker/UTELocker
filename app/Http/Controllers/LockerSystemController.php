@@ -100,6 +100,15 @@ class LockerSystemController extends Controller
         ]);
     }
 
+    public function resetPass(Request $request) {
+        $this->lockerSlotService->resetPassSlot(
+            $request->password,
+            $request->header('X-License-Id')
+        );
+
+        return Reply::success('Reset pass successfully');
+    }
+
     function pusher()
     {
         $this->sendNotification(
