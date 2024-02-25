@@ -162,7 +162,10 @@ class BookingController extends Controller
 
             $this->sendNotification(
                 NotificationType::LOCKER_SYSTEM,
-                $count,
+                json_encode([
+                    'booking_id' => $booking->id,
+                    'slot_number' => $count,
+                ]),
                 $lockerId,
                 $booking->client_id,
             );
