@@ -13,6 +13,7 @@ export const API = Object.freeze({
     POST_CHANGE_PIN_CODE: () => `${API_BOOKING_PREFIX}/change-password`,
     PUT_UPDATE_USER: () => `${API_PREFIX}/user`,
     GET_BOOKING_OF_SLOT: (lockerSlotId) => `${API_BOOKING_PREFIX}/slot/${lockerSlotId}`,
+    GET_OPEN_LOCKER: (bookingId) => `${API_BOOKING_PREFIX}/open-locker/${bookingId}`,
 });
 
 export const LOGOUT_URL = '/logout';

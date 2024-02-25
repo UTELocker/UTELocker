@@ -86,7 +86,7 @@
                                                 type="primary"
                                                 shape="round"
                                                 size="medium"
-                                                @click="handleClickShowButton(item)"
+                                                @click="handleOpenLocker(item)"
                                                 :disabled="!isActive(item)"
                                             >
                                                 MỞ KHÓA
@@ -110,6 +110,19 @@
                                 <a-divider />
                                 <a-collapse ghost>
                                     <a-collapse-panel header="Cài đặt" :key="item.id">
+                                        <a-button
+                                            type="primary"
+                                            shape="round"
+                                            size="medium"
+                                            :style="{
+                                                width: '100%',
+                                                marginBottom: '0.5rem',
+                                            }"
+                                            @click="handleClickShowButton(item)"
+                                            :disabled="!isActive(item)"
+                                        >
+                                            Chi tiết
+                                        </a-button>
                                         <a-button
                                             type="primary"
                                             size="large"
@@ -164,13 +177,14 @@
 <script>
 import {defineComponent,createVNode,inject} from "vue";
 import {mapActions, mapState} from "vuex";
-import {BOOKING_ACTIVITY_STATUS} from "../constants/bookingConstant";
+import {API, BOOKING_ACTIVITY_STATUS} from "../constants/bookingConstant";
 import ActionsBooking from "./ActionsBooking.vue";
 import ExtendDateBookingModal from "./ExtendDateBookingModal.vue";
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal } from 'ant-design-vue';
 import {GLOBAL_CONFIG} from "../SymbolKey.js";
 import { notification } from 'ant-design-vue';
+import {del, get} from "../helpers/api";
 
 export default defineComponent({
     name: "OverviewApp",
@@ -279,6 +293,34 @@ export default defineComponent({
         },
         changePinCode(booking) {
             this.isShowDrawer = false;
+        },
+        handleOpenLocker(booking) {
+            Modal.confirm({
+                title: () => 'Bạn có chắc muốn mở tủ không?',
+                icon: () => createVNode(ExclamationCircleOutlined),
+                content: () => 'Khi đóng tủ mật kẩu sẽ được thay đổi',
+                onOk: () => {
+                    new Promise((resolve, reject) => {
+                        get(API.GET_OPEN_LOCKER(booking.id)).then(response => {
+                            notification['success']({
+                                message: 'Thành công',
+                                description: `Mở tủ ${booking.slot_code} thành công`
+                            });
+                            resolve();
+                        }).catch(error => {
+                            const message = error?.response?.data?.message || error || 'Lỗi kết thúc đặt tủ'
+                            notification['error']({
+                                message: 'Lỗi mở tủ',
+                                description: message
+                            });
+                            reject(error);
+                        });
+                    })
+                },
+                okText: 'Đồng ý',
+                cancelText: 'Hủy',
+                onCancel() {},
+            });
         },
     },
     created() {

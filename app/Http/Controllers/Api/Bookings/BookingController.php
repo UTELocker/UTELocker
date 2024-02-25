@@ -3,19 +3,25 @@
 namespace App\Http\Controllers\Api\Bookings;
 
 use App\Classes\Reply;
+use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Bookings\ChangePassRequest;
 use App\Http\Requests\Api\Bookings\PutExtendTimeRequest;
 use App\Http\Requests\Api\Bookings\StoreBookingRequest;
 use App\Models\Transaction;
+use App\Models\LockerSlot;
+use App\Enums\LockerSlotType;
 use App\Services\Admin\Bookings\BookingService;
 use App\Services\Wallets\TransactionService;
 use App\Services\Wallets\WalletService;
 use Illuminate\Http\Request;
 use App\Enums\BookingStatus;
+use App\Traits\HandleNotification;
 
 class BookingController extends Controller
 {
+    use HandleNotification;
+
     public ?BookingService $bookingService;
     public ?TransactionService $transactionService;
 
@@ -131,5 +137,39 @@ class BookingController extends Controller
                 'data' => $bookings
             ]
         );
+    }
+
+    public function openSlotLocker ($bookingId) {
+        $booking = $this->bookingService->get($bookingId);
+
+        if ($booking->status == BookingStatus::APPROVED || $booking->status == BookingStatus::APPROVED) {
+            $lockerId = LockerSlot::where('id', $booking->locker_slot_id)->first()->locker_id;
+            $slotsInLocker = LockerSlot::where('locker_id', $lockerId)
+                ->select('id', 'row', 'column', 'type')
+                ->orderBy('row')
+                ->orderBy('column')
+                ->get();
+
+            $count = 1;
+            foreach ($slotsInLocker as $slot) {
+                if ($slot->id == $booking->locker_slot_id) {
+                    break;
+                }
+                if ($slot->type == LockerSlotType::SLOT) {
+                    $count++;
+                }
+            }
+
+            $this->sendNotification(
+                NotificationType::LOCKER_SYSTEM,
+                $count,
+                $lockerId,
+                $booking->client_id,
+            );
+
+            return Reply::success('Open slot locker successfully');
+        }
+
+        return Reply::error('Open slot locker failed');
     }
 }

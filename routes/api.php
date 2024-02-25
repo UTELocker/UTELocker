@@ -67,6 +67,8 @@ Route::middleware('auth:sanctum')->group(function () {
             ->name('api.bookings.changePassword');
         Route::get('slot/{slotId}', [BookingController::class, 'getBookingsBySlotId'])
             ->name('api.bookings.getBookingsBySlotId');
+        Route::get('open-locker/{bookingId}', [BookingController::class, 'openSlotLocker'])
+            ->name('portal.bookings.openSlotLocker');
     });
 
     Route::prefix('search')->group(function () {
