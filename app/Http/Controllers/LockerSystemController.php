@@ -118,4 +118,20 @@ class LockerSystemController extends Controller
             1,
         );
     }
+
+    public function forgotClose(Request $request)
+    {
+        $booking = $this->bookingService->get($request->bookingId);
+
+        $this->sendNotification(
+            NotificationType::LOCKER_SYSTEM,
+            'Ngăn tủ tại ' . ($booking->locker->location->description ?? '') . ' đang mở quá ' . ($request->forgotCloseTime ?? '5') . ' phút',
+            $booking->owner_id,
+            $booking->client_id,
+            'bookings',
+            $booking->id
+        );
+
+        return Reply::success('Forgot close successfully');
+    }
 }
