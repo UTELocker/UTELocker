@@ -15,13 +15,13 @@ phases:
       - composer install
       - npm install
       - npm run dev
-      - cp .env.example .env
+      - cp .env.example .env.prod
       - php artisan key:generate
-      - sed -i 's/DB_HOST=.*/DB_HOST=$DB_HOST/' .env
-      - sed -i 's/DB_PORT=.*/DB_PORT=$DB_PORT/' .env
-      - sed -i 's/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/' .env
-      - sed -i 's/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/' .env
-      - sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/' .env
+      - sed -i 's/DB_HOST=.*/DB_HOST=$DB_HOST/' .env.prod
+      - sed -i 's/DB_PORT=.*/DB_PORT=$DB_PORT/' .env.prod
+      - sed -i 's/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/' .env.prod
+      - sed -i 's/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/' .env.prod
+      - sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/' .env.prod
 artifacts:
   files:
     - '**/*'

@@ -2,4 +2,5 @@
 yum install -y httpd
 sudo dnf install php8.2 -y
 
-#sudo cp /var/www/html/scripts/utelocker.conf /etc/httpd/conf.d/
+cp /var/www/html/.env.prod /var/www/html/.env
+sudo cp /var/www/html/scripts/utelocker.conf /etc/httpd/conf.d/
