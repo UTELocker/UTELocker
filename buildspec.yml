@@ -10,17 +10,17 @@ phases:
         php composer-setup.php ;
         php -r "unlink('composer-setup.php');" ;
         mv composer.phar /usr/local/bin/composer
+  pre_build:
+      - cp .env.example .env.prod
+      - echo $DB_HOST
+      - echo $DB_DATABASE
+      - echo $DB_USERNAME
+      - echo $DB_PASSWORD
   build:
     commands:
       - composer install
       - npm install
       - npm run dev
-      - cp .env.example .env.prod
-      - sed -i 's/DB_HOST=.*/DB_HOST=$DB_HOST/' .env.prod
-      - sed -i 's/DB_PORT=.*/DB_PORT=$DB_PORT/' .env.prod
-      - sed -i 's/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/' .env.prod
-      - sed -i 's/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/' .env.prod
-      - sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/' .env.prod
 artifacts:
   files:
     - '**/*'

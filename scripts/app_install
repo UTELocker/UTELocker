@@ -1,4 +1,4 @@
 #!/bin/bash
-cp /var/www/html/.env.prod /var/www/html/.env
+cp /var/www/html/.env.prod /var/www/html/.env -f
 php /var/www/html/artisan key:generate
 sudo cp /var/www/html/scripts/utelocker.conf /etc/httpd/conf.d/
