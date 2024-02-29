@@ -13,6 +13,7 @@ phases:
   pre_build:
       commands:
         - cp .env.example .env.prod
+        - sed -i "s/APP_ENV=.*/APP_ENV=production/g" .env.prod
         - sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/g" .env.prod
         - sed -i "s/DB_PORT=.*/DB_PORT=$DB_PORT/g" .env.prod
         - sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/g" .env.prod
