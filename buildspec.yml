@@ -2,6 +2,7 @@ version: 0.2
 phases:
   install:
     commands:
+      - printenv
       - |
         export DEBIAN_FRONTEND=noninteractive
         apt-get update
@@ -11,7 +12,6 @@ phases:
         mv composer.phar /usr/local/bin/composer
   build:
     commands:
-      - chmod -R 777 storage
       - composer install
       - npm install
       - npm run dev
