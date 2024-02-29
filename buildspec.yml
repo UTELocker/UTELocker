@@ -16,7 +16,6 @@ phases:
       - npm install
       - npm run dev
       - cp .env.example .env.prod
-      - php artisan key:generate
       - sed -i 's/DB_HOST=.*/DB_HOST=$DB_HOST/' .env.prod
       - sed -i 's/DB_PORT=.*/DB_PORT=$DB_PORT/' .env.prod
       - sed -i 's/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/' .env.prod
