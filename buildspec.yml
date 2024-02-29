@@ -1,4 +1,5 @@
 version: 0.2
+env:
 phases:
   install:
     commands:
@@ -11,9 +12,17 @@ phases:
         mv composer.phar /usr/local/bin/composer
   build:
     commands:
+      - chmod -R 777 storage
       - composer install
       - npm install
       - npm run dev
+      - cp .env.example .env
+      - php artisan key:generate
+      - sed -i 's/DB_HOST=.*/DB_HOST=${DB_HOST}/' .env
+      - sed -i 's/DB_PORT=.*/DB_PORT=${DB_PORT}/' .env
+      - sed -i 's/DB_DATABASE=.*/DB_DATABASE=${DB_DATABASE}/' .env
+      - sed -i 's/DB_USERNAME=.*/DB_USERNAME=${DB_USERNAME}/' .env
+      - sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=${DB_PASSWORD}/' .env
 artifacts:
   files:
     - '**/*'
