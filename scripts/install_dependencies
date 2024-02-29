@@ -1,4 +1,3 @@
 #!/bin/bash
 yum install -y httpd
-amazon-linux-extras install php8.1
-yum install -y php-xml php-mbstring php-json php-mysqlnd
+sudo dnf install php8.2 -y
