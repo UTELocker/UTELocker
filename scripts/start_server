@@ -1,4 +1,3 @@
 #!/bin/bash
 service httpd start
 chkconfig httpd on
-sudo cp /var/www/html/scripts/utelocker.conf /etc/httpd/conf.d/
