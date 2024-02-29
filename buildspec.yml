@@ -13,10 +13,11 @@ phases:
   pre_build:
       commands:
         - cp .env.example .env.prod
-        - echo $DB_HOST
-        - echo $DB_DATABASE
-        - echo $DB_USERNAME
-        - echo $DB_PASSWORD
+        - sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/g" .env.prod
+        - sed -i "s/DB_PORT=.*/DB_PORT=$DB_PORT/g" .env.prod
+        - sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/g" .env.prod
+        - sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/g" .env.prod
+        - sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/g" .env.prod
   build:
     commands:
       - composer install
