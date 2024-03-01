@@ -19,7 +19,6 @@ phases:
         - sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/g" .env.prod
         - sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/g" .env.prod
         - sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/g" .env.prod
-        - sed -i "s/APP_URL=.*/APP_URL=$APP_URL/g" .env.prod
         - sed -i "s/MIX_FIREBASE_API_KEY=.*/MIX_FIREBASE_API_KEY=$MIX_FIREBASE_API_KEY/g" .env.prod
         - sed -i "s/MIX_FIREBASE_AUTH_DOMAIN=.*/MIX_FIREBASE_AUTH_DOMAIN=$MIX_FIREBASE_AUTH_DOMAIN/g" .env.prod
         - sed -i "s/MIX_FIREBASE_PROJECT_ID=.*/MIX_FIREBASE_PROJECT_ID=$MIX_FIREBASE_PROJECT_ID/g" .env.prod
