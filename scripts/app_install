@@ -1,8 +1,4 @@
 #!/bin/bash
-cp /var/www/html/.env.prod /var/www/html/.env -f
-php /var/www/html/artisan key:generate
-php /var/www/html/artisan cache:clear
-php /var/www/html/artisan config:clear
-php /var/www/html/artisan route:clear
+php /var/www/html/artisan optimize:clear
 php /var/www/html/artisan migrate
 sudo cp /var/www/html/scripts/utelocker.conf /etc/httpd/conf.d/
