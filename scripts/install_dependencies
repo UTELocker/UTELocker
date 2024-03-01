@@ -1,3 +1,4 @@
 #!/bin/bash
 yum install -y httpd
 sudo dnf install php8.2 -y
+sudo rm /var/www/html/.env
