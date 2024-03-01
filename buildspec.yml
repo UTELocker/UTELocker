@@ -19,6 +19,20 @@ phases:
         - sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/g" .env.prod
         - sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/g" .env.prod
         - sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/g" .env.prod
+        - sed -i "s/APP_URL=.*/APP_URL=$APP_URL/g" .env.prod
+        - sed -i "s/MIX_FIREBASE_API_KEY=.*/MIX_FIREBASE_API_KEY=$MIX_FIREBASE_API_KEY/g" .env.prod
+        - sed -i "s/MIX_FIREBASE_AUTH_DOMAIN=.*/MIX_FIREBASE_AUTH_DOMAIN=$MIX_FIREBASE_AUTH_DOMAIN/g" .env.prod
+        - sed -i "s/MIX_FIREBASE_PROJECT_ID=.*/MIX_FIREBASE_PROJECT_ID=$MIX_FIREBASE_PROJECT_ID/g" .env.prod
+        - sed -i "s/MIX_FIREBASE_STORAGE_BUCKET=.*/MIX_FIREBASE_STORAGE_BUCKET=$MIX_FIREBASE_STORAGE_BUCKET/g" .env.prod
+        - sed -i "s/MIX_FIREBASE_MESSAGING_SENDER_ID=.*/MIX_FIREBASE_MESSAGING_SENDER_ID=$MIX_FIREBASE_MESSAGING_SENDER_ID/g" .env.prod
+        - sed -i "s/MIX_FIREBASE_APP_ID=.*/MIX_FIREBASE_APP_ID=$MIX_FIREBASE_APP_ID/g" .env.prod
+        - sed -i "s/MIX_FIREBASE_MEASUREMENT_ID=.*/MIX_FIREBASE_MEASUREMENT_ID=$MIX_FIREBASE_MEASUREMENT_ID/g" .env.prod
+        - sed -i "s/PUSHER_APP_ID=.*/PUSHER_APP_ID=$PUSHER_APP_ID/g" .env.prod
+        - sed -i "s/PUSHER_APP_KEY=.*/PUSHER_APP_KEY=$PUSHER_APP_KEY/g" .env.prod
+        - sed -i "s/PUSHER_APP_SECRET=.*/PUSHER_APP_SECRET=$PUSHER_APP_SECRET/g" .env.prod
+        - sed -i "s/PUSHER_APP_CLUSTER=.*/PUSHER_APP_CLUSTER=$PUSHER_APP_CLUSTER/g" .env.prod
+        - sed -i "s/PUSHER_APP_HOST=.*/PUSHER_APP_HOST=$PUSHER_APP_HOST/g" .env.prod
+        - sed -i "s/PUSHER_SCHEME=.*/PUSHER_SCHEME=$PUSHER_SCHEME/g" .env.prod
   build:
     commands:
       - composer install
