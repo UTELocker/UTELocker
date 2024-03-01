@@ -4,6 +4,5 @@ php /var/www/html/artisan key:generate
 php /var/www/html/artisan cache:clear
 php /var/www/html/artisan config:clear
 php /var/www/html/artisan route:clear
-php /var/www/html/artisan config:cache
 php /var/www/html/artisan migrate
 sudo cp /var/www/html/scripts/utelocker.conf /etc/httpd/conf.d/
