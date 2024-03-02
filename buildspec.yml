@@ -1,0 +1,43 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - printenv
+      - |
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get update
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+        php composer-setup.php ;
+        php -r "unlink('composer-setup.php');" ;
+        mv composer.phar /usr/local/bin/composer
+  pre_build:
+      commands:
+        - cp .env.example .env
+        - sed -i "s/APP_ENV=.*/APP_ENV=production/g" .env
+        - sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/g" .env
+        - sed -i "s/DB_PORT=.*/DB_PORT=$DB_PORT/g" .env
+        - sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/g" .env
+        - sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/g" .env
+        - sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/g" .env
+        - sed -i "s/MIX_FIREBASE_API_KEY=.*/MIX_FIREBASE_API_KEY=$MIX_FIREBASE_API_KEY/g" .env
+        - sed -i "s/MIX_FIREBASE_AUTH_DOMAIN=.*/MIX_FIREBASE_AUTH_DOMAIN=$MIX_FIREBASE_AUTH_DOMAIN/g" .env
+        - sed -i "s/MIX_FIREBASE_PROJECT_ID=.*/MIX_FIREBASE_PROJECT_ID=$MIX_FIREBASE_PROJECT_ID/g" .env
+        - sed -i "s/MIX_FIREBASE_STORAGE_BUCKET=.*/MIX_FIREBASE_STORAGE_BUCKET=$MIX_FIREBASE_STORAGE_BUCKET/g" .env
+        - sed -i "s/MIX_FIREBASE_MESSAGING_SENDER_ID=.*/MIX_FIREBASE_MESSAGING_SENDER_ID=$MIX_FIREBASE_MESSAGING_SENDER_ID/g" .env
+        - sed -i "s/MIX_FIREBASE_APP_ID=.*/MIX_FIREBASE_APP_ID=$MIX_FIREBASE_APP_ID/g" .env
+        - sed -i "s/MIX_FIREBASE_MEASUREMENT_ID=.*/MIX_FIREBASE_MEASUREMENT_ID=$MIX_FIREBASE_MEASUREMENT_ID/g" .env
+        - sed -i "s/PUSHER_APP_ID=.*/PUSHER_APP_ID=$PUSHER_APP_ID/g" .env
+        - sed -i "s/PUSHER_APP_KEY=.*/PUSHER_APP_KEY=$PUSHER_APP_KEY/g" .env
+        - sed -i "s/PUSHER_APP_SECRET=.*/PUSHER_APP_SECRET=$PUSHER_APP_SECRET/g" .env
+        - sed -i "s/PUSHER_APP_CLUSTER=.*/PUSHER_APP_CLUSTER=$PUSHER_APP_CLUSTER/g" .env
+        - sed -i "s/PUSHER_APP_HOST=.*/PUSHER_APP_HOST=$PUSHER_APP_HOST/g" .env
+        - sed -i "s/PUSHER_SCHEME=.*/PUSHER_SCHEME=$PUSHER_SCHEME/g" .env
+  build:
+    commands:
+      - composer install
+      - php artisan key:generate
+      - npm install
+      - npm run dev
+artifacts:
+  files:
+    - '**/*'

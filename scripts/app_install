@@ -1,0 +1,4 @@
+#!/bin/bash
+php /var/www/html/artisan optimize:clear
+php /var/www/html/artisan migrate
+sudo cp /var/www/html/scripts/utelocker.conf /etc/httpd/conf.d/
