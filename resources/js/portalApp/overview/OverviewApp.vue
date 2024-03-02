@@ -325,7 +325,10 @@ export default defineComponent({
     },
     created() {
         this.isLoading = true;
-        this.getBookingActivities().then(() => {
+        const licenseId = window.location.pathname.split('/')[2];
+        this.getBookingActivities({
+            licenseId: licenseId,
+        }).then(() => {
             this.isLoading = false;
         });
     },

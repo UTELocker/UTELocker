@@ -86,9 +86,9 @@ const actions = {
             commit('setWallet', wallet);
         });
     },
-    loadBookingActivities({ commit }) {
+    loadBookingActivities({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            get(API.GET_BOOKING_ACTIVITIES()).then(response => {
+            get(API.GET_BOOKING_ACTIVITIES(payload)).then(response => {
                 const data = response.data.data;
                 const bookingActivitiesActive = [];
                 const bookingActivitiesNotYet = [];

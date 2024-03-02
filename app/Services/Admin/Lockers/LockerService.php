@@ -190,6 +190,7 @@ class LockerService extends BaseService
         $endDate = Carbon::createFromFormat('Y-m-d H:i', $inputs['end_date'])->addMinutes(30);
         $numberSlot = $inputs['number_of_slots'] ?? 1;
         $locations = $inputs['location_ids'] ?? null;
+        $licenseId = $inputs['license_id'] ?? null;
 
         return $this->model
             ->select(
@@ -203,6 +204,9 @@ class LockerService extends BaseService
             ->where('licenses.client_id', user()->client_id)
             ->when($locations, function ($query, $locations) {
                 $query->whereIn('locations.id', $locations);
+            })
+            ->when($licenseId, function ($query, $licenseId) {
+                $query->where('licenses.id', $licenseId);
             })
             ->where('lockers.status', LockerStatus::IN_USE)
             ->withCount(['lockerSlots' => function ($query) use($startDate, $endDate) {

@@ -111,7 +111,7 @@ class BookingService extends BaseService
         Common::assignField($this->model, 'end_date', $inputs);
     }
 
-    public function getBookingActivities(User $user) {
+    public function getBookingActivities(User $user, $licenseId = null) {
         return $this->model
             ->where('bookings.owner_id', $user->id)
             ->where('bookings.client_id', $user->client_id)
@@ -122,6 +122,10 @@ class BookingService extends BaseService
             })
             ->leftJoin('locker_slots', 'bookings.locker_slot_id', '=', 'locker_slots.id')
             ->leftJoin('lockers', 'locker_slots.locker_id', '=', 'lockers.id')
+            ->when($licenseId != null, function ($query) use ($licenseId) {
+                $query->leftJoin('licenses', 'lockers.id', '=', 'licenses.locker_id')
+                    ->where('licenses.id', $licenseId);
+            })
             ->leftJoin('locations', 'lockers.location_id', '=', 'locations.id')
             ->select(
                 'lockers.id as locker_id', 'locker_slots.id as locker_slot_id',

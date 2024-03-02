@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Bookings\ChangePassRequest;
 use App\Http\Requests\Api\Bookings\PutExtendTimeRequest;
 use App\Http\Requests\Api\Bookings\StoreBookingRequest;
+use App\Models\License;
 use App\Models\Transaction;
 use App\Models\LockerSlot;
 use App\Enums\LockerSlotType;
@@ -38,9 +39,10 @@ class BookingController extends Controller
         $this->walletService = $walletService;
     }
 
-    public function getBookingActivities()
+    public function getBookingActivities(Request $request)
     {
-        $bookings = $this->bookingService->getBookingActivities(user());
+        $licenseId = $request->get('licenseId') ?? null;
+        $bookings = $this->bookingService->getBookingActivities(user(), $licenseId);
         return Reply::successWithData('Get bookings successfully',
             [
                 'data' => $this->bookingService->formatOutputApi($bookings)

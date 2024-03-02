@@ -39,13 +39,14 @@ const mutations = {
 
 const actions = {
     loadAvailableLockers({ commit }, payload) {
-        const { locationIds, startDate, endDate, numberOfSlots } = payload;
+        const { locationIds, startDate, endDate, numberOfSlots, licenseId } = payload;
         return new Promise((resolve, reject) => {
             get(API.GET_AVAILABLE_LOCKERS({
                 'location_ids' : locationIds,
                 'start_date' : startDate,
                 'end_date' : endDate,
                 'number_of_slots' : numberOfSlots,
+                'license_id' : licenseId,
             })).then(response => {
                 const data = response.data.data;
                 if (data.length === 0) {

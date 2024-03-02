@@ -133,7 +133,8 @@ export default defineComponent({
                 { label: '1 giờ', value: [dayjs(), dayjs().add(1, 'h')] },
                 { label: '1 ngày', value: [dayjs(), dayjs().add(1, 'd')] },
                 { label: '2 ngày', value: [dayjs(), dayjs().add(2, 'd')] },
-            ]
+            ],
+            licenseId: null,
         };
     },
     setup() {
@@ -185,6 +186,7 @@ export default defineComponent({
                     startDate: this.formModel.startDate,
                     endDate: this.formModel.endDate,
                     numberOfSlots: this.formModel.numberOfSlots,
+                    licenseId: this.licenseId,
                 }).then(() => {
                     this.isSubmitLoading = false;
                 }).catch((e) => {
@@ -219,6 +221,7 @@ export default defineComponent({
                 content: message,
             });
         });
+        this.licenseId = this.$route.query.license;
     },
 });
 </script>

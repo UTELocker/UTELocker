@@ -47,6 +47,7 @@
         "quill-mention": "^4.0.0",
         "sweetalert2": "^11.7.32",
         "vue": "^3.3.4",
+        "vue-qrcode-reader": "^5.5.3",
         "vue-request": "^2.0.4",
         "vue-router": "^4.2.5",
         "vue3-otp-input": "^0.4.1",

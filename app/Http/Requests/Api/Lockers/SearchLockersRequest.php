@@ -29,6 +29,7 @@ class SearchLockersRequest extends FormRequest
             'number_of_slots' => 'nullable|integer|min:1',
             'location_ids' => 'nullable|array',
             'location_ids.*' => 'integer|exists:locations,id',
+            'license_id' => 'nullable|integer|exists:licenses,id',
         ];
     }
 }
