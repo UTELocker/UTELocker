@@ -13,7 +13,7 @@ import UserSettingsApp from "./user/UserSettingsApp.vue";
 import HelpCallApp from "./helpCall/HelpCallApp.vue";
 import HelpCallAdminApp from "./helpCall/HelpCallAdminApp.vue";
 import HelpCallCreateApp from "./helpCall/HelpCallCreateApp.vue";
-import ScannerQR from "./ScannerQR/ScannerQR.vue";
+import ScannerQR from "./ScannerQR/scannerQR.vue";
 
 const routes = [
     {

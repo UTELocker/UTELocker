@@ -66,8 +66,8 @@ class StoreBookingRequest extends FormRequest
             ]);
         }
         return [
-            'start_date' => 'required|date_format:Y-m-d H:i|after:now',
-            'end_date' => 'required|date_format:Y-m-d H:i|after:start_date',
+            'start_date' => 'required|after:now',
+            'end_date' => 'required|after:start_date',
             'list_slots_id' => 'required|array',
             'list_slots_id.*' => [
                 'required',

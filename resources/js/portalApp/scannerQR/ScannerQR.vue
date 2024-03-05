@@ -51,6 +51,7 @@
     ];
 
     export default {
+        name: "ScannerQR",
         components: {
             QrcodeStream,
             CheckCircleTwoTone,

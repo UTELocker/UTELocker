@@ -12,6 +12,7 @@
                 />
                 <Menu v-if="!isMobile" />
             </a-col>
+            <scanner-q-r v-if="isMobile" />
             <notification :isMobile="isMobile" v-if="isMobile" />
             <a-popover
                 v-model:open="menuOpen"
@@ -37,6 +38,7 @@ import Menu from "./Menu.vue";
 import { UnorderedListOutlined } from '@ant-design/icons-vue';
 import SearchBox from "./SearchBox.vue";
 import Notification from "./Notification.vue";
+import ScannerQR from "./ScannerQR.vue";
 export default defineComponent({
     name: "Header",
     components: {
@@ -44,7 +46,8 @@ export default defineComponent({
         Menu,
         Logo,
         UnorderedListOutlined,
-        Notification
+        Notification,
+        ScannerQR
     },
     setup() {
         const route = useRoute();
