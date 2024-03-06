@@ -126,7 +126,7 @@ class UserService extends BaseService
         return $this->model->findOrFail($id);
     }
 
-    public function update(User $user, array $inputs, array $options = []): user
+    public function update(User $user, array $inputs, array $options = []): User|bool
     {
         $this->setModel($user);
         if (isset($options['isPrefix']) && $options['isPrefix']) {
