@@ -132,7 +132,7 @@ class WalletService extends BaseService
     {
         $password = $auth['password'];
 
-        if (!Auth::guard('wallets')->attempt(['id' => user()->id, 'password' => $password])) {
+        if (!Auth::guard('wallets')->attempt(['user_id' => user()->id, 'password' => $password])) {
             return false;
         }
 
