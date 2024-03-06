@@ -18,7 +18,7 @@
                         separator=""
                         :num-inputs="6"
                         :should-auto-focus="true"
-                        :input-type="letter-numeric"
+                        :input-type="'letter-numeric'"
                         :conditionalClass="['one', 'two', 'three', 'four', 'five', 'six']"
                         :placeholder="['*', '*', '*', '*', '*', '*']"
                     />
@@ -65,7 +65,7 @@
                         separator=""
                         :num-inputs="6"
                         :should-auto-focus="true"
-                        :input-type="letter-numeric"
+                        :input-type="'letter-numeric'"
                         :conditionalClass="['one', 'two', 'three', 'four', 'five', 'six']"
                         :placeholder="['*', '*', '*', '*', '*', '*']"
                     />
