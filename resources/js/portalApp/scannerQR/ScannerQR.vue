@@ -46,7 +46,7 @@
     import { CheckCircleTwoTone, SwapOutlined } from '@ant-design/icons-vue'
     import { QrcodeStream } from 'vue-qrcode-reader'
     const patternResultAccess = [
-        'https://utelocker.dataviz.io.vn/portal/[0-9].$',
+        'https://utelocker.dataviz.io.vn/portal/.',
     ];
 
     export default {
@@ -106,6 +106,7 @@
                 this.result = detectedCodes.map((code) => code.rawValue)
                 this.paused = true
 
+                console.log(this.result)
                 if (patternResultAccess.some((pattern) => new RegExp(pattern).test(this.result))) {
                     this.showScanConfirmation = true
 
