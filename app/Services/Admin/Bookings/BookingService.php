@@ -498,7 +498,7 @@ class BookingService extends BaseService
             ->where('bookings.status', BookingStatus::APPROVED)
             ->where('licenses.id', $licenseId)
             ->select(
-                'bookings.pin_code',
+                'bookings.pin_code', 'locker_slots.id as locker_slot_id',
                 'locker_slots.row', 'locker_slots.column',
             )
             ->get();

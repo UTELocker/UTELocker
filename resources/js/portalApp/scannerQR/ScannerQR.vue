@@ -46,8 +46,7 @@
     import { CheckCircleTwoTone, SwapOutlined } from '@ant-design/icons-vue'
     import { QrcodeStream } from 'vue-qrcode-reader'
     const patternResultAccess = [
-        '/.+',
-        '/booking?location=.+',
+        'https://utelocker.dataviz.io.vn/portal/[0-9].$',
     ];
 
     export default {
@@ -110,7 +109,7 @@
                 if (patternResultAccess.some((pattern) => new RegExp(pattern).test(this.result))) {
                     this.showScanConfirmation = true
 
-                    window.location.href = window.location.origin + '/portal' + this.result
+                    window.location.href = this.result
 
                 } else {
                     this.isShowModal = true

@@ -60,7 +60,7 @@
             :form="form"
             @updateForm="updateFormValue"
             :key="'selected-detail'"
-        ></selected-detail>
+        />
         <a-form-item
             ref="title"
             label="Tiêu đề"
@@ -125,9 +125,10 @@ import SelectedDetail from './SelectedDetail.vue';
 
 export default defineComponent({
     name: 'HelpCallCreateApp',
-    components: [
-        SelectedDetail,
-    ],
+    components: {
+        'selected-detail': SelectedDetail,
+
+    },
     setup() {
         const rules = reactive({
             type: [

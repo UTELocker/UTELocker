@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LockerSlotType;
+use App\Models\LockerSlot;
 use Illuminate\Http\Request;
 use App\Traits\HandleNotification;
 use App\Enums\NotificationType;
@@ -67,6 +69,26 @@ class LockerSystemController extends Controller
         $bookings = $this->bookingService->getBookingActivitiesLicense(
             $request->header('X-License-Id'),
         );
+
+        if (!$bookings) {
+            return null;
+        }
+
+        $slotsInLocker = LockerSlot::where('locker_id', $request->header('X-License-Id'))
+            ->select('id', 'row', 'column', 'type')
+            ->orderBy('row')
+            ->orderBy('column')
+            ->get();
+
+        $count = 1;
+        foreach ($slotsInLocker as $slot) {
+            if ($bookings->where('locker_slot_id', $slot->id)->count() > 0) {
+                $bookings->where('locker_slot_id', $slot->id)->first()->numOfLocker = $count;
+            }
+            if ($slot->type == LockerSlotType::SLOT) {
+                $count++;
+            }
+        }
 
         return Reply::successWithData('Syn successfully',
             [

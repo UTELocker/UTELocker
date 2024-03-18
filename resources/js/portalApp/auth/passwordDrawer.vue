@@ -8,7 +8,7 @@
         :closable="false"
         :maskClosable="false"
     >
-        <div style="display: flex !important; justify-content: center !important;" v-if="!is2FA">
+        <div style="display: flex !important; justify-content: center !important;">
             <a-card title="Password" style="width: 500px">
                 <div style="display: flex; flex-direction: row; justify-content: center;">
                     <v-otp-input
@@ -44,44 +44,6 @@
             </div>
         </a-card>
         </div>
-        <div style="display: flex !important; justify-content: center !important;" v-if="is2FA">
-            <a-card title="OTP" style="width: 500px">
-                <div>
-                    Nhập mã OTP được gửi về số điện thoại {{ user.mobile }}.
-                </div>
-                <div>
-                    Mã OTP sẽ hết hạn sau <span>{{ timerCount }}</span> giây.
-                    Nếu bạn chưa nhận được mã vui lòng nhấn <a @click="sendOTP" :style="{
-                        color: timerCount <= 0 ? 'blue' : 'gray',
-                        cursor: timerCount <= 0 ? 'pointer' : 'not-allowed',
-                    }">đây</a> để gửi lại.
-                </div>
-
-                <div style="display: flex; flex-direction: row; justify-content: center; margin-top: 10px">
-                    <v-otp-input
-                        ref="otpInput"
-                        v-model:value="otp"
-                        input-classes="otp-input"
-                        separator=""
-                        :num-inputs="6"
-                        :should-auto-focus="true"
-                        :input-type="'letter-numeric'"
-                        :conditionalClass="['one', 'two', 'three', 'four', 'five', 'six']"
-                        :placeholder="['*', '*', '*', '*', '*', '*']"
-                    />
-                </div>
-
-                <div id="recaptcha-container"></div>
-                <a-button
-                    type="primary"
-                    :loading="loading"
-                    style="width: 100%; margin-top: 20px;"
-                    @click="verifyOtp"
-                >
-                    Xác nhận
-                </a-button>
-            </a-card>
-        </div>
     </a-drawer>
 </template>
 <script>
@@ -111,11 +73,7 @@ export default defineComponent({
                 password: '',
             },
             loading: false,
-            is2FA: false,
             appVerifier : '',
-            otp: '',
-            test: '',
-            timerCount: 60,
         };
     },
     computed: {
@@ -123,19 +81,6 @@ export default defineComponent({
             user: state => state.moduleBase.user,
             isAccept: state => state.moduleWallet.isAccept,
         }),
-    },
-    watch: {
-        timerCount: {
-            handler(value) {
-                if (value > 0 && this.is2FA) {
-                    setTimeout(() => {
-                        this.timerCount--;
-                    }, 1000);
-                }
-
-            },
-            immediate: true
-        }
     },
     methods: {
         ...mapActions({
@@ -149,12 +94,7 @@ export default defineComponent({
             .then(res => {
                 if (res.data.status == 'success') {
                     this.loading = false;
-                    this.is2FA = true;
-                    this.renderRecaptcha();
-                    setTimeout(()=>{
-                        this.sendOTP();
-                        this.timerCount--;
-                    },1000)
+                    this.accept();
                 } else {
                     Modal.error({
                         title: 'Error',
@@ -170,55 +110,6 @@ export default defineComponent({
                     content: err.message,
                 });
             })
-        },
-
-        renderRecaptcha() {
-            setTimeout(()=>{
-                let vm = this
-                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                    'size': 'invisible',
-                    'callback': function(response) {
-
-                    },
-                    'expired-callback': function() {
-
-                    }
-                });
-                this.appVerifier =  window.recaptchaVerifier
-            },1000)
-        },
-
-        formatMobile(mobile) {
-            return `+84${mobile.slice(1)}`
-        },
-
-        sendOTP() {
-            let appVerifier = this.appVerifier
-            let vm = this
-            const phoneNumber = this.formatMobile(this.user.mobile);
-            firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
-                .then(function (confirmationResult) {
-                    window.confirmationResult = confirmationResult;
-                    vm.timerCount = 60;
-                }).catch(function (error) {
-                    Modal.error({
-                        title: 'Error',
-                        content: error.message,
-                    });
-            });
-        },
-
-        verifyOtp(){
-            let vm = this
-            this.loading = true;
-            window.confirmationResult.confirm(this.otp).then(function (result) {
-                vm.accept();
-            }).catch(function (error) {
-                Modal.error({
-                    title: 'Error',
-                    content: error.message,
-                });
-            });
         },
     },
 });

@@ -54,6 +54,17 @@
                         </div>
                     @endif
                     @if($slot->type == \App\Enums\LockerSlotType::CPU)
+                        <x-forms.select fieldId="status"
+                                        :fieldLabel="__('app.status')"
+                                        :field
+                                        fieldName="status">
+                            @foreach(\App\Enums\LockerSlotStatus::getDescriptions() as $key => $status)
+                                <option
+                                    value="{{ $key }}"
+                                    {{ $key == $slot->status ? 'selected' : '' }}
+                                >{{ $status }}</option>
+                            @endforeach
+                        </x-forms.select>
                         <div class="row mt-2">
                             <div class="col-md-12">
                                 <label class="control-label">@lang('settings.maxTimeHoursBooking')</label>

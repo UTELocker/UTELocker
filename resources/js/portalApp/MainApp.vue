@@ -18,6 +18,7 @@ import useMediaQuery from "./hooks/useMediaQuery";
 import {GLOBAL_CONFIG} from "./SymbolKey";
 import Layout from "./components/layouts/Layout.vue";
 import {mapActions} from "vuex";
+import {DONT_SHOW_POLICY_BOOKING} from "./constants/bookingConstant";
 
 const getAlgorithm = (themes = []) =>
     themes
@@ -112,6 +113,8 @@ export default defineComponent({
                 });
             });
         });
+        // localStorage.setItem('isDontShowPolicyBooking', 0);
+        console.log(localStorage.getItem("isDontShowPolicyBooking"));
     }
 });
 </script>

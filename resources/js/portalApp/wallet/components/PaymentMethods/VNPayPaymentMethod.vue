@@ -8,7 +8,7 @@
                 v-model:value="formState.amount"
                 size="large"
                 :min="0"
-                :max="1000000000"
+                :max="10000000"
                 :step="10000"
                 :precision="0"
                 :formatter="value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
