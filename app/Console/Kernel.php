@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(new OverdueWarningBookingTask())->everyMinute();
         $schedule->call(new ApprovedBookingTask())->everyMinute();
         $schedule->call(new OverdueBookingTask())->everyMinute();
-        $schedule->call(new WarningExpireTask())->everyMinute();
+//        $schedule->call(new WarningExpireTask())->everyMinute();
         $schedule->call(new ExpireTokenTask())->everyMinute();
         $schedule->call(new LockedBookingTask())->everyMinute();
 //        $schedule->call(new CheckLockerLiveTask())

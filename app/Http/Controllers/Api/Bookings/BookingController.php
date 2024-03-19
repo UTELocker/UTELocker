@@ -162,16 +162,6 @@ class BookingController extends Controller
                 }
             }
 
-            $this->sendNotification(
-                NotificationType::LOCKER_SYSTEM,
-                json_encode([
-                    'booking_id' => $booking->id,
-                    'slot_number' => $count,
-                ]),
-                $lockerId,
-                $booking->client_id,
-            );
-
             return Reply::success('Open slot locker successfully');
         }
 
