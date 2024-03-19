@@ -18,7 +18,7 @@ class OverdueBookingTask
     {
         DB::transaction(function () {
             Booking::whereIn('bookings.status', [BookingStatus::APPROVED])
-                    ->where('bookings.end_date', Carbon::now()->format('Y-m-d H:i'))
+                    ->where('bookings.end_date', '<=', Carbon::now()->format('Y-m-d H:i'))
                     ->update(['bookings.status' => BookingStatus::EXPIRED]);
         });
     }

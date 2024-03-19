@@ -53,7 +53,7 @@ class WarningExpireTask
                 case 1:
                     $this->sendNotification(
                         NotificationType::BOOKING,
-                        "Your booking is expending 30 minutes at locker $booking->locker_code",
+                        "Your booking is expending 10 minutes at locker $booking->locker_code",
                         $booking->owner_id,
                         $booking->client_id,
                         'bookings',

@@ -26,15 +26,15 @@ class LockedBookingTask
                 ->get();
             foreach ($lockers as $locker) {
                 $configLocker = json_decode($locker->config ?? '{}', true);
-                $booking = Booking::where('bookings.status', BookingStatus::APPROVED)
+                $booking = Booking::where('bookings.status', BookingStatus::EXPIRED)
                     ->leftJoin('locker_slots', 'locker_slots.id', '=', 'bookings.locker_slot_id')
                     ->leftJoin('lockers', 'lockers.id', '=', 'locker_slots.locker_id')
                     ->leftJoin('locations', 'locations.id', '=', 'lockers.location_id')
                     ->where('locker_slots.locker_id', $locker->locker_id)
-//                    ->where('bookings.end_date', '<=', Carbon::now()->subMinutes(
-//                        $configLocker['bufferTime'] ?? 30
-//                    )->format('Y-m-d H:i'))
-                    ->where('bookings.end_date', Carbon::now()->format('Y-m-d H:i'))
+                    ->where('bookings.end_date', '<=', Carbon::now()->subMinutes(
+                        $configLocker['bufferTime'] ?? 30
+                    )->format('Y-m-d H:i'))
+//                    ->where('bookings.end_date', '<=', Carbon::now()->format('Y-m-d H:i'))
                     ->select(
                         'bookings.id',
                         'bookings.owner_id',

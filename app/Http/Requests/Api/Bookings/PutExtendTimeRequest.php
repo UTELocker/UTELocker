@@ -40,8 +40,9 @@ class PutExtendTimeRequest extends FormRequest
                         })
                         ->first();
 
-                    if (!$booking) {
-                        $fail('Booking not found');
+                    if (empty($booking)) {
+                        $fail('Không thể thêm thời gian cho đơn đặt chỗ này');
+                        return;
                     }
 
                     if ($value < 30) {

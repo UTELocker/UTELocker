@@ -37,7 +37,7 @@ class StoreClientRequest extends BaseRequest
             'client_email' => 'required|email',
             'client_website' => 'nullable|url',
             'client_phone' => 'nullable|numeric',
-            'client_address' => 'nullable|string',
+            'client_address' => 'required|string',
             'client_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
 
