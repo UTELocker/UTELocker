@@ -20,7 +20,6 @@
                 <p style="font-size: medium;">Điểm thưởng: <strong>{{this.getWalletPoints()}}</strong></p>
             </div>
             <div
-                v-if="!isMobile"
                 class="wallet-action"
             >
                 <a-button type="primary" @click="this.$router.push({name: 'wallet.topup'})">Nạp Tiền</a-button>
