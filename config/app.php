@@ -71,7 +71,7 @@ return [
     */
 
     'timezone' => 'Asia/Ho_Chi_Minh',
-
+    'schedule_timezone' => 'Asia/Ho_Chi_Minh',
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
